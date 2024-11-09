@@ -27,7 +27,21 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
     Color cn6 = new Color(172,237,255);//azul claro
     Color cn7 = new Color(64,55,34);//cafe 2
     Color cn8 = new Color(0,168,45);//verde
-    
+    Color cn9 = new Color(203,115,91);//cafe claro
+    Color cn10 = new Color(127,250,91);//verde claro
+    public JTextArea textArea = new JTextArea();
+    public String txt1 = "Estadisticas sobre los bosques de: \n"
+                                      +"    »Encino.\n"
+                                      +"    »Encino-Pino.\n"
+                                      +"    »Oyamel.\n"
+                                      +"    »Pino.\n"
+                                      +"    »PIno-Encino.\n"
+                                      +"    »Mesofolio.\n";
+    public String txt2 = "Estadisticas sobre: \n"
+                                      +"    »Tipos de bosque.\n"
+                                      +"    »Localización.\n"
+                                      +"    »Hectareas.\n"
+                                      +"    »Arboles por hectarea.\n";
 
     public simulacionTablaDeDatos() {
         initComponents();
@@ -43,25 +57,12 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn4,cn4,cn5);
         pintarBoton(btnIndices,"<html>Indices de deforestación</html>",cn4,cn4,cn5);
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
-        pintarBoton(btnGrafica,"<html>Grafica Circular</html>",cn8,cn8,cn4);
-        
-        
-        JTextArea textArea = new JTextArea("Estadisticas sobre los bosques de: \n"
-                                      +"    »Encino.\n"
-                                      +"    »Encino-Pino.\n"
-                                      +"    »Oyamel.\n"
-                                      +"    »Pino.\n"
-                                      +"    »PIno-Encino.\n"
-                                      +"    »Mesofolio.\n");
-    textArea.setOpaque(false);  // Hacer transparente el fondo
-    textArea.setBorder(BorderFactory.createEmptyBorder());  // Quitar el borde
-    textArea.setEditable(false);  // Evitar que sea editable
-    textArea.setFocusable(false);  // Evitar que el usuario pueda enfocarlo
-    textArea.setForeground(cn4);  // Cambia el color del texto
-    textArea.setFont(new Font("Arial", Font.PLAIN, 19));  // Cambia la fuente y el tamaño
-    textArea.setBounds(990, 570,350, 190); 
-    pcontenido.add(textArea);
-        
+        pintarBoton(btnGrafica,"<html>Grafica Circular</html>",cn10,cn10,cn5);
+        btnGrafica.setFont(new Font("Arial", Font.PLAIN, 19));
+        pintarBoton(btnGrafica2,"<html>Grafica de Barras</html>",cn9,cn9,cn5);
+        btnGrafica2.setFont(new Font("Arial", Font.PLAIN, 19));
+       
+   
     }
     public void pintarBoton(JButton nombreBoton,String txt,Color c1,Color c2, Color c3){
         nombreBoton.setText(txt);
@@ -69,6 +70,31 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         nombreBoton.setBackground(c1);
         nombreBoton.setBorder(new LineBorder(c2, 2));
         nombreBoton.setForeground(c3);
+    }
+    public void aparecerTexto(String txt,int n1,int n2,int n3,int n4){
+    textArea.setVisible(true);
+    textArea.setText(txt);
+    textArea.setOpaque(false);  // Hacer transparente el fondo
+    textArea.setBorder(BorderFactory.createEmptyBorder());  // Quitar el borde
+    textArea.setEditable(false);  // Evitar que sea editable
+    textArea.setFocusable(false);  // Evitar que el usuario pueda enfocarlo
+    textArea.setForeground(cn4);  // Cambia el color del texto
+    textArea.setFont(new Font("Arial", Font.PLAIN, 19));  // Cambia la fuente y el tamaño
+    textArea.setBounds(n1,n2,n3,n4); 
+    pcontenido.add(textArea);
+    pcontenido.revalidate();
+    pcontenido.repaint();
+    }
+    public void titulo (){
+    lblTitulo.setText("              ¿QUÉ CONTIENE?");
+    lblTitulo.setForeground(cn4);  // Cambia el color del texto
+    lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25)); 
+    }
+    public void setIcon(String ruta, int s1, int s2){
+    ImageIcon originalIcon = new ImageIcon(ruta);
+    Image scaledImage = originalIcon.getImage().getScaledInstance(s1,s2, Image.SCALE_SMOOTH);
+    ImageIcon scaledIcon = new ImageIcon(scaledImage);
+    jLabel4.setIcon(scaledIcon);
     }
     
     @SuppressWarnings("unchecked")
@@ -89,6 +115,7 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         btnGrafica = new javax.swing.JButton();
         btnGrafica2 = new javax.swing.JButton();
+        lblTitulo = new javax.swing.JLabel();
 
         jLabel1.setText("jLabel1");
 
@@ -260,22 +287,26 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
             .addGroup(pcontenidoLayout.createSequentialGroup()
                 .addComponent(pMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pcontenidoLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(228, 228, 228))
                     .addGroup(pcontenidoLayout.createSequentialGroup()
                         .addGap(232, 232, 232)
                         .addComponent(btnGrafica, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 275, Short.MAX_VALUE)
                         .addComponent(btnGrafica2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(217, 217, 217))))
+                        .addGap(217, 217, 217))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pcontenidoLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(228, 228, 228))))
         );
         pcontenidoLayout.setVerticalGroup(
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(pcontenidoLayout.createSequentialGroup()
-                .addGap(106, 106, 106)
+                .addGap(28, 28, 28)
+                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -400,16 +431,16 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
 
     private void btnGraficaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGraficaMouseEntered
     btnGrafica2.setVisible(false);
-    
-  
-    ImageIcon originalIcon = new ImageIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/13106-NOOZWG.png");
-    Image scaledImage = originalIcon.getImage().getScaledInstance(590,580, Image.SCALE_SMOOTH);
-    ImageIcon scaledIcon = new ImageIcon(scaledImage);
-    jLabel4.setIcon(scaledIcon);
+    titulo();
+    aparecerTexto(txt1 ,990, 570,500, 500);
+    setIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/rb_2148152709.png",590,580);
     }//GEN-LAST:event_btnGraficaMouseEntered
 
     private void btnGraficaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGraficaMouseExited
-        jLabel4.setIcon(new ImageIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforestation_8992494.png"));
+    textArea.setVisible(false);
+    lblTitulo.setForeground(cn7);
+    jLabel4.setIcon(new ImageIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforestation_8992494.png"));
+    btnGrafica2.setVisible(true);
     }//GEN-LAST:event_btnGraficaMouseExited
 
     private void btnGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficaActionPerformed
@@ -417,11 +448,17 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGraficaActionPerformed
 
     private void btnGrafica2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGrafica2MouseEntered
-        // TODO add your handling code here:
+    btnGrafica.setVisible(false);
+    titulo();
+    aparecerTexto(txt2 ,510, 630,500, 500);
+    setIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/rb_17905.png",590,580);
     }//GEN-LAST:event_btnGrafica2MouseEntered
 
     private void btnGrafica2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGrafica2MouseExited
-        // TODO add your handling code here:
+    textArea.setVisible(false);
+    lblTitulo.setForeground(cn7);
+    jLabel4.setIcon(new ImageIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforestation_8992494.png"));
+    btnGrafica.setVisible(true);
     }//GEN-LAST:event_btnGrafica2MouseExited
 
     private void btnGrafica2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrafica2ActionPerformed
@@ -450,6 +487,7 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel pMenu;
     private javax.swing.JPanel pcontenido;
     // End of variables declaration//GEN-END:variables
