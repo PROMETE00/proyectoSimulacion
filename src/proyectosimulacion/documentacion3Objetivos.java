@@ -27,12 +27,10 @@ public class documentacion3Objetivos extends javax.swing.JFrame {
         jPanel2.setBackground(cn2);
         jPanel2.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
         jPanel2.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));        
-        pMenu.setBackground(cn4);
-        pintarBoton(btnExp,"<html>Explicación del<br>modelo matemático</html>",cn3,cn3,cn4);
-        btnExp.setEnabled(false);
-        pintarBoton(btnObj,"<html>Objetivos del analisis<br>y resultados esperados</html>",cn4,cn4,cn5);
+        pMenu.setBackground(cn4);       
+        estadoInicial();
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
-        pintarBoton(btnMod,"<html>Modelo de regresión <br>lineal simple</html>",cn4,cn4,cn5);
+        
         txtModelo.setText("Pendiente (ß1):\n\n"
                         + "Refleja la tasa de cambio de la variable dependiente y respecto a la independiente X\n\n"
                         + "Si ß1 > 0,hay una relación positiva: y aumenta cuando X crece.\n"
@@ -95,6 +93,12 @@ public class documentacion3Objetivos extends javax.swing.JFrame {
         nombreBoton.setBackground(c1);
         nombreBoton.setBorder(new LineBorder(c2, 2));
         nombreBoton.setForeground(c3);
+    }
+    public void estadoInicial(){
+        pintarBoton(btnExp,"<html>Explicación del<br>modelo matemático</html>",cn3,cn3,cn4);
+        btnExp.setEnabled(false);
+        pintarBoton(btnMod,"<html>Modelo de regresión <br>lineal simple</html>",cn4,cn4,cn5);
+        pintarBoton(btnObj,"<html>Objetivos del analisis<br>y resultados esperados</html>",cn4,cn4,cn5);
     }
  
 
@@ -342,10 +346,7 @@ public class documentacion3Objetivos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnModMouseEntered
 
     private void btnModMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModMouseExited
-        pintarBoton(btnExp,"<html>Explicación del<br>modelo matemático</html>",cn3,cn3,cn4);
-        pintarBoton(btnObj,"<html>Objetivos del analisis<br>y resultados esperados</html>",cn4,cn4,cn5);
-        pintarBoton(btnMod,"<html>Modelo de regresión <br>lineal simple</html>",cn4,cn4,cn5);
-        btnExp.setEnabled(false);
+        estadoInicial();
     }//GEN-LAST:event_btnModMouseExited
 
     private void btnObjMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnObjMouseEntered
@@ -355,11 +356,7 @@ public class documentacion3Objetivos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnObjMouseEntered
 
     private void btnObjMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnObjMouseExited
-        pintarBoton(btnExp,"<html>Explicación del<br>modelo matemático</html>",cn3,cn3,cn4);
-        pintarBoton(btnObj,"<html>Objetivos del analisis<br>y resultados esperados</html>",cn4,cn4,cn5);
-        pintarBoton(btnMod,"<html>Modelo de regresión <br>lineal simple</html>",cn4,cn4,cn5);
-        btnExp.setEnabled(false);
-
+        estadoInicial();
     }//GEN-LAST:event_btnObjMouseExited
 
     public static void main(String args[]) {
