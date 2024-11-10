@@ -32,10 +32,10 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         pMenu.setBorder(new MatteBorder(0,0,0,4, Color.BLACK));
         pcontenido.setBackground(cn7);
         pMenu.setBackground(cn4);
-        
+        setIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforestation_1552679.png",100,100);
         estadoInicial();
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
-
+        titulo();
    
     }
     public void pintarBoton(JButton nombreBoton,String txt,Color c1,Color c2, Color c3){
@@ -47,7 +47,7 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
     }
     
     public void titulo (){
-    lblTitulo.setText("              ¿QUÉ CONTIENE?");
+    lblTitulo.setText("                     TABLA DE DATOS");
     lblTitulo.setForeground(cn4);  // Cambia el color del texto
     lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25)); 
     }
@@ -55,7 +55,7 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
     ImageIcon originalIcon = new ImageIcon(ruta);
     Image scaledImage = originalIcon.getImage().getScaledInstance(s1,s2, Image.SCALE_SMOOTH);
     ImageIcon scaledIcon = new ImageIcon(scaledImage);
-    jLabel4.setIcon(scaledIcon);
+    lbliconoTab.setIcon(scaledIcon);
     }
     public void estadoInicial(){
         pintarBoton(btnTabla,"<html>Tablas de datos</html>",cn3,cn3,cn5);
@@ -81,7 +81,9 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         btnIndices = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        lbliconoTab = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         jLabel1.setText("jLabel1");
 
@@ -212,27 +214,67 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
                 .addComponent(btnMain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "TIPO DE BOSQUE", "LOCALIZACIÓN", "HECTAREAS", "ARBOLES POR HECTAREA"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+        }
+
         javax.swing.GroupLayout pcontenidoLayout = new javax.swing.GroupLayout(pcontenido);
         pcontenido.setLayout(pcontenidoLayout);
         pcontenidoLayout.setHorizontalGroup(
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pcontenidoLayout.createSequentialGroup()
                 .addComponent(pMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 321, Short.MAX_VALUE)
-                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(167, 167, 167)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(167, 167, 167)
+                        .addComponent(lbliconoTab, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addGap(72, 72, 72)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 965, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(69, Short.MAX_VALUE))))
         );
         pcontenidoLayout.setVerticalGroup(
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(pcontenidoLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pcontenidoLayout.createSequentialGroup()
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbliconoTab, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -352,8 +394,10 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblTitulo;
+    private javax.swing.JLabel lbliconoTab;
     private javax.swing.JPanel pMenu;
     private javax.swing.JPanel pcontenido;
     // End of variables declaration//GEN-END:variables
