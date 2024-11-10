@@ -207,8 +207,14 @@
         <Component class="javax.swing.JLabel" name="lblTitulo">
         </Component>
         <Component class="javax.swing.JButton" name="btnGraficaSig">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGraficaSigActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnAtras">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAtrasActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

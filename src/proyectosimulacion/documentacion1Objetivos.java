@@ -286,7 +286,9 @@ public class documentacion1Objetivos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExpActionPerformed
-        // TODO add your handling code here:
+        documentacion3Objetivos nuevaVentana = new documentacion3Objetivos();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnExpActionPerformed
 
     private void btnObjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObjActionPerformed
@@ -294,7 +296,9 @@ public class documentacion1Objetivos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnObjActionPerformed
 
     private void btnMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainActionPerformed
-        // TODO add your handling code here:
+        ventanaMenuPrincipal nuevaVentana = new ventanaMenuPrincipal();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMainActionPerformed
 
     private void btnExpMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExpMouseEntered
@@ -309,7 +313,9 @@ public class documentacion1Objetivos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExpMouseExited
 
     private void btnModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModActionPerformed
-        // TODO add your handling code here:
+        documentacion2Objetivos nuevaVentana = new documentacion2Objetivos();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnModActionPerformed
 
     private void btnModMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModMouseEntered

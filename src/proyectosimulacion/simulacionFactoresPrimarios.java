@@ -232,6 +232,12 @@ public class simulacionFactoresPrimarios extends javax.swing.JFrame {
                 .addComponent(btnMain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        btnFacPrim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFacPrimActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pcontenidoLayout = new javax.swing.GroupLayout(pcontenido);
         pcontenido.setLayout(pcontenidoLayout);
         pcontenidoLayout.setHorizontalGroup(
@@ -280,15 +286,21 @@ public class simulacionFactoresPrimarios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTablaActionPerformed
-        // TODO add your handling code here:
+        simulacionTablaDeDatos nuevaVentana = new simulacionTablaDeDatos();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnTablaActionPerformed
 
     private void btnEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadisticasActionPerformed
-        // TODO add your handling code here:
+        simulacionEstadisticasPorBosque nuevaVentana = new simulacionEstadisticasPorBosque();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnEstadisticasActionPerformed
 
     private void btnMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainActionPerformed
-        // TODO add your handling code here:
+        ventanaMenuPrincipal nuevaVentana = new ventanaMenuPrincipal();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMainActionPerformed
 
     private void btnTablaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTablaMouseEntered
@@ -304,7 +316,9 @@ public class simulacionFactoresPrimarios extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTablaMouseExited
 
     private void btnFactoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFactoresActionPerformed
-        // TODO add your handling code here:
+        simulacionFactoresDeDeforestacion nuevaVentana = new  simulacionFactoresDeDeforestacion();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnFactoresActionPerformed
 
     private void btnFactoresMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFactoresMouseEntered
@@ -358,6 +372,12 @@ public class simulacionFactoresPrimarios extends javax.swing.JFrame {
     private void btnIndicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndicesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnIndicesActionPerformed
+
+    private void btnFacPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacPrimActionPerformed
+        simulacionFactoresSecundarios nuevaVentana = new  simulacionFactoresSecundarios();
+        nuevaVentana.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnFacPrimActionPerformed
 
     public static void main(String args[]) {
         

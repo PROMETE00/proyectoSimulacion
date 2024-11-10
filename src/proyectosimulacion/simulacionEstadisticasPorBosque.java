@@ -328,7 +328,9 @@ public class simulacionEstadisticasPorBosque extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTablaActionPerformed
-        // TODO add your handling code here:
+       simulacionTablaDeDatos nuevaVentana = new simulacionTablaDeDatos();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnTablaActionPerformed
 
     private void btnEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadisticasActionPerformed
@@ -336,7 +338,9 @@ public class simulacionEstadisticasPorBosque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEstadisticasActionPerformed
 
     private void btnMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainActionPerformed
-        // TODO add your handling code here:
+        ventanaMenuPrincipal nuevaVentana = new ventanaMenuPrincipal();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMainActionPerformed
 
     private void btnTablaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTablaMouseEntered
@@ -352,7 +356,9 @@ public class simulacionEstadisticasPorBosque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTablaMouseExited
 
     private void btnFactoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFactoresActionPerformed
-        // TODO add your handling code here:
+        simulacionFactoresDeDeforestacion nuevaVentana = new  simulacionFactoresDeDeforestacion();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnFactoresActionPerformed
 
     private void btnFactoresMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFactoresMouseEntered
@@ -422,7 +428,9 @@ public class simulacionEstadisticasPorBosque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGraficaMouseExited
 
     private void btnGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficaActionPerformed
-        // TODO add your handling code here:
+        simulacionEstadisticasGraficaCircular nuevaVentana = new  simulacionEstadisticasGraficaCircular();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnGraficaActionPerformed
 
     private void btnGrafica2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGrafica2MouseEntered
@@ -440,7 +448,9 @@ public class simulacionEstadisticasPorBosque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGrafica2MouseExited
 
     private void btnGrafica2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrafica2ActionPerformed
-        // TODO add your handling code here:
+    simulacionEstadisticasGraficaBarras nuevaVentana = new  simulacionEstadisticasGraficaBarras();
+    nuevaVentana.setVisible(true);
+    this.dispose();
     }//GEN-LAST:event_btnGrafica2ActionPerformed
 
     public static void main(String args[]) {

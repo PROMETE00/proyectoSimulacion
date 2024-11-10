@@ -217,6 +217,18 @@ public class simulacionFactoresDeDeforestacion extends javax.swing.JFrame {
                 .addComponent(btnMain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        btnFacPrim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFacPrimActionPerformed(evt);
+            }
+        });
+
+        btnFacSec.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFacSecActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pcontenidoLayout = new javax.swing.GroupLayout(pcontenido);
         pcontenido.setLayout(pcontenidoLayout);
         pcontenidoLayout.setHorizontalGroup(
@@ -270,15 +282,21 @@ public class simulacionFactoresDeDeforestacion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTablaActionPerformed
-        // TODO add your handling code here:
+        simulacionTablaDeDatos nuevaVentana = new simulacionTablaDeDatos();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnTablaActionPerformed
 
     private void btnEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadisticasActionPerformed
-        // TODO add your handling code here:
+        simulacionEstadisticasPorBosque nuevaVentana = new simulacionEstadisticasPorBosque();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnEstadisticasActionPerformed
 
     private void btnMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainActionPerformed
-        // TODO add your handling code here:
+        ventanaMenuPrincipal nuevaVentana = new ventanaMenuPrincipal();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMainActionPerformed
 
     private void btnTablaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTablaMouseEntered
@@ -348,6 +366,18 @@ public class simulacionFactoresDeDeforestacion extends javax.swing.JFrame {
     private void btnIndicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndicesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnIndicesActionPerformed
+
+    private void btnFacPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacPrimActionPerformed
+        simulacionFactoresPrimarios nuevaVentana = new  simulacionFactoresPrimarios();
+        nuevaVentana.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnFacPrimActionPerformed
+
+    private void btnFacSecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacSecActionPerformed
+        simulacionFactoresSecundarios nuevaVentana = new  simulacionFactoresSecundarios();
+        nuevaVentana.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnFacSecActionPerformed
 
     public static void main(String args[]) {
         
