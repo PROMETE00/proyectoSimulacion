@@ -4,10 +4,16 @@ import javax.swing.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -25,7 +31,9 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
     Color cn8 = new Color(0,168,45);//verde
     Color cn9 = new Color(203,115,91);//cafe claro
     Color cn10 = new Color(127,250,91);//verde claro
-
+    private static final String DATA_FILE = "Datos.csv";
+    private DefaultTableModel mt = new DefaultTableModel();
+    
     public simulacionTablaDeDatos() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -36,7 +44,9 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         estadoInicial();
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
         titulo();
-   
+        Datos();
+        jTable1.setRowHeight(50);
+     
     }
     public void pintarBoton(JButton nombreBoton,String txt,Color c1,Color c2, Color c3){
         nombreBoton.setText(txt);
@@ -64,6 +74,25 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         pintarBoton(btnFactores,"<html>Factores de deforestación</html>",cn4,cn4,cn5);
         pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn4,cn4,cn5);
         pintarBoton(btnIndices,"<html>Indices de deforestación</html>",cn4,cn4,cn5);
+    }
+
+    public void Datos() {
+        String ids[]={"TIPO","FRECUENCIA","PORCENTAJE","% VALIDO","% ACULUMADO"};
+        mt.setColumnIdentifiers(ids);
+        jTable1.setModel(mt);
+        
+        cargarDatos();
+    }
+     public void cargarDatos() {
+        try (BufferedReader br = new BufferedReader(new FileReader(DATA_FILE))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                mt.addRow(data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

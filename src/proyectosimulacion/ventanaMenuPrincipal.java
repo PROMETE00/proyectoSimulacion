@@ -149,7 +149,7 @@ public class ventanaMenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSimulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimulacionActionPerformed
-        simulacionEstadisticasPorBosque nuevaVentana = new simulacionEstadisticasPorBosque();
+        simulacionTablaDeDatos nuevaVentana = new simulacionTablaDeDatos();
         nuevaVentana.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSimulacionActionPerformed
@@ -163,7 +163,7 @@ public class ventanaMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSimulacionMouseEntered
 
     private void btnDocumentacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocumentacionActionPerformed
-        documentacion1Objetivos nuevaVentana = new documentacion1Objetivos();
+        documentacion3Objetivos nuevaVentana = new documentacion3Objetivos();
         nuevaVentana.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnDocumentacionActionPerformed

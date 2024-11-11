@@ -1,13 +1,24 @@
 package proyectosimulacion;
 
+import java.awt.BorderLayout;
 import javax.swing.*;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.util.Rotation;
 
 /**
  *
@@ -26,17 +37,6 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
     Color cn9 = new Color(135,48,16);//negro 2
     Color cn10 = new Color(118,169,39);//verde 2
     
-    
-    public JTextArea textArea = new JTextArea();
-    public String txt1 = "Estadisticas sobre los bosques de: \n"
-                                      +"    »Encino.\n"
-                                      +"    »Encino-Pino.\n"
-                                      +"    »Oyamel.\n"
-                                      +"    »Pino.\n"
-                                      +"    »PIno-Encino.\n"
-                                      +"    »Mesofolio.\n";
-
-
     public simulacionEstadisticasGraficaCircular() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -45,12 +45,16 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
         pMenu.setBackground(cn4);
         estadoInicial();
         titulo();
-        aparecerTexto(txt1,720, 630,500, 500);
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
         pintarBoton(btnAtras,"<html>ATRAS</html>",cn9,cn9,cn4);
         pintarBoton(btnGraficaSig,"<html><center>GRAFICA <br>DE<br>BARRAS</center></html>",cn9,cn9,cn4);
-        setIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/rb_2148152709.png",590,580);
+        GraficaPastel();
+        pintarBoton(btnH,"HECTAREAS",cn6,cn6,cn5);
+        pintarBoton(btnHT,"HECTAREAS Y TIERRAS FORESTALES",cn6,cn6,cn5);
+        btnH.setEnabled(false);
     }
+   
+    
     public void pintarBoton(JButton nombreBoton,String txt,Color c1,Color c2, Color c3){
         nombreBoton.setText(txt);
         nombreBoton.setFocusPainted(false);
@@ -58,18 +62,100 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
         nombreBoton.setBorder(new LineBorder(c2, 2));
         nombreBoton.setForeground(c3);
     }
+    
+   public void GraficaPastel2(){
+    double n1 = 67.76;
+    double n2 = 30.07;
+    double n3 = 1.34;
+    double n4 = 0.83;
+
+    DefaultPieDataset datos = new DefaultPieDataset();
+    datos.setValue("PASTIZALES", n1);
+    datos.setValue("TIERRAS AGRÍCOLAS", n2);
+    datos.setValue("OTROS USOS", n3);
+    datos.setValue("ASENTAMIENTOS HUMANOS", n4);
+
+    JFreeChart grafico_circular = ChartFactory.createPieChart3D(
+         "HECTÁREAS Y TIERRAS FORESTALES",
+         datos,
+         true,   // Mostrar leyenda
+         true,   // Mostrar herramientas de interacción
+         false   // No mostrar URL
+    );
+
+    ChartPanel panel = new ChartPanel(grafico_circular);
+    panel.setMouseWheelEnabled(true);
+
+    // Eliminar el tamaño preferido, ya que puede estar limitando el tamaño
+    panel.setPreferredSize(new Dimension(950, 600));  // Ajusta a un tamaño más grande
+    panel.setSize(new Dimension(950, 600));  // Asegúrate de que también se defina el tamaño en el componente
+
+    // Establecer layout para que ocupe todo el espacio disponible
+    panelGrafica.setLayout(new BorderLayout());
+    panelGrafica.add(panel, BorderLayout.CENTER);
+
+    PiePlot3D plot = (PiePlot3D) grafico_circular.getPlot();
+    plot.setStartAngle(290);
+    plot.setDirection(Rotation.CLOCKWISE);
+    plot.setForegroundAlpha(0.7f);  
+    plot.setNoDataMessage("No hay datos para mostrar");  
+
+    // Asegúrate de que el panelGrafica se redimensione
+    panelGrafica.revalidate();
+    panelGrafica.repaint();
+    }
+
+
+
+    
+    public void GraficaPastel() {
+    double n1 = 43669;
+    double n2 = 56090;
+    double n3 = 80002;
+    double n4 = 2611;
+
+    DefaultPieDataset datos = new DefaultPieDataset();
+    datos.setValue("Pino", n1);
+    datos.setValue("Encino", n2);
+    datos.setValue("Pino-Encino", n3);
+    datos.setValue("Encino-Pino", n4);
+
+    JFreeChart grafico_circular = ChartFactory.createPieChart3D(
+            "HECTÁREAS",
+            datos,
+            true,
+            true,
+            false
+    );
+
+    ChartPanel panel = new ChartPanel(grafico_circular);
+    panel.setMouseWheelEnabled(true);
+
+    // Ajustar tamaño del panel para que ocupe todo el espacio disponible
+    panel.setPreferredSize(panelGrafica.getSize());
+
+    // Configurar el layout de panelGrafica y agregar el gráfico al centro
+    panelGrafica.setLayout(new BorderLayout());
+    panelGrafica.add(panel, BorderLayout.CENTER);
+
+    // Configuración del gráfico de pastel (PiePlot3D)
+    PiePlot3D plot = (PiePlot3D) grafico_circular.getPlot();
+    plot.setStartAngle(290);
+    plot.setDirection(Rotation.CLOCKWISE);
+    plot.setForegroundAlpha(0.7f);  // Ajusta la transparencia
+    plot.setNoDataMessage("No hay datos para mostrar");  // Mensaje si faltan datos
+
+    // Empaqueta y repinta la ventana para ver los cambios
+    panelGrafica.revalidate();
+    panelGrafica.repaint();
+    }
 
     public void titulo (){
     lblTitulo.setText("         GRAFICA DE PASTEL");
     lblTitulo.setForeground(cn4);  // Cambia el color del texto
     lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25)); 
     }
-    public void setIcon(String ruta, int s1, int s2){
-    ImageIcon originalIcon = new ImageIcon(ruta);
-    Image scaledImage = originalIcon.getImage().getScaledInstance(s1,s2, Image.SCALE_SMOOTH);
-    ImageIcon scaledIcon = new ImageIcon(scaledImage);
-    jLabel4.setIcon(scaledIcon);
-    }
+
     public void estadoInicial(){
         pintarBoton(btnTabla,"<html>Tablas de datos</html>",cn4,cn4,cn5);
         pintarBoton(btnEstadisticas,"Estadisticas por bosque",cn3,cn3,cn4);
@@ -78,21 +164,6 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
         pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn4,cn4,cn5);
         pintarBoton(btnIndices,"<html>Indices de deforestación</html>",cn4,cn4,cn5);
     }
-    public void aparecerTexto(String txt,int n1,int n2,int n3,int n4){
-    textArea.setVisible(true);
-    textArea.setText(txt);
-    textArea.setOpaque(false);  // Hacer transparente el fondo
-    textArea.setBorder(BorderFactory.createEmptyBorder());  // Quitar el borde
-    textArea.setEditable(false);  // Evitar que sea editable
-    textArea.setFocusable(false);  // Evitar que el usuario pueda enfocarlo
-    textArea.setForeground(cn4);  // Cambia el color del texto
-    textArea.setFont(new Font("Arial", Font.PLAIN, 19));  // Cambia la fuente y el tamaño
-    textArea.setBounds(n1,n2,n3,n4); 
-    pcontenido.add(textArea);
-    pcontenido.revalidate();
-    pcontenido.repaint();
-    }
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -108,10 +179,12 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
         btnRegresiones = new javax.swing.JButton();
         btnIndices = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
         btnGraficaSig = new javax.swing.JButton();
         btnAtras = new javax.swing.JButton();
+        panelGrafica = new javax.swing.JPanel();
+        btnH = new javax.swing.JButton();
+        btnHT = new javax.swing.JButton();
 
         jLabel1.setText("jLabel1");
 
@@ -238,7 +311,7 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
                 .addComponent(btnRegresiones, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnIndices, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 415, Short.MAX_VALUE)
                 .addComponent(btnMain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -254,21 +327,54 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout panelGraficaLayout = new javax.swing.GroupLayout(panelGrafica);
+        panelGrafica.setLayout(panelGraficaLayout);
+        panelGraficaLayout.setHorizontalGroup(
+            panelGraficaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 951, Short.MAX_VALUE)
+        );
+        panelGraficaLayout.setVerticalGroup(
+            panelGraficaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 607, Short.MAX_VALUE)
+        );
+
+        btnH.setText(" HECTAREAS");
+        btnH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHActionPerformed(evt);
+            }
+        });
+
+        btnHT.setText("HECTAREAS Y TIERRAS FORESTALES");
+        btnHT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHTActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pcontenidoLayout = new javax.swing.GroupLayout(pcontenido);
         pcontenido.setLayout(pcontenidoLayout);
         pcontenidoLayout.setHorizontalGroup(
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pcontenidoLayout.createSequentialGroup()
                 .addComponent(pMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 240, Short.MAX_VALUE)
-                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(80, 80, 80)
-                .addComponent(btnGraficaSig, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(80, 80, 80)
+                        .addComponent(btnGraficaSig, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(pcontenidoLayout.createSequentialGroup()
+                                .addComponent(btnH, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnHT, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(panelGrafica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pcontenidoLayout.setVerticalGroup(
@@ -281,9 +387,13 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
                         .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnGraficaSig, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addGap(21, 21, 21)
+                .addComponent(panelGrafica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnHT, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnH, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -398,6 +508,24 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    private void btnHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHActionPerformed
+        panelGrafica.removeAll();
+        GraficaPastel();
+        panelGrafica.revalidate();
+        panelGrafica.repaint();
+        btnH.setEnabled(false);
+        btnHT.setEnabled(true);
+    }//GEN-LAST:event_btnHActionPerformed
+
+    private void btnHTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHTActionPerformed
+        panelGrafica.removeAll();
+        panelGrafica.revalidate();
+        panelGrafica.repaint();
+        GraficaPastel2();
+        btnHT.setEnabled(false);
+        btnH.setEnabled(true);
+    }//GEN-LAST:event_btnHTActionPerformed
+
     public static void main(String args[]) {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -412,6 +540,8 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
     private javax.swing.JButton btnEstadisticas;
     private javax.swing.JButton btnFactores;
     private javax.swing.JButton btnGraficaSig;
+    private javax.swing.JButton btnH;
+    private javax.swing.JButton btnHT;
     private javax.swing.JButton btnIndices;
     private javax.swing.JButton btnMain;
     private javax.swing.JButton btnRegresiones;
@@ -419,9 +549,9 @@ public class simulacionEstadisticasGraficaCircular extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel pMenu;
+    private javax.swing.JPanel panelGrafica;
     private javax.swing.JPanel pcontenido;
     // End of variables declaration//GEN-END:variables
 }

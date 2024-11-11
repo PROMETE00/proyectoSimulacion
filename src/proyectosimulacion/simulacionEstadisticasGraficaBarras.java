@@ -1,13 +1,25 @@
 package proyectosimulacion;
 
+import java.awt.BorderLayout;
 import javax.swing.*;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.util.Rotation;
 
 /**
  *
@@ -37,7 +49,61 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
         pintarBoton(btnAtras,"<html>ATRAS</html>",cn9,cn9,cn4);
         pintarBoton(btnGraficaSig,"<html><center>GRAFICA <br>DE<br>PASTEL</center></html>",cn9,cn9,cn4);
-        setIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/rb_17905.png",590,580);
+        GraficaBarras();
+        pintarBoton(btn1,"<html>TIPOS DE BOSQUE</html>",cn6,cn6,cn5);
+        btn1.setEnabled(false);
+        pintarBoton(btn2,"<html>ECORREGION</html>",cn6,cn6,cn5);
+        pintarBoton(btn3,"<html>DEFORESTACIÓN</html>",cn6,cn6,cn5);
+    }
+    
+    public void GraficaBarras(){
+        
+    double n1=15.5;
+    double n2=7.1;
+    double n3=25.75;
+    double n4=9.98;
+    double n5=18.67;
+    double n6=23;
+    
+
+    DefaultCategoryDataset datos= new DefaultCategoryDataset();
+    
+    datos.setValue(n1, "Bosque", "Encino");
+    datos.setValue(n2, "Bosque", "Encino-pino");
+    datos.setValue(n3, "Bosque", "Oyamel");
+    datos.setValue(n4, "Bosque", "Pino");
+    datos.setValue(n5, "Bosque", "Pino-encino");
+    datos.setValue(n6, "Bosque", "Mesofolio de montaña");
+    
+    JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+            "SIERRA NORTE",
+            "TIPO DE BOSQUE",
+            "PORCENTAJE",
+            datos,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false
+    
+      );
+    
+    ChartPanel panel= new ChartPanel(grafico_barras);
+    panel.setMouseWheelEnabled(true);
+    panel.setPreferredSize(new Dimension(400,200));
+    
+    panelBarras.setLayout(new BorderLayout());
+    panelBarras.add(panel,BorderLayout.CENTER);
+    Dimension size = panelBarras.getSize();
+    panel.setPreferredSize(new Dimension((int) size.getWidth(), (int) size.getHeight()));
+    
+    CategoryPlot plot = grafico_barras.getCategoryPlot();
+    CategoryAxis domainAxis = plot.getDomainAxis();
+    domainAxis.setCategoryLabelPositions(
+    CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 4.0) // 45 grados
+    );
+    domainAxis.setTickLabelFont(new Font("SansSerif", Font.PLAIN, 14)); // Reducir a 8
+    pack();
+    repaint();
     }
     public void pintarBoton(JButton nombreBoton,String txt,Color c1,Color c2, Color c3){
         nombreBoton.setText(txt);
@@ -52,12 +118,7 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
     lblTitulo.setForeground(cn4);  // Cambia el color del texto
     lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25)); 
     }
-    public void setIcon(String ruta, int s1, int s2){
-    ImageIcon originalIcon = new ImageIcon(ruta);
-    Image scaledImage = originalIcon.getImage().getScaledInstance(s1,s2, Image.SCALE_SMOOTH);
-    ImageIcon scaledIcon = new ImageIcon(scaledImage);
-    jLabel4.setIcon(scaledIcon);
-    }
+
     public void estadoInicial(){
         pintarBoton(btnTabla,"<html>Tablas de datos</html>",cn4,cn4,cn5);
         pintarBoton(btnEstadisticas,"Estadisticas por bosque",cn3,cn3,cn4);
@@ -66,6 +127,128 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
         pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn4,cn4,cn5);
         pintarBoton(btnIndices,"<html>Indices de deforestación</html>",cn4,cn4,cn5);
     }
+    
+   public void ecorregion() {
+    double n1 = 5767;
+    double n2 = 7454;
+    double n3 = 4575;
+
+    DefaultCategoryDataset datos = new DefaultCategoryDataset();
+
+    datos.setValue(n1, "SELVAS", "CALIDO-HUMEDAS");
+    datos.setValue(n2, "SELVAS1", "CALIDO-SECAS");
+    datos.setValue(n3, "SIERRAS", "TEMPLADAS");
+
+    // Crear un gráfico de barras
+    JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+            "DEFORESTACION(HA/AÑO)",
+            "ECORREGION",
+            "HAS",
+            datos,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false
+    );
+
+    ChartPanel panel = new ChartPanel(grafico_barras);
+    panel.setMouseWheelEnabled(true);
+
+    // Configurar el tamaño dinámico
+    panel.setPreferredSize(new Dimension(panelBarras.getWidth(), panelBarras.getHeight())); // Ajustar al tamaño del contenedor
+
+    // Asegurarse de que el panel del gráfico se ajuste al tamaño disponible
+    panel.setSize(panelBarras.getWidth(), panelBarras.getHeight());
+    panel.setMinimumSize(new Dimension(200, 100));  // Tamaño mínimo si el contenedor es pequeño
+
+    panelBarras.setLayout(new BorderLayout());
+    panelBarras.removeAll();  // Limpiar el panel actual
+    panelBarras.add(panel, BorderLayout.CENTER);
+
+    // Asegúrate de que el panelGrafica se redimensione
+    panelBarras.revalidate();
+    panelBarras.repaint();
+    }
+
+    public void deforestacion() {
+    double n1 = 17933;
+    double n2 = 17933;
+    double n3 = 17933;
+    double n4 = 15899;
+    double n5 = 15899;
+    double n6 = 15899;
+    double n7 = 22626;
+    double n8 = 22626;
+    double n9 = 22626;
+    double n10 = 18214;
+    double n11 = 18214;
+    double n12 = 18214;
+    double n13 = 18770;
+    double n14 = 18770;
+    double n15 = 18770;
+    double n16 = 20520;
+    double n17 = 20520;
+    double n18 = 20520;
+    double n19 = 10613;
+    double n20 = 10613;
+    double n21 = 10613;
+
+    DefaultCategoryDataset datos = new DefaultCategoryDataset();
+
+    datos.setValue(n1, "1", "2001");
+    datos.setValue(n2, "2", "2002");
+    datos.setValue(n3, "3", "2003");
+    datos.setValue(n4, "4", "2004");
+    datos.setValue(n5, "5", "2005");
+    datos.setValue(n6, "6", "2006");
+    datos.setValue(n7, "7", "2007");
+    datos.setValue(n8, "8", "2008");
+    datos.setValue(n9, "9", "2009");
+    datos.setValue(n10, "10", "2010");
+    datos.setValue(n11, "11", "2011");
+    datos.setValue(n12, "12", "2012");
+    datos.setValue(n13, "13", "2013");
+    datos.setValue(n14, "14", "2014");
+    datos.setValue(n15, "15", "2015");
+    datos.setValue(n16, "16", "2016");
+    datos.setValue(n17, "17", "2017");
+    datos.setValue(n18, "18", "2018");
+    datos.setValue(n19, "19", "2019");
+    datos.setValue(n20, "20", "2020");
+    datos.setValue(n21, "21", "2021");
+
+    // Crear un gráfico de barras
+    JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+            "OAXACA",
+            "PERIODO 2001-2021",
+            "SUPERFICIE DEFORESTADA",
+            datos,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false
+    );
+
+    ChartPanel panel = new ChartPanel(grafico_barras);
+    panel.setMouseWheelEnabled(true);
+
+    // Configurar el tamaño dinámico
+    panel.setPreferredSize(new Dimension(panelBarras.getWidth(), panelBarras.getHeight())); // Ajustar al tamaño del contenedor
+
+    // Asegurarse de que el panel del gráfico se ajuste al tamaño disponible
+    panel.setSize(panelBarras.getWidth(), panelBarras.getHeight());
+    panel.setMinimumSize(new Dimension(200, 100));  // Tamaño mínimo si el contenedor es pequeño
+
+    panelBarras.setLayout(new BorderLayout());
+    panelBarras.removeAll();  // Limpiar el panel actual
+    panelBarras.add(panel, BorderLayout.CENTER);
+
+    // Asegúrate de que el panelGrafica se redimensione
+    panelBarras.revalidate();
+    panelBarras.repaint();
+    }
+
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -82,10 +265,13 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
         btnRegresiones = new javax.swing.JButton();
         btnIndices = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
         btnGraficaSig = new javax.swing.JButton();
         btnAtras = new javax.swing.JButton();
+        panelBarras = new javax.swing.JPanel();
+        btn1 = new javax.swing.JButton();
+        btn2 = new javax.swing.JButton();
+        btn3 = new javax.swing.JButton();
 
         jLabel1.setText("jLabel1");
 
@@ -212,7 +398,7 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
                 .addComponent(btnRegresiones, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnIndices, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 415, Short.MAX_VALUE)
                 .addComponent(btnMain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -228,21 +414,63 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout panelBarrasLayout = new javax.swing.GroupLayout(panelBarras);
+        panelBarras.setLayout(panelBarrasLayout);
+        panelBarrasLayout.setHorizontalGroup(
+            panelBarrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 967, Short.MAX_VALUE)
+        );
+        panelBarrasLayout.setVerticalGroup(
+            panelBarrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 612, Short.MAX_VALUE)
+        );
+
+        btn1.setText("jButton1");
+        btn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn1ActionPerformed(evt);
+            }
+        });
+
+        btn2.setText("jButton1");
+        btn2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn2ActionPerformed(evt);
+            }
+        });
+
+        btn3.setText("jButton1");
+        btn3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pcontenidoLayout = new javax.swing.GroupLayout(pcontenido);
         pcontenido.setLayout(pcontenidoLayout);
         pcontenidoLayout.setHorizontalGroup(
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pcontenidoLayout.createSequentialGroup()
                 .addComponent(pMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 240, Short.MAX_VALUE)
-                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(80, 80, 80)
-                .addComponent(btnGraficaSig, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(80, 80, 80)
+                        .addComponent(btnGraficaSig, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addGap(80, 80, 80)
+                        .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(pcontenidoLayout.createSequentialGroup()
+                                .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(137, 137, 137)
+                                .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(panelBarras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pcontenidoLayout.setVerticalGroup(
@@ -255,9 +483,14 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
                         .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnGraficaSig, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAtras, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addGap(23, 23, 23)
+                .addComponent(panelBarras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -372,6 +605,36 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnGraficaSigActionPerformed
 
+    private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
+        panelBarras.removeAll();
+        panelBarras.revalidate();
+        panelBarras.repaint();
+        GraficaBarras();
+        btn1.setEnabled(false);
+        btn2.setEnabled(true);
+        btn3.setEnabled(true);
+    }//GEN-LAST:event_btn1ActionPerformed
+
+    private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
+        panelBarras.removeAll();
+        panelBarras.revalidate();
+        panelBarras.repaint();
+        ecorregion();
+        btn1.setEnabled(true);
+        btn2.setEnabled(false);
+        btn3.setEnabled(true);
+    }//GEN-LAST:event_btn2ActionPerformed
+
+    private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
+        panelBarras.removeAll();
+        panelBarras.revalidate();
+        panelBarras.repaint();
+        deforestacion();
+        btn1.setEnabled(true);
+        btn2.setEnabled(true);
+        btn3.setEnabled(false);
+    }//GEN-LAST:event_btn3ActionPerformed
+
     public static void main(String args[]) {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -382,6 +645,9 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn1;
+    private javax.swing.JButton btn2;
+    private javax.swing.JButton btn3;
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnEstadisticas;
     private javax.swing.JButton btnFactores;
@@ -393,9 +659,9 @@ public class simulacionEstadisticasGraficaBarras extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel pMenu;
+    private javax.swing.JPanel panelBarras;
     private javax.swing.JPanel pcontenido;
     // End of variables declaration//GEN-END:variables
 }
