@@ -1,30 +1,32 @@
 package proyectosimulacion;
-
 import java.awt.BorderLayout;
-import javax.swing.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.JTextArea;
+import org.apache.commons.math4.legacy.stat.StatUtils;
+import org.apache.commons.math4.legacy.stat.regression.SimpleRegression;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
  * @author prome
  */
-public class simulacionFactoresSecundarios extends javax.swing.JFrame {
+public class simulacionRegresion extends javax.swing.JFrame {
     
     Color cn1 = new Color(76,43,11);//cafe
     Color cn2 = new Color(204,204,204);//gris
@@ -36,9 +38,14 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
     Color cn8 = new Color(235,191,92);//amarillo claro
     Color cn9 = new Color(135,48,16);//negro 2
     Color cn10 = new Color(189,222,95);//verde claro
+    private double[] x = {90.5, 0, 15, 10, 15, 28.5, 74, 86, 41, 27.5, 35, 15};
+    private double[] y = {10.529, 4.660, 4.660, 4.660, 10.013, 10.013, 10.013, 13.048, 13.048, 13.048, 3.234, 3.234};
+    private SimpleRegression sr = new SimpleRegression();
+
+    private JTextArea resultados = new JTextArea();
      
 
-    public simulacionFactoresSecundarios() {
+    public simulacionRegresion() {
         initComponents();
         this.setLocationRelativeTo(null);
         pMenu.setBorder(new MatteBorder(0,0,0,4, Color.BLACK));
@@ -47,27 +54,10 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
         estadoInicial();
         titulo();
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
-        pintarBoton(btnFacPrim,"<html><center>FACTORES<br>PRIMARIOS</center></html>",cn8,cn8,cn5);
-        setIcon(jLabel4,"/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforest_9568180.png",130,130,0);
-        secundarios();
-        
+        setIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforestation_4148626.png",450,450);
+        Regresion();
+
     }
-    public void setIcon(JLabel lbl ,String ruta, int ancho, int alto, double angulo){
-        
-    ImageIcon originalIcon = new ImageIcon(ruta);
-    Image originalImage = originalIcon.getImage();
-    BufferedImage rotatedImage = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g2d = rotatedImage.createGraphics();
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    AffineTransform transform = new AffineTransform();
-    transform.rotate(Math.toRadians(angulo), ancho / 2.0, alto / 2.0);
-    transform.translate((ancho - originalImage.getWidth(null)) / 2.0, (alto - originalImage.getHeight(null)) / 2.0); // Centrar la imagen
-    g2d.setTransform(transform);
-    g2d.drawImage(originalImage, 0, 0, ancho, alto, null);
-    g2d.dispose();
-    lbl.setIcon(new ImageIcon(rotatedImage));
-    }
-    
     public void pintarBoton(JButton nombreBoton,String txt,Color c1,Color c2, Color c3){
         nombreBoton.setText(txt);
         nombreBoton.setFocusPainted(false);
@@ -77,67 +67,112 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
     }
 
     public void titulo (){
-    lblTitulo.setText("FACTORES SECUNDARIOS");
+    lblTitulo.setText("REGRESION LINEAL");
     lblTitulo.setForeground(cn4);  // Cambia el color del texto
     lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25)); 
     }
-    
+    public void setIcon(String ruta, int s1, int s2){
+    ImageIcon originalIcon = new ImageIcon(ruta);
+    Image scaledImage = originalIcon.getImage().getScaledInstance(s1,s2, Image.SCALE_SMOOTH);
+    ImageIcon scaledIcon = new ImageIcon(scaledImage);
+   
+    }
     public void estadoInicial(){
         pintarBoton(btnTabla,"<html>Tablas de datos</html>",cn4,cn4,cn5);
         pintarBoton(btnEstadisticas,"<html>Estadisticas por bosque<html>",cn4,cn4,cn5);
-        pintarBoton(btnFactores,"<html>Factores de deforestación</html>",cn3,cn3,cn4);
-        btnFactores.setEnabled(false);
-        pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn4,cn4,cn5);
+        pintarBoton(btnFactores,"<html>Factores de deforestación</html>",cn4,cn4,cn5);
+        pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn3,cn3,cn4);
+         btnRegresiones.setEnabled(false);
         pintarBoton(btnIndices,"<html>Indices de deforestación</html>",cn4,cn4,cn5);
     }
-    public void secundarios (){
-    double n1=0;
-    double n2=65;
-    double n3=42;
-    double n4=29;
-    double n5=0;
-    double n6=5;
-    double n7=45.5;
-    double n8=33;
-    double n9=14.5;
-    
+    public void Regresion() {
+    try {
+        initializeData();
 
-    DefaultCategoryDataset datos= new DefaultCategoryDataset();
-    
-    datos.setValue(n1, "ESTADISTICA", "factor socioeconomico");
-    datos.setValue(n2, "ESTADISTICA", "necesidades dendroenergeticas ");
-    datos.setValue(n3, "ESTADISTICA", "seguridad alimentaria ");
-    datos.setValue(n4, "ESTADISTICA", "falta demedios de vida alternativos en zona rural");
-    datos.setValue(n5, "ESTADISTICA", "servicios de extencion deficientes");
-    datos.setValue(n6, "ESTADISTICA", "sin demarcacion de limites ");
-    datos.setValue(n7, "ESTADISTICA", "manejo forestal insostenible ");
-    datos.setValue(n8, "ESTADISTICA", "mala implementacion de leyes ");
-    datos.setValue(n9, "ESTADISTICA", "presion politica sobre funcionarios forestales");
-    
+        XYSeries series = createDataset();
+        JFreeChart chart = createChart(series);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(jPanel1.getWidth(), jPanel1.getHeight()));
 
-    
-    JFreeChart grafico_barras = ChartFactory.createBarChart3D(
-            "FACTORES SECUNDARIOS",
-            "TIPO",
-            "PORCENTAJE",
-            datos,
-            PlotOrientation.HORIZONTAL,
-            true,
-            true,
-            false
-    
-      );
-    
-    ChartPanel panel= new ChartPanel(grafico_barras);
-    panel.setMouseWheelEnabled(true);
-    panel.setPreferredSize(new Dimension(1000,500));
-    
-    panelVista.setLayout(new BorderLayout());
-    panelVista.add(panel,BorderLayout.NORTH);
-    
-    pack();
-    repaint();
+        jPanel1.removeAll();  // Limpiar jPanel1
+        jPanel1.setLayout(new BorderLayout());  // Establecer un diseño de borde
+        jPanel1.add(chartPanel, BorderLayout.CENTER);
+        jPanel1.validate();  // Validar el panel para que se renderice correctamente
+
+        showResults();  // Muestra los resultados si es necesario en otro lugar
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    }
+  
+    private void initializeData() {
+        if (x.length != y.length) {
+            throw new IllegalArgumentException("Arrays 'x' and 'y' must have the same length.");
+        }
+
+        for (int i = 0; i < x.length; i++) {
+            sr.addData(x[i], y[i]);
+        }
+    }
+
+    private XYSeries createDataset() {
+        XYSeries series = new XYSeries("Datos");
+        for (int i = 0; i < x.length; i++) {
+            series.add(x[i], y[i]);
+        }
+        return series;
+    }
+
+    private JFreeChart createChart(XYSeries series) {
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+        JFreeChart chart = ChartFactory.createScatterPlot(
+                "", "X", "Y", dataset, PlotOrientation.VERTICAL, true, true, false);
+
+        double[] yc = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            yc[i] = sr.predict(x[i]);
+        }
+
+        XYSeries regressionSeries = new XYSeries("Regresion");
+        for (int i = 0; i < x.length; i++) {
+            regressionSeries.add(x[i], yc[i]);
+        }
+
+        dataset.addSeries(regressionSeries);
+
+        XYPlot plot = (XYPlot) chart.getPlot();
+        plot.setRenderer(1, plot.getRenderer(0));  // Copia el renderer del gráfico de dispersión
+        plot.setDataset(1, dataset);  // Agrega el conjunto de datos de regresión
+        plot.mapDatasetToRangeAxis(1, 0);  // Mapea el conjunto de datos de regresión al eje y derecho
+
+        ValueAxis yAxis = new NumberAxis("Y");
+        plot.setRangeAxis(1, yAxis);  // Agrega el eje y derecho
+        plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+
+        return chart;
+    }
+
+    private void showResults() {
+        textArea.setText("");
+        textArea.setFont(new Font("Arial", Font.PLAIN, 15)); 
+        textArea.setBackground(Color.LIGHT_GRAY);
+        textArea.setLineWrap(true);
+        textArea.append("DATOS LEIDOS:\n" + sr.getN());
+        textArea.append("\nORDENADAS AL ORIGEN\n" + sr.getIntercept());
+        textArea.append("\nPendiente:\n" + sr.getSlope());
+        textArea.append("\nR2:\n" + sr.getRSquare());
+        textArea.append("\nValor mínimo:\n" + StatUtils.min(y));
+        textArea.append("\nValor máximo:\n" + StatUtils.max(y));
+        textArea.append("\nValor PROMEDIO:\n" + StatUtils.mean(y));
+        textArea.append("\nValor varianza:\n" + StatUtils.variance(y));
+        textArea.append("\nValor geometrico:\n" + StatUtils.geometricMean(y));
+        textArea.append("\nValor suma:\n" + StatUtils.sum(y));
+        textArea.append("\nValor producto:\n" + StatUtils.product(y));
+        
+    }
+
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -153,10 +188,10 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
         btnRegresiones = new javax.swing.JButton();
         btnIndices = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
-        btnFacPrim = new javax.swing.JButton();
-        panelVista = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        textArea = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
 
         jLabel1.setText("jLabel1");
 
@@ -204,6 +239,9 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
 
         btnFactores.setText("Factores de deforestacion");
         btnFactores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnFactoresMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnFactoresMouseEntered(evt);
             }
@@ -256,13 +294,13 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
             .addComponent(btnEstadisticas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnTabla, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pMenuLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 30, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addGap(27, 27, 27)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(btnMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnFactores, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+            .addComponent(btnFactores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnRegresiones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnIndices, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -287,21 +325,19 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
                 .addComponent(btnMain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        btnFacPrim.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFacPrimActionPerformed(evt);
-            }
-        });
+        textArea.setColumns(20);
+        textArea.setRows(5);
+        jScrollPane1.setViewportView(textArea);
 
-        javax.swing.GroupLayout panelVistaLayout = new javax.swing.GroupLayout(panelVista);
-        panelVista.setLayout(panelVistaLayout);
-        panelVistaLayout.setHorizontalGroup(
-            panelVistaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 979, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 835, Short.MAX_VALUE)
         );
-        panelVistaLayout.setVerticalGroup(
-            panelVistaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 517, Short.MAX_VALUE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 613, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout pcontenidoLayout = new javax.swing.GroupLayout(pcontenido);
@@ -310,30 +346,30 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pcontenidoLayout.createSequentialGroup()
                 .addComponent(pMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pcontenidoLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnFacPrim, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
-                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(127, 127, 127)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pcontenidoLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelVista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(68, 68, 68))))
+                .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pcontenidoLayout.createSequentialGroup()
+                        .addGap(353, 353, 353)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pcontenidoLayout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         pcontenidoLayout.setVerticalGroup(
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(pcontenidoLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFacPrim, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(99, 99, 99)
-                .addComponent(panelVista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addGap(165, 165, 165)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 485, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pcontenidoLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -341,7 +377,7 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pcontenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pcontenido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -382,17 +418,22 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTablaMouseExited
 
     private void btnFactoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFactoresActionPerformed
-       simulacionFactoresDeDeforestacion nuevaVentana = new  simulacionFactoresDeDeforestacion();
+        simulacionFactoresDeDeforestacion nuevaVentana = new simulacionFactoresDeDeforestacion();
         nuevaVentana.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnFactoresActionPerformed
 
     private void btnFactoresMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFactoresMouseEntered
-
+        
+        pintarBoton(btnTabla,"",cn4,cn4,cn5);
+        pintarBoton(btnEstadisticas,"",cn4,cn4,cn5);
+        pintarBoton(btnFactores,"<html>Factores de deforestación</html>",cn3,cn3,cn4);
+        pintarBoton(btnRegresiones,"",cn4,cn4,cn5);
+        pintarBoton(btnIndices,"",cn4,cn4,cn5);
     }//GEN-LAST:event_btnFactoresMouseEntered
 
     private void btnFactoresMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFactoresMouseExited
-     
+     estadoInicial();
     }//GEN-LAST:event_btnFactoresMouseExited
 
     private void btnEstadisticasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEstadisticasMouseEntered
@@ -420,9 +461,7 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresionesMouseExited
 
     private void btnRegresionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresionesActionPerformed
-        simulacionRegresion nuevaVentana = new simulacionRegresion();
-        nuevaVentana.setVisible(true);
-        this.dispose();
+        // TODO add your handling code here:
     }//GEN-LAST:event_btnRegresionesActionPerformed
 
     private void btnIndicesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIndicesMouseEntered
@@ -441,24 +480,21 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnIndicesActionPerformed
 
-    private void btnFacPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacPrimActionPerformed
-        simulacionFactoresPrimarios nuevaVentana = new  simulacionFactoresPrimarios();
-        nuevaVentana.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnFacPrimActionPerformed
+    private void btnFactoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFactoresMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnFactoresMouseClicked
 
     public static void main(String args[]) {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new simulacionFactoresSecundarios().setVisible(true);
+                new simulacionRegresion().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEstadisticas;
-    private javax.swing.JButton btnFacPrim;
     private javax.swing.JButton btnFactores;
     private javax.swing.JButton btnIndices;
     private javax.swing.JButton btnMain;
@@ -467,10 +503,11 @@ public class simulacionFactoresSecundarios extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel pMenu;
-    private javax.swing.JPanel panelVista;
     private javax.swing.JPanel pcontenido;
+    private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
 }

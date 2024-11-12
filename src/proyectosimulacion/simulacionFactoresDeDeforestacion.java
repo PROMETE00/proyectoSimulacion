@@ -348,7 +348,9 @@ public class simulacionFactoresDeDeforestacion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresionesMouseExited
 
     private void btnRegresionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresionesActionPerformed
-        // TODO add your handling code here:
+        simulacionRegresion nuevaVentana = new simulacionRegresion();
+        nuevaVentana.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnRegresionesActionPerformed
 
     private void btnIndicesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIndicesMouseEntered
