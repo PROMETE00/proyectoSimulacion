@@ -163,7 +163,7 @@ public class ventanaMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSimulacionMouseEntered
 
     private void btnDocumentacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocumentacionActionPerformed
-        documentacion3Objetivos nuevaVentana = new documentacion3Objetivos();
+        documentacionMain nuevaVentana = new documentacionMain();
         nuevaVentana.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnDocumentacionActionPerformed
