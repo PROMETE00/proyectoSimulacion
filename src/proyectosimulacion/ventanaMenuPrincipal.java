@@ -12,6 +12,9 @@ public class ventanaMenuPrincipal extends javax.swing.JFrame {
     Color cn = new Color(123,211,134);//verde claro
     Color cn1 = new Color(76,43,11);//cafe
     Color cn2 = new Color(95,163,142);//verde mas oscuro
+    Color cn3 = new Color(45,83,25);//verde mas oscuro
+    Color cn4 = new Color(12,51,13);//verde mas oscuro
+    
     
     public ventanaMenuPrincipal() {
         initComponents();
@@ -111,7 +114,7 @@ public class ventanaMenuPrincipal extends javax.swing.JFrame {
                         .addComponent(pImagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(btnDocumentacion, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
         pFondoLayout.setVerticalGroup(
             pFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,7 +174,7 @@ public class ventanaMenuPrincipal extends javax.swing.JFrame {
     private void btnSimulacionMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSimulacionMouseExited
         pFondo.setBackground(cn1);
         pImagen.setBackground(cn1);
-        btnDocumentacion.setBackground(cn2);
+        btnDocumentacion.setBackground(cn4);
         btnDocumentacion.setBorder(new LineBorder(Color.BLACK,2,true));
         btnDocumentacion.setText("DOCUMENTACIÓN");
     }//GEN-LAST:event_btnSimulacionMouseExited
@@ -179,7 +182,7 @@ public class ventanaMenuPrincipal extends javax.swing.JFrame {
     private void btnDocumentacionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDocumentacionMouseEntered
         pFondo.setBackground(cn2);
         pImagen.setBackground(cn2);
-        btnSimulacion.setBackground(cn2);
+        btnSimulacion.setBackground(cn3);
         btnSimulacion.setBorder(new LineBorder(cn2,2,true));
         btnSimulacion.setText("");
     }//GEN-LAST:event_btnDocumentacionMouseEntered

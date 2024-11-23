@@ -413,8 +413,8 @@ public class documentacionMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnObjActionPerformed
 
     private void btnMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainActionPerformed
-        ventanaMenuPrincipal nuevaVentana = new ventanaMenuPrincipal();
-        nuevaVentana.setVisible(true);
+        menuSimulacion nuevaVentana = new menuSimulacion();
+        nuevaVentana.ventanaMain();
         this.dispose();
     }//GEN-LAST:event_btnMainActionPerformed
 

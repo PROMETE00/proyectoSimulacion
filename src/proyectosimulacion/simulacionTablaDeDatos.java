@@ -56,11 +56,7 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         nombreBoton.setForeground(c3);
     }
     
-    public void titulo (){
-    lblTitulo.setText("                     TABLA DE DATOS");
-    lblTitulo.setForeground(cn4);  // Cambia el color del texto
-    lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25)); 
-    }
+   
     public void setIcon(String ruta, int s1, int s2){
     ImageIcon originalIcon = new ImageIcon(ruta);
     Image scaledImage = originalIcon.getImage().getScaledInstance(s1,s2, Image.SCALE_SMOOTH);
@@ -74,6 +70,12 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
         pintarBoton(btnFactores,"<html>Factores de deforestación</html>",cn4,cn4,cn5);
         pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn4,cn4,cn5);
         pintarBoton(btnIndices,"<html>Indices de deforestación</html>",cn4,cn4,cn5);
+    }
+    
+     public void titulo (){
+    lblTitulo.setText("                     TABLA DE DATOS");
+    lblTitulo.setForeground(cn4);  // Cambia el color del texto
+    lblTitulo.setFont(new Font("Arial", Font.PLAIN, 25)); 
     }
 
     public void Datos() {
@@ -239,7 +241,7 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
                 .addComponent(btnRegresiones, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnIndices, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 403, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 407, Short.MAX_VALUE)
                 .addComponent(btnMain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -291,7 +293,7 @@ public class simulacionTablaDeDatos extends javax.swing.JFrame {
                     .addGroup(pcontenidoLayout.createSequentialGroup()
                         .addGap(72, 72, 72)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 965, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(69, Short.MAX_VALUE))))
+                        .addContainerGap(73, Short.MAX_VALUE))))
         );
         pcontenidoLayout.setVerticalGroup(
             pcontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
