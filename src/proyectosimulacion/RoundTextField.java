@@ -3,8 +3,15 @@ package proyectosimulacion;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
+import javax.swing.JTextField;
 
 public class RoundTextField extends JTextField {
+
     private int cornerRadius;
 
     public RoundTextField(int columns, int cornerRadius) {
@@ -19,11 +26,11 @@ public class RoundTextField extends JTextField {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Fondo redondeado
-        //g2.setColor(getBackground());
+        g2.setColor(getBackground()); // Usar el color de fondo definido
         g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius));
 
         // Borde redondeado
-        //g2.setColor(getForeground());
+        g2.setColor(getForeground()); // Usar el color de texto definido para el borde
         g2.draw(new RoundRectangle2D.Float(0, 0, getWidth() - 1, getHeight() - 1, cornerRadius, cornerRadius));
 
         g2.dispose();
@@ -37,8 +44,8 @@ public class RoundTextField extends JTextField {
 
     @Override
     public Insets getInsets() {
-        // Ajusta los márgenes internos para evitar que el texto se superponga con el borde
         int padding = cornerRadius / 4;
         return new Insets(padding, padding, padding, padding);
     }
+
 }
