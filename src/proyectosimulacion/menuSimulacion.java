@@ -19,6 +19,7 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.Rotation;
 import java.awt.BorderLayout;
+import javax.swing.border.MatteBorder;
 
 public class menuSimulacion {
 
@@ -45,9 +46,20 @@ public class menuSimulacion {
     JButton btnGCB2 = new JButton();
     JButton btnGCB3 = new JButton();
     JButton btnGCB4 = new JButton();
+    JButton btnGB1 = new JButton();
+    JButton btnGB2 = new JButton();
+    JButton btnGB3 = new JButton();
+    JButton btnGB4 = new JButton();
+    JButton btnGB5 = new JButton();
     JLabel imagenLI = new JLabel();
     JLabel textoLI = new JLabel();
     JLabel imagenMG = new JLabel();
+    JLabel lblImg1 = new JLabel();
+    JLabel lblTitulo = new JLabel();
+    JTextArea txtModelo = new JTextArea();
+    JTextArea txtModelo2 = new JTextArea();
+    JScrollPane jScrollPane1 = new JScrollPane();
+    JScrollPane jScrollPane2 = new JScrollPane();
 
     Color cn1 = new Color(76, 43, 11); // café
     Color cn2 = new Color(204, 204, 204); // gris
@@ -75,6 +87,7 @@ public class menuSimulacion {
     Color cn24 = new Color(75, 90, 64);
     Color cn25 = new Color(0, 95, 126);
     Color cn26 = new Color(0, 70, 94);
+    Color inv = new Color(0, 0, 0, 0);
 
     private static final String DATA_FILE = "Datos.csv";
     private DefaultTableModel mt = new DefaultTableModel();
@@ -91,46 +104,231 @@ public class menuSimulacion {
         panel.setBackground(cn26);
         frame.add(panel);
 
-//        menuPrincipal();
-        menuGraficaBarras();
-        barraInteraccion();
-        
+        menuPrincipal();
+//        menuGraficaBarras();
+
         frame.setVisible(true);
     }
-    public void menuGraficaBarras() {
-        // Configurar botones
-        btnGCB1.setBounds(350, 50, 200, 60);
-        btnGCB2.setBounds(1665, 50, 200, 60);
-        btnGCB3.setBounds(550, 1000, 200, 60);
-        btnGCB4.setBounds(1450, 1000, 250, 60);
-        pintarBoton(btnGCB1, "ATRAS", cn3, cn3, cn4);
-        pintarBoton(btnGCB2, "GRAFICA CIRCULAR", cn3, cn3, cn4);
-        pintarBoton(btnGCB3, "HECTAREAS", cn3, cn3, cn4);
-        pintarBoton(btnGCB4, "HECTAREAS Y TIERRAS FORESTALES", cn3, cn3, cn4);
 
-        if (!btnGCB3.isEnabled()) {
-            btnGCB4.setEnabled(true);
-        } else if (!btnGCB4.isEnabled()) {
+    public void documentacionExplicacion() {
+        lblImg1.setVisible(true);
+        frame.setTitle("             COMPONENTES DEL MODELO MATEMATICO");
+        txtModelo.setText("Pendiente (ß1):\n\n"
+                + "Refleja la tasa de cambio de la variable dependiente y respecto a la independiente X\n\n"
+                + "                 Si ß1 > 0,hay una relación positiva: y aumenta cuando X crece.\n"
+                + "                 Si ß1 < 0,la relación es negativa: y disminuye con aumentos en X\n\n"
+                + "Ordena al origen(ß0):Represena el valor esperado de Y cuando X = 0\n\n"
+                + "Esto proporciona un punto de referencia inicial para interpretar \n"
+                + "el comportamiento del modelo.\n\n"
+                + "                                           Coeficiente de Determinación :");
+        txtModelo.setBounds(640, 40, 1000, 500);
+        txtModelo.setBackground(inv);
+        persoTexArea(txtModelo, jScrollPane1, 27);
+        txtModelo.setForeground(cn4);
+        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/Captura de pantalla_20241106.png", 700, 300, lblImg1);
+        lblImg1.setBounds(800, 540, 700, 300);
+        lblImg1.setBackground(inv);
+        panel.add(lblImg1);
+        txtModelo2.setText("\n\nMide la proporción de variabilidad en y explicada por el modelo lineal.\n\n"
+                + "R^2 cercano a 1:El modelo tiene un ajuste excelente y explica casi toda la"
+                + "variabilidad en los datos.\n\n"
+                + "R^2 bajo:El modelo no representa bien la tendencia de los datos,surgiendo una"
+                + "relación débil entre X e Y.");
+        persoTexArea(txtModelo2, jScrollPane2, 27);
+        txtModelo2.setBounds(640, 800, 1000, 700);
+        txtModelo2.setBackground(inv);
+        txtModelo2.setForeground(cn4); //
+        panel.add(txtModelo);
+        panel.add(txtModelo2);
+        Re();
+        txtModelo.setOpaque(false); // Esto asegura que el fondo sea transparente si inv tiene alfa 0
+        txtModelo.setBackground(inv);
+        txtModelo2.setOpaque(false);
+        txtModelo2.setBackground(inv);
+    }
+
+    public void documentacionObjetivos() {
+        frame.setTitle("     OBJETIVOS DEL ANALISIS Y RESULTADOS ESPERADOS");
+        txtModelo.setText(" El análisis estadístico de los datos tiene como propósito principal la identificación de patrones y tendencias que puedan emplearse para \n"
+                + " realizar predicciones informadas y evaluar posibles escenarios futuros. Estos son los objetivos específicos y los resultados esperados de  \n"
+                + " este análisis:\n"
+                + "                                                                                       1. Predicción de Comportamiento Futuro \n"
+                + " Usando el modelo de regresión lineal, se buscará proyectar el comportamiento de los datos a corto y mediano plazo. La regresión \n "
+                + "permitirá extrapolar los valores, generando estimaciones basadas en las tendencias observadas en el conjunto de datos inicial. Así, se \n "
+                + "espera contar  con una herramienta predictiva que brinde un panorama sobre posibles valores futuros y la variabilidad que podría  \n "
+                + "esperarse bajo condiciones similares a las de los datos analizados.\n \n"
+                + "                                                                                                   2. Simulación de Escenarios \n"
+                + " A partir de las métricas de dispersión, como la varianza y el rango de los datos, se podrá simular escenarios alternativos, considerando \n "
+                + "diferentes posibles variaciones en los valores. Esto permitirá explorar cómo cambios en la variable \n "
+                + "independiente podrían afectar los resultados y cómo estos ajustes se reflejan en el modelo de regresión lineal.\n\n"
+                + "                                                                                3. Identificación de Patrones y Tendencias Generales \n"
+                + " A través de la pendiente y el coeficiente de determinación ((R^2)) de la regresión lineal, el análisis revelará la dirección y la fuerza de \n "
+                + "la relación entre variables, proporcionando una visión de las tendencias generales que dominan el comportamiento de los datos. Un \n "
+                + "(R^2) alto indicaría una tendencia clara que podría ser útil en la toma de decisiones, mientras que un valor bajo sugeriría mayor \n "
+                + "variabilidad y, por lo tanto, menor predictibilidad en los datos.\n\n"
+                + "                                                                                     4. Evaluación de la Precisión en las Estimaciones \n "
+                + "Al comparar las proyecciones del modelo con los valores reales, se podrá evaluar la precisión del análisis. Este proceso de validación \n "
+                + "permitirá identificar el grado de confianza del modelo y ajustar cualquier parámetro que mejore la precisión de las predicciones futuras.\n\n"
+                + "                                                                                  5. Mejora en la Toma de Decisiones Basada en Datos \n"
+                + " Finalmente, el análisis busca ofrecer una base cuantitativa sólida para la toma de decisiones informadas. Al entender mejor el \n"
+                + " comportamiento histórico y su potencial de cambio, será posible evaluar el impacto de diferentes acciones o políticas y predecir cómo \n"
+                + " estas decisiones podrían influir en el futuro de los valores estudiados.\n\n "
+                + "                                                                                                          Resultados Esperados\n "
+                + "Los resultados esperados del análisis estadístico incluyen la obtención de un modelo de predicción confiable y una comprensión \n"
+                + " detallada de las tendencias presentes en los datos. Además, se espera identificar cualquier patrón significativo y simular variaciones \n"
+                + " para evaluar la solidez del modelo, brindando así una herramienta analítica que ayude a anticipar y manejar cambios en el contexto del \n estudio.");
+        txtModelo.setVisible(true);
+        jScrollPane1.setVisible(true);
+        persoTexArea(txtModelo, jScrollPane1, 22);
+        txtModelo.setBackground(inv);
+        txtModelo.setBounds(400, 40, 1450, 1100);
+        panel.add(txtModelo);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    public void documentacionModelo() {
+        frame.setTitle("MODELO DE REGRESION SIMPLE");
+        panel.setBackground(cn1);
+        lblImg1.setVisible(true);
+        txtModelo.setVisible(true);
+        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/Regresión-lineal-2162541869.png", 850, 700, lblImg1);
+        lblImg1.setBounds(650, 50, 850, 700);
+        panel.add(lblImg1);
+        txtModelo.setText("Y : Variable dependiente o respuesta. \n"
+                + "X : Vaiable independiente o predictoria.\n"
+                + "B0 : Ordenada al origeno intercepto.\n"
+                + "Valor estimado de Y cuando X = 0 \n"
+                + "B1 : Pendiente, indica cuánto cambia Y \n"
+                + "por cada unidad de cambio en X.");
+        persoTexArea(txtModelo, jScrollPane1, 35);
+        txtModelo.setBounds(740, 790, 650, 600);
+        txtModelo.setForeground(cn4);
+        txtModelo.setBackground(inv);
+        panel.add(txtModelo);
+    }
+
+    public void persoTexArea(JTextArea txtM, JScrollPane jS, int n) {
+        txtM.setFont(new Font("Arial", Font.PLAIN, n));
+        txtM.setForeground(cn5);
+        txtM.setEditable(false);
+        txtM.setCursor(null);
+        txtM.setBorder(null);
+        txtM.setBorder(BorderFactory.createEmptyBorder());
+        jS.setBorder(BorderFactory.createEmptyBorder());
+        txtM.setBackground(cn4);
+        txtM.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                txtM.setCaretPosition(0);
+            }
+        });
+        txtM.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                txtM.getCaret().setVisible(false);
+            }
+        });
+    }
+
+    public void Re() {
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    public void barraInteraccionD() {
+
+        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/documentation_9746255.png", 70, 70, imagenLI);
+        imagenLI.setBounds(0, 0, 70, 70);
+        panel.add(imagenLI);
+        textoLI.setText("DOCUMENTACIÓN");
+        textoLI.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        textoLI.setBounds(80, 0, 200, 50);
+        panel.add(textoLI);
+        btnExp.setBounds(0, 200, 300, 60);
+        pintarBoton(btnExp, "<html>Explicación del modelo matemático</html>", cn22, cn22, cn4);
+        btnObj.setBounds(0, 265, 300, 60);
+        pintarBoton(btnObj, "<html>Objetivos del analisis y resultados esperados</html>", cn22, cn22, cn4);
+        btnMod.setBounds(0, 330, 300, 60);
+        pintarBoton(btnMod, "<html>Modelo de regresión lineal simple</html>", cn22, cn22, cn4);
+
+        btnMenuP.setBounds(0, 1073, 300, 60);
+        pintarBoton(btnMenuP, "<html>MENÚ PRINCIPAL</html>", cn3, cn3, cn4);
+        panel.add(btnMenuP);
+
+        btnExp.addActionListener(e -> {
+            limpiarPanel();
+            documentacionExplicacion();
+            barraInteraccionD();
+        });
+
+        btnObj.addActionListener(e -> {
+            limpiarPanel();
+            documentacionObjetivos();
+            barraInteraccionD();
+        });
+
+        btnMod.addActionListener(e -> {
+            limpiarPanel();
+            documentacionModelo();
+            barraInteraccionD();
+        });
+
+        btnMenuP.addActionListener(e -> {
+            limpiarPanel();
+            menuPrincipal();
+        });
+        panel.add(btnExp);
+        panel.add(btnObj);
+        panel.add(btnMod);
+        frameLI.setBackground(cn23);
+        frameLD.setBackground(cn24);
+        frameLI.setBounds(0, 0, 300, 1150);
+        frameLD.setBounds(300, 0, 1650, 1150);
+        panel.add(frameLI);
+        panel.add(frameLD);
+    }
+
+    public void menuGraficaBarras() {
+        btnGB1.setBounds(350, 50, 200, 60);
+        btnGB2.setBounds(1665, 50, 200, 60);
+        btnGB3.setBounds(380, 1000, 200, 60);
+        btnGB4.setBounds(1590, 1000, 250, 60);
+        btnGB5.setBounds(960, 1000, 250, 60);
+        pintarBoton(btnGB1, "ATRAS", cn3, cn3, cn4);
+        pintarBoton(btnGB2, "GRAFICA DE PASTEL", cn3, cn3, cn4);
+        pintarBoton(btnGB3, "TIPOS DE BOSQUE", cn3, cn3, cn4);
+        pintarBoton(btnGB4, "ECORREGION", cn3, cn3, cn4);
+        pintarBoton(btnGB5, "DEFORESTACION", cn3, cn3, cn4);
+
+        if (!btnGB3.isEnabled()) {
+            btnGB4.setEnabled(true);
+            btnGB5.setEnabled(true);
+        } else if (!btnGB4.isEnabled()) {
+            btnGB3.setEnabled(true);
+            btnGB5.setEnabled(true);
+        } else if (!btnGB5.isEnabled()) {
             btnGCB3.setEnabled(true);
+            btnGCB4.setEnabled(true);
         }
 
-        // Agregar botones al panel principal
-        panel.add(btnGCB1);
-        panel.add(btnGCB2);
-        panel.add(btnGCB3);
-        panel.add(btnGCB4);
+        panel.add(btnGB1);
+        panel.add(btnGB2);
+        panel.add(btnGB3);
+        panel.add(btnGB4);
+        panel.add(btnGB5);
 
-        // Configurar y agregar panelGrafica al panel principal
-        panelGrafica.setBounds(650, 250, 951, 608); // Posición y tamaño
+        panelGrafica.setBounds(380, 170, 1460, 780); // Posición y tamaño
         panel.add(panelGrafica); // Agregar al panel principal
-        // Llamar al método que genera la gráfica
-        btnGCB3.addActionListener(e -> {
-            GraficaPastel();
-            barraInteraccion();
+
+        btnGB3.addActionListener(e -> {
+            barraInteraccionD();
         });
-        btnGCB4.addActionListener(e -> {
-            GraficaPastel2();
-            barraInteraccion();
+        btnGB4.addActionListener(e -> {
+            barraInteraccionD();
+        });
+        btnGB5.addActionListener(e -> {
+            barraInteraccionD();
         });
     }
 
@@ -158,7 +356,7 @@ public class menuSimulacion {
 
         ChartPanel chartPanel = new ChartPanel(grafico_circular);
         chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setPreferredSize(new Dimension(950, 600));
+        chartPanel.setPreferredSize(new Dimension(1420, 770));
 
         PiePlot3D plot = (PiePlot3D) grafico_circular.getPlot();
         plot.setStartAngle(290);
@@ -166,7 +364,6 @@ public class menuSimulacion {
         plot.setForegroundAlpha(0.7f);
         plot.setNoDataMessage("No hay datos para mostrar");
 
-        chartPanel.setPreferredSize(new Dimension(951, 608));
         panelGrafica.setLayout(new BorderLayout());
         panelGrafica.add(chartPanel, BorderLayout.CENTER);
 
@@ -200,7 +397,7 @@ public class menuSimulacion {
 
         ChartPanel chartPanel = new ChartPanel(grafico_circular);
         chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setPreferredSize(new Dimension(950, 600));
+        chartPanel.setPreferredSize(new Dimension(1420, 770));
 
         PiePlot3D plot = (PiePlot3D) grafico_circular.getPlot();
         plot.setStartAngle(290);
@@ -208,7 +405,6 @@ public class menuSimulacion {
         plot.setForegroundAlpha(0.7f);
         plot.setNoDataMessage("No hay datos para mostrar");
 
-        chartPanel.setPreferredSize(new Dimension(951, 608));
         panelGrafica.setLayout(new BorderLayout());
         panelGrafica.add(chartPanel, BorderLayout.CENTER);
 
@@ -242,7 +438,7 @@ public class menuSimulacion {
 
         ChartPanel chartPanel = new ChartPanel(grafico_circular);
         chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setPreferredSize(new Dimension(950, 600));
+        chartPanel.setPreferredSize(new Dimension(1420, 770));
 
         PiePlot3D plot = (PiePlot3D) grafico_circular.getPlot();
         plot.setStartAngle(290); // Ángulo de inicio
@@ -250,7 +446,6 @@ public class menuSimulacion {
         plot.setForegroundAlpha(0.7f); // Transparencia
         plot.setNoDataMessage("No hay datos para mostrar"); // Mensaje en caso de datos faltantes
 
-        chartPanel.setPreferredSize(new Dimension(951, 608));
         panelGrafica.setLayout(new BorderLayout());
         panelGrafica.add(chartPanel, BorderLayout.CENTER);
 
@@ -284,7 +479,7 @@ public class menuSimulacion {
         panel.add(btnGCB4);
 
         // Configurar y agregar panelGrafica al panel principal
-        panelGrafica.setBounds(650, 250, 951, 608); // Posición y tamaño
+        panelGrafica.setBounds(620, 250, 951, 608); // Posición y tamaño
         panel.add(panelGrafica); // Agregar al panel principal
         // Llamar al método que genera la gráfica
         btnGCB3.addActionListener(e -> {
@@ -431,9 +626,8 @@ public class menuSimulacion {
 
         btnMDoc.addActionListener(e -> {
             limpiarPanel();
-            documentacionMain dM = new documentacionMain();
-            dM.setVisible(true);
-            frame.dispose();
+            documentacionExplicacion();
+            barraInteraccionD();
         });
         btnMSim.addMouseListener(new MouseAdapter() {
             @Override
@@ -575,23 +769,6 @@ public class menuSimulacion {
         panel.add(btnIndices);
 
         frameLI.setBackground(cn23);
-        frameLD.setBackground(cn24);
-        frameLI.setBounds(0, 0, 300, 1150);
-        frameLD.setBounds(300, 0, 1650, 1150);
-        panel.add(frameLI);
-        panel.add(frameLD);
-    }
-
-    public void barraInteraccionDocumentacion() {
-        btnExp.setBounds(0, 200, 300, 60);
-        btnMod.setBounds(0, 265, 300, 60);
-        btnObj.setBounds(0, 330, 300, 60);
-
-        panel.add(btnExp);
-        panel.add(btnMod);
-        panel.add(btnObj);
-
-        frameLI.setBackground(cn20);
         frameLD.setBackground(cn24);
         frameLI.setBounds(0, 0, 300, 1150);
         frameLD.setBounds(300, 0, 1650, 1150);

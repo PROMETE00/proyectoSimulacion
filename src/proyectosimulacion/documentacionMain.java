@@ -177,7 +177,6 @@ public class documentacionMain extends javax.swing.JFrame {
                 txtM.getCaret().setVisible(false);
             }
         });
-
     }
 
     public void tDispo() {
