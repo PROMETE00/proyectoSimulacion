@@ -117,7 +117,7 @@ public class menuSimulacion {
     public void simulacion() {
         JLabel aInicio = new JLabel();
         JLabel aFin = new JLabel();
-        JLabel aActual = new JLabel();
+        JLabel aActual = new JLabel("2021");
         JLabel aCalculado = new JLabel();
         RoundButton btnIniciarSimulacion = new RoundButton(20);
         int tiempoCalculado = 2001; // Valor inicial del año
@@ -127,15 +127,15 @@ public class menuSimulacion {
         txtInciciarSImulacion.setForeground(cn4);
         txtInciciarSImulacion.setBounds(1050, 30, 900, 60);
         panel.add(txtInciciarSImulacion);
-        
+
         txtSImulacion.setText("AÑOS A SIMULAR:");
-        txtSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        txtSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 20));
         txtSImulacion.setForeground(cn4);
         txtSImulacion.setBounds(1090, 285, 900, 60);
         panel.add(txtSImulacion);
 
-        txtTiempoSimulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-        txtTiempoSimulacion.setBounds(945, 420, 400, 100);
+        txtTiempoSimulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 20));
+        txtTiempoSimulacion.setBounds(995, 420, 400, 100);
         txtTiempoSimulacion.setBackground(inv);
         txtTiempoSimulacion.setForeground(cn4);
         txtTiempoSimulacion.setEditable(false);
@@ -153,55 +153,89 @@ public class menuSimulacion {
         aFin.setBounds(1685, 115, 100, 100);
         aFin.setForeground(cn4);
         panel.add(aFin);
-        
+
         RoundTextField txtInput = new RoundTextField(1, 30); // 1 columna, radio 30
         txtInput.setFont(new Font("Arial", Font.PLAIN, 20));
         txtInput.setForeground(cn4); // Letra blanca
         txtInput.setBackground(inv); // Fondo negro
         txtInput.setCaretColor(cn4); // Cursor blanco
+        txtInput.setHorizontalAlignment(JTextField.CENTER);
         txtInput.setBounds(1330, 285, 100, 60);
         panel.add(txtInput);
 
-        JScrollBar yearScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, 2001, 1, 2001, 2022);
-        yearScrollBar.setUnitIncrement(1); // Incremento de 1 año
-        yearScrollBar.setBounds(1070, 150, 600, 30); // Posición y tamaño de la barra
+        aActual.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        aActual.setBounds(1350, 200, 100, 30); // Ubicación inicial debajo de la scrollbar
+        aActual.setForeground(cn4);
+        panel.add(aActual);
 
-        // Cambiar el estilo de la scrollbar
-        yearScrollBar.setBackground(Color.GRAY); // Color de fondo de la barra
-        yearScrollBar.setForeground(cn4); // Color de la "cinta" de la barra
+        JScrollBar yearScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, 2001, 1, 2001, 2022);
+        yearScrollBar.setUnitIncrement(1);
+        yearScrollBar.setBounds(1070, 150, 600, 30);
+
+        // Cambiar estilo de la scrollbar
+        yearScrollBar.setBackground(Color.GRAY);
+        yearScrollBar.setForeground(cn4);
+
         yearScrollBar.setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
             @Override
             protected JButton createDecreaseButton(int orientation) {
                 JButton button = super.createDecreaseButton(orientation);
-                button.setPreferredSize(new Dimension(0, 0)); // Ocultar los botones de la scrollbar
+                button.setPreferredSize(new Dimension(15, 15)); // Tamaño mínimo visible
+                button.setBackground(Color.GRAY); // Color del botón
                 return button;
             }
 
             @Override
             protected JButton createIncreaseButton(int orientation) {
                 JButton button = super.createIncreaseButton(orientation);
-                button.setPreferredSize(new Dimension(0, 0)); // Ocultar los botones de la scrollbar
+                button.setPreferredSize(new Dimension(15, 15)); // Tamaño mínimo visible
+                button.setBackground(Color.GRAY); // Color del botón
                 return button;
             }
         });
 
+        // Listener para actualizar valores dinámicamente
+        Runnable actualizarCalculo = () -> {
+            try {
+                int inputValue = Integer.parseInt(txtInput.getText());
+                int selectedYear = yearScrollBar.getValue();
+                int suma = inputValue + selectedYear;
+                txtTiempoSimulacion.setText("SE SIMULARA HASTA EL AÑO:");
+                aCalculado.setText(String.valueOf(suma));
+            } catch (NumberFormatException ex) {
+                aCalculado.setText("");
+            }
+        };
         yearScrollBar.addAdjustmentListener(e -> {
             int selectedYear = yearScrollBar.getValue();
-            aActual.setText("" + selectedYear);
-            aActual.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-            aActual.setBounds(1350, 160, 100, 100);
-            aActual.setForeground(cn4);
-            panel.add(aActual);
-            
-            txtTiempoSimulacion.setText(""); // Limpia el texto anterior
-            txtTiempoSimulacion.setText("SE SIMULARA HASTA EL AÑO:");
-            aCalculado.setText("" + selectedYear);
-            aCalculado.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-            aCalculado.setForeground(cn4);
-            aCalculado.setBounds(1352, 385, 600, 100);
-            panel.add(aCalculado);
+            aActual.setText(String.valueOf(selectedYear)); // Actualiza el texto del JLabel
         });
-        panel.add(yearScrollBar);
+
+        yearScrollBar.addAdjustmentListener(e -> actualizarCalculo.run());
+
+        txtInput.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarCalculo.run();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarCalculo.run();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarCalculo.run();
+            }
+        });
+
+        // Configuración visual de aCalculado
+        aCalculado.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        aCalculado.setForeground(cn4);
+        aCalculado.setBounds(1352, 385, 600, 100);
+        panel.add(aCalculado);
+
         // Botón de inicio de simulación
         pintarBoton(btnIniciarSimulacion, "INICIAR SIMULACION", cn22, cn22, cn4);
         btnIniciarSimulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
@@ -212,6 +246,11 @@ public class menuSimulacion {
         img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/18157321.png", 1920, 1150, LblSim);
         LblSim.setBounds(0, 0, 1920, 1150);
         panel.add(LblSim);
+
+        panel.add(yearScrollBar);
+        panel.revalidate();
+        panel.repaint();
+
     }
 
     public void documentacionExplicacion() {
