@@ -2,8 +2,6 @@ package proyectosimulacion;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -19,7 +17,6 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.Rotation;
 import java.awt.BorderLayout;
-import javax.swing.border.MatteBorder;
 
 public class menuSimulacion {
 
@@ -58,7 +55,6 @@ public class menuSimulacion {
     JLabel textoLI = new JLabel();
     JLabel imagenMG = new JLabel();
     JLabel lblImg1 = new JLabel();
-    JLabel lblTitulo = new JLabel();
     JLabel LblSim = new JLabel();
     JTextArea txtModelo = new JTextArea();
     JTextArea txtModelo2 = new JTextArea();
@@ -120,7 +116,6 @@ public class menuSimulacion {
         JLabel aActual = new JLabel("2021");
         JLabel aCalculado = new JLabel();
         RoundButton btnIniciarSimulacion = new RoundButton(20);
-        int tiempoCalculado = 2001; // Valor inicial del año
 
         txtInciciarSImulacion.setText("SELECCIONE EL AÑO DE INICIO DE LA SIMULACIÓN");
         txtInciciarSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
