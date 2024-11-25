@@ -17,6 +17,11 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.Rotation;
 import java.awt.BorderLayout;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class menuSimulacion {
 
@@ -24,6 +29,9 @@ public class menuSimulacion {
     JPanel frameLI = new JPanel();
     JPanel frameLD = new JPanel();
     JPanel panelGrafica = new JPanel();
+    JPanel panelBarras = new JPanel();
+    JPanel panelFactores = new JPanel();
+    JPanel panelVista = new JPanel();
     JFrame frame = new JFrame();
     JLabel imgMain = new JLabel();
     JButton btnMSim = new JButton();
@@ -48,6 +56,8 @@ public class menuSimulacion {
     JButton btnGB3 = new JButton();
     JButton btnGB4 = new JButton();
     JButton btnGB5 = new JButton();
+    JButton btnF1 = new JButton();
+    JButton btnF2 = new JButton();
     JLabel txtInciciarSImulacion = new JLabel();
     JLabel txtSImulacion = new JLabel();
     JTextArea txtTiempoSimulacion = new JTextArea();
@@ -56,6 +66,7 @@ public class menuSimulacion {
     JLabel imagenMG = new JLabel();
     JLabel lblImg1 = new JLabel();
     JLabel LblSim = new JLabel();
+    JLabel imgFac = new JLabel();
     JTextArea txtModelo = new JTextArea();
     JTextArea txtModelo2 = new JTextArea();
     JScrollPane jScrollPane1 = new JScrollPane();
@@ -93,6 +104,7 @@ public class menuSimulacion {
     private DefaultTableModel mt = new DefaultTableModel();
     private JTable tabla;
     private JScrollPane scrollPane;
+    private boolean metodoUnoActivo = true;
 
     public void ventanaMain() {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -105,15 +117,367 @@ public class menuSimulacion {
         frame.add(panel);
 
 //        menuPrincipal();
-        simulacion();
-//        menuGraficaBarras();
+        barraInteraccion();
         frame.setVisible(true);
+    }
+    
+    public void regresiones(){
+    
+    
+    }
+
+    public void menuFactores() {
+
+        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforest_9568180.png", 160, 160, imgFac);
+        imgFac.setBounds(1015, 20, 160, 160);
+        panel.add(imgFac);
+
+        frame.setTitle("FACTORES DE DEFORESTACIÓN PRIMARIOS");
+//        btnF1.setBounds(380, 1000, 240, 100);
+        btnF2.setBounds(1600, 45, 240, 100);
+//        pintarBoton(btnF1, "FACTORES PRIMARIOS", cn3, cn3, cn4);
+        pintarBoton(btnF2, "FACTORES SECUNDARIOS", cn3, cn3, cn4);
+
+        panelVista.setBounds(380, 200, 1460, 850);
+        panel.add(panelVista);
+        primarios();
+        panel.add(btnF1);
+        panel.add(btnF2);
+
+        btnF2.addActionListener(e -> {
+            if (metodoUnoActivo) {
+                frame.setTitle("FACTORES  DE DEFORESTACIÓN PRIMARIOS");
+                primarios();
+            } else {
+                frame.setTitle("FACTORES  DE DEFORESTACIÓN SECUNDARIOS");
+                secundarios();
+            }
+            metodoUnoActivo = !metodoUnoActivo;
+            barraInteraccion();
+        });
+//        btnF1.addActionListener(e -> {
+//        });
+    }
+
+    public void secundarios() {
+        panelVista.removeAll();
+        btnF2.setText("FACTORES PRIMARIOS");
+        double n1 = 0;
+        double n2 = 65;
+        double n3 = 42;
+        double n4 = 29;
+        double n5 = 0;
+        double n6 = 5;
+        double n7 = 45.5;
+        double n8 = 33;
+        double n9 = 14.5;
+
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+        datos.setValue(n1, "ESTADISTICA", "factor socioeconomico");
+        datos.setValue(n2, "ESTADISTICA", "necesidades dendroenergeticas ");
+        datos.setValue(n3, "ESTADISTICA", "seguridad alimentaria ");
+        datos.setValue(n4, "ESTADISTICA", "falta demedios de vida alternativos en zona rural");
+        datos.setValue(n5, "ESTADISTICA", "servicios de extencion deficientes");
+        datos.setValue(n6, "ESTADISTICA", "sin demarcacion de limites ");
+        datos.setValue(n7, "ESTADISTICA", "manejo forestal insostenible ");
+        datos.setValue(n8, "ESTADISTICA", "mala implementacion de leyes ");
+        datos.setValue(n9, "ESTADISTICA", "presion politica sobre funcionarios forestales");
+
+        JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+                "FACTORES SECUNDARIOS",
+                "TIPO",
+                "PORCENTAJE",
+                datos,
+                PlotOrientation.HORIZONTAL,
+                true,
+                true,
+                false
+        );
+
+        ChartPanel chartPanel = new ChartPanel(grafico_barras);
+        chartPanel.setMouseWheelEnabled(true);
+
+        // Usar un layout para que el ChartPanel ocupe todo el espacio
+        panelVista.setLayout(new BorderLayout());
+        panelVista.add(chartPanel, BorderLayout.CENTER); // Cambiar a BorderLayout.CENTER
+
+        panelVista.revalidate(); // Revalidar el panel
+        panelVista.repaint(); // Repaint para actualizar la vista
+    }
+
+    public void primarios() {
+
+        btnF2.setText("FACTORES SECUNDARIOS");
+        panelVista.removeAll();
+        double n1 = 90.5;
+        double n2 = 0;
+        double n3 = 15;
+        double n4 = 10;
+        double n5 = 15;
+        double n6 = 28.5;
+        double n7 = 74;
+        double n8 = 86;
+        double n9 = 41;
+        double n10 = 27.5;
+        double n11 = 35;
+        double n12 = 15;
+
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+
+        datos.setValue(n1, "ESTADISTICA", "factor socioeconomico");
+        datos.setValue(n2, "ESTADISTICA", "extraccion insostenible de leña para combustible");
+        datos.setValue(n3, "ESTADISTICA", "extraccion de madera insostenible");
+        datos.setValue(n4, "ESTADISTICA", "incendios forestales (intencionales)");
+        datos.setValue(n5, "ESTADISTICA", "incendios forestales naturales");
+        datos.setValue(n6, "ESTADISTICA", "desarrollo de infraestructura ");
+        datos.setValue(n7, "ESTADISTICA", "pastero de ganado libre ");
+        datos.setValue(n8, "ESTADISTICA", "expansion urbana y rural ");
+        datos.setValue(n9, "ESTADISTICA", "expansion agricula de subsistencia  ");
+        datos.setValue(n10, "ESTADISTICA", "deslizamiento de tierra  ");
+        datos.setValue(n11, "ESTADISTICA", "plagas");
+        datos.setValue(n12, "ESTADISTICA", "gobernanza debil");
+
+        JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+                "FACTORES PRIMARIOS",
+                "TIPO",
+                "PORCENTAJE",
+                datos,
+                PlotOrientation.HORIZONTAL,
+                true,
+                true,
+                false
+        );
+
+        ChartPanel panel = new ChartPanel(grafico_barras);
+        panel.setMouseWheelEnabled(true);
+        panel.setPreferredSize(new Dimension(1000, 500));
+
+        panelVista.setLayout(new BorderLayout());
+        panelVista.add(panel, BorderLayout.CENTER);
+
+        panelVista.repaint();
+        panelVista.revalidate();
+    }
+
+    public void deforestacion() {
+        panelBarras.removeAll();
+        double n1 = 17933;
+        double n2 = 17933;
+        double n3 = 17933;
+        double n4 = 15899;
+        double n5 = 15899;
+        double n6 = 15899;
+        double n7 = 22626;
+        double n8 = 22626;
+        double n9 = 22626;
+        double n10 = 18214;
+        double n11 = 18214;
+        double n12 = 18214;
+        double n13 = 18770;
+        double n14 = 18770;
+        double n15 = 18770;
+        double n16 = 20520;
+        double n17 = 20520;
+        double n18 = 20520;
+        double n19 = 10613;
+        double n20 = 10613;
+        double n21 = 10613;
+
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+
+        datos.setValue(n1, "1", "2001");
+        datos.setValue(n2, "2", "2002");
+        datos.setValue(n3, "3", "2003");
+        datos.setValue(n4, "4", "2004");
+        datos.setValue(n5, "5", "2005");
+        datos.setValue(n6, "6", "2006");
+        datos.setValue(n7, "7", "2007");
+        datos.setValue(n8, "8", "2008");
+        datos.setValue(n9, "9", "2009");
+        datos.setValue(n10, "10", "2010");
+        datos.setValue(n11, "11", "2011");
+        datos.setValue(n12, "12", "2012");
+        datos.setValue(n13, "13", "2013");
+        datos.setValue(n14, "14", "2014");
+        datos.setValue(n15, "15", "2015");
+        datos.setValue(n16, "16", "2016");
+        datos.setValue(n17, "17", "2017");
+        datos.setValue(n18, "18", "2018");
+        datos.setValue(n19, "19", "2019");
+        datos.setValue(n20, "20", "2020");
+        datos.setValue(n21, "21", "2021");
+
+        // Crear un gráfico de barras
+        JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+                "OAXACA",
+                "PERIODO 2001-2021",
+                "SUPERFICIE DEFORESTADA",
+                datos,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+
+        ChartPanel panel = new ChartPanel(grafico_barras);
+        panel.setMouseWheelEnabled(true);
+
+        // Configurar el tamaño dinámico
+        panel.setPreferredSize(new Dimension(panelBarras.getWidth(), panelBarras.getHeight())); // Ajustar al tamaño del contenedor
+
+        // Asegurarse de que el panel del gráfico se ajuste al tamaño disponible
+        panel.setSize(panelBarras.getWidth(), panelBarras.getHeight());
+        panel.setMinimumSize(new Dimension(200, 100));  // Tamaño mínimo si el contenedor es pequeño
+
+        panelBarras.setLayout(new BorderLayout());
+        panelBarras.removeAll();  // Limpiar el panel actual
+        panelBarras.add(panel, BorderLayout.CENTER);
+
+        // Asegúrate de que el panelGrafica se redimensione
+        panelBarras.revalidate();
+        panelBarras.repaint();
+    }
+
+    public void ecorregion() {
+        panelBarras.removeAll();
+        double n1 = 5767;
+        double n2 = 7454;
+        double n3 = 4575;
+
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+
+        datos.setValue(n1, "SELVAS", "CALIDO-HUMEDAS");
+        datos.setValue(n2, "SELVAS1", "CALIDO-SECAS");
+        datos.setValue(n3, "SIERRAS", "TEMPLADAS");
+
+        // Crear un gráfico de barras
+        JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+                "DEFORESTACION(HA/AÑO)",
+                "ECORREGION",
+                "HAS",
+                datos,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+
+        ChartPanel panel = new ChartPanel(grafico_barras);
+        panel.setMouseWheelEnabled(true);
+
+        panel.setPreferredSize(new Dimension(panelBarras.getWidth(), panelBarras.getHeight())); // Ajustar al tamaño del contenedor
+
+        panel.setSize(panelBarras.getWidth(), panelBarras.getHeight());
+        panel.setMinimumSize(new Dimension(200, 100));  // Tamaño mínimo si el contenedor es pequeño
+
+        panelBarras.setLayout(new BorderLayout());
+        panelBarras.add(panel, BorderLayout.CENTER);
+
+        panelBarras.revalidate();
+        panelBarras.repaint();
+    }
+
+    public void menuGraficaBarras() {
+
+        btnGB1.setBounds(350, 50, 200, 60);
+        btnGB2.setBounds(1665, 50, 200, 60);
+        btnGB3.setBounds(380, 1000, 200, 60);
+        btnGB4.setBounds(960, 1000, 250, 60);
+        btnGB5.setBounds(1590, 1000, 250, 60);
+        pintarBoton(btnGB1, "ATRAS", cn3, cn3, cn4);
+        pintarBoton(btnGB2, "GRAFICA DE PASTEL", cn3, cn3, cn4);
+        pintarBoton(btnGB3, "TIPOS DE BOSQUE", cn3, cn3, cn4);
+        pintarBoton(btnGB4, "ECORREGION", cn3, cn3, cn4);
+        pintarBoton(btnGB5, "DEFORESTACION", cn3, cn3, cn4);
+
+        panel.add(btnGB1);
+        panel.add(btnGB2);
+        panel.add(btnGB3);
+        panel.add(btnGB4);
+        panel.add(btnGB5);
+
+        panelBarras.setBounds(380, 170, 1460, 780); // Posición y tamaño
+        panel.add(panelBarras); // Agregar al panel principal
+        GraficaBarras();
+        btnGB1.addActionListener(e -> {
+            limpiarPanel();
+            menuGraficas();
+            barraInteraccion();
+        });
+        btnGB2.addActionListener(e -> {
+            limpiarPanel();
+            panel.removeAll();
+            graficaCircular();
+            barraInteraccion();
+        });
+        btnGB3.addActionListener(e -> {
+            GraficaBarras();
+            barraInteraccionD();
+        });
+        btnGB4.addActionListener(e -> {
+            ecorregion();
+            barraInteraccionD();
+        });
+        btnGB5.addActionListener(e -> {
+            deforestacion();
+            barraInteraccionD();
+        });
+    }
+
+    public void GraficaBarras() {
+        panelBarras.removeAll();
+        double n1 = 15.5;
+        double n2 = 7.1;
+        double n3 = 25.75;
+        double n4 = 9.98;
+        double n5 = 18.67;
+        double n6 = 23;
+
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+
+        datos.setValue(n1, "Bosque", "Encino");
+        datos.setValue(n2, "Bosque", "Encino-pino");
+        datos.setValue(n3, "Bosque", "Oyamel");
+        datos.setValue(n4, "Bosque", "Pino");
+        datos.setValue(n5, "Bosque", "Pino-encino");
+        datos.setValue(n6, "Bosque", "Mesofolio de montaña");
+
+        JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+                "SIERRA NORTE",
+                "TIPO DE BOSQUE",
+                "PORCENTAJE",
+                datos,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+
+        ChartPanel panel = new ChartPanel(grafico_barras);
+        panel.setMouseWheelEnabled(true);
+        panel.setPreferredSize(new Dimension(400, 200));
+
+        panelBarras.setLayout(new BorderLayout());
+        panelBarras.add(panel, BorderLayout.CENTER);
+        Dimension size = panelBarras.getSize();
+        panel.setPreferredSize(new Dimension((int) size.getWidth(), (int) size.getHeight()));
+
+        CategoryPlot plot = grafico_barras.getCategoryPlot();
+        CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setCategoryLabelPositions(
+                CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 4.0) // 45 grados
+        );
+        domainAxis.setTickLabelFont(new Font("SansSerif", Font.PLAIN, 14)); // Reducir a 8
+        panel.repaint();
+
+        panelBarras.revalidate();
+        panelBarras.repaint();
     }
 
     public void simulacion() {
         JLabel aInicio = new JLabel();
         JLabel aFin = new JLabel();
-        JLabel aActual = new JLabel("2021");
+        JLabel aActual = new JLabel("2001");
         JLabel aCalculado = new JLabel();
         RoundButton btnIniciarSimulacion = new RoundButton(20);
 
@@ -245,6 +609,13 @@ public class menuSimulacion {
         panel.add(yearScrollBar);
         panel.revalidate();
         panel.repaint();
+
+        btnIniciarSimulacion.addActionListener(e -> {
+            limpiarPanel();
+            tablaDeDatos();
+//            menuSimulacion();
+            barraInteraccion();
+        });
 
     }
 
@@ -395,19 +766,16 @@ public class menuSimulacion {
         panel.add(btnMenuP);
 
         btnExp.addActionListener(e -> {
-            limpiarPanel();
             documentacionExplicacion();
             barraInteraccionD();
         });
 
         btnObj.addActionListener(e -> {
-            limpiarPanel();
             documentacionObjetivos();
             barraInteraccionD();
         });
 
         btnMod.addActionListener(e -> {
-            limpiarPanel();
             documentacionModelo();
             barraInteraccionD();
         });
@@ -425,90 +793,6 @@ public class menuSimulacion {
         frameLD.setBounds(300, 0, 1650, 1150);
         panel.add(frameLI);
         panel.add(frameLD);
-    }
-
-    public void menuGraficaBarras() {
-        btnGB1.setBounds(350, 50, 200, 60);
-        btnGB2.setBounds(1665, 50, 200, 60);
-        btnGB3.setBounds(380, 1000, 200, 60);
-        btnGB4.setBounds(1590, 1000, 250, 60);
-        btnGB5.setBounds(960, 1000, 250, 60);
-        pintarBoton(btnGB1, "ATRAS", cn3, cn3, cn4);
-        pintarBoton(btnGB2, "GRAFICA DE PASTEL", cn3, cn3, cn4);
-        pintarBoton(btnGB3, "TIPOS DE BOSQUE", cn3, cn3, cn4);
-        pintarBoton(btnGB4, "ECORREGION", cn3, cn3, cn4);
-        pintarBoton(btnGB5, "DEFORESTACION", cn3, cn3, cn4);
-
-        if (!btnGB3.isEnabled()) {
-            btnGB4.setEnabled(true);
-            btnGB5.setEnabled(true);
-        } else if (!btnGB4.isEnabled()) {
-            btnGB3.setEnabled(true);
-            btnGB5.setEnabled(true);
-        } else if (!btnGB5.isEnabled()) {
-            btnGCB3.setEnabled(true);
-            btnGCB4.setEnabled(true);
-        }
-
-        panel.add(btnGB1);
-        panel.add(btnGB2);
-        panel.add(btnGB3);
-        panel.add(btnGB4);
-        panel.add(btnGB5);
-
-        panelGrafica.setBounds(380, 170, 1460, 780); // Posición y tamaño
-        panel.add(panelGrafica); // Agregar al panel principal
-
-        btnGB3.addActionListener(e -> {
-            barraInteraccionD();
-        });
-        btnGB4.addActionListener(e -> {
-            barraInteraccionD();
-        });
-        btnGB5.addActionListener(e -> {
-            barraInteraccionD();
-        });
-    }
-
-    public void GraficaBarras() {
-        panelGrafica.removeAll();
-        graficaCircular();
-        double n1 = 67.76;
-        double n2 = 30.07;
-        double n3 = 1.34;
-        double n4 = 0.83;
-
-        DefaultPieDataset datos = new DefaultPieDataset();
-        datos.setValue("PASTIZALES", n1);
-        datos.setValue("TIERRAS AGRÍCOLAS", n2);
-        datos.setValue("OTROS USOS", n3);
-        datos.setValue("ASENTAMIENTOS HUMANOS", n4);
-
-        JFreeChart grafico_circular = ChartFactory.createPieChart3D(
-                "HECTÁREAS Y TIERRAS FORESTALES",
-                datos,
-                true, // Mostrar leyenda
-                true, // Mostrar herramientas de interacción
-                false // No mostrar URL
-        );
-
-        ChartPanel chartPanel = new ChartPanel(grafico_circular);
-        chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setPreferredSize(new Dimension(1420, 770));
-
-        PiePlot3D plot = (PiePlot3D) grafico_circular.getPlot();
-        plot.setStartAngle(290);
-        plot.setDirection(Rotation.CLOCKWISE);
-        plot.setForegroundAlpha(0.7f);
-        plot.setNoDataMessage("No hay datos para mostrar");
-
-        panelGrafica.setLayout(new BorderLayout());
-        panelGrafica.add(chartPanel, BorderLayout.CENTER);
-
-        panelGrafica.revalidate();
-        panelGrafica.repaint();
-        btnGCB4.setEnabled(false);
-        btnGCB3.setEnabled(true);
     }
 
     public void GraficaPastel2() {
@@ -626,6 +910,16 @@ public class menuSimulacion {
         });
         btnGCB4.addActionListener(e -> {
             GraficaPastel2();
+            barraInteraccion();
+        });
+        btnGCB1.addActionListener(e -> {
+            limpiarPanel();
+            menuGraficas();
+            barraInteraccion();
+        });
+        btnGCB2.addActionListener(e -> {
+            limpiarPanel();
+            menuGraficaBarras();
             barraInteraccion();
         });
     }
@@ -758,8 +1052,7 @@ public class menuSimulacion {
 
         btnMSim.addActionListener(e -> {
             limpiarPanel();
-            menuSimulacion();
-            barraInteraccion();
+            simulacion();
         });
 
         btnMDoc.addActionListener(e -> {
@@ -799,6 +1092,7 @@ public class menuSimulacion {
     }
 
     public void tablaDeDatos() {
+        frame.setTitle("TABLA DE DATOS");
         tabla = new JTable(mt);
         scrollPane = new JScrollPane(tabla);
         tabla.setRowHeight(46);
@@ -833,6 +1127,7 @@ public class menuSimulacion {
     }
 
     public void menuGraficas() {
+        frame.setTitle("ESTADISTICAS POR BOSQUE");
         img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforestation_8992494.png", 700, 700, imagenMG);
         imagenMG.setBounds(750, 100, 700, 700);
         pintarBoton(btnGC, "GRAFICA CIRCULAR", cn3, cn3, cn4);
@@ -846,6 +1141,11 @@ public class menuSimulacion {
             GraficaPastel();
             barraInteraccion();
         });
+        btnGB.addActionListener(e -> {
+            limpiarPanel();
+            menuGraficaBarras();
+            barraInteraccion();
+        });
 
         panel.add(imagenMG);
         panel.add(btnGC);
@@ -857,7 +1157,7 @@ public class menuSimulacion {
         img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/blockchain_6298127.png", 70, 70, imagenLI);
         imagenLI.setBounds(0, 0, 70, 70);
         panel.add(imagenLI);
-        textoLI.setText("SIMULACION");
+        textoLI.setText("SIMULACIÓN");
         textoLI.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 30));
         textoLI.setBounds(80, 0, 200, 50);
         panel.add(textoLI);
@@ -869,14 +1169,12 @@ public class menuSimulacion {
         pintarBoton(btnFactores, "<html>FACTORES DE DEFORESTACION</html>", cn22, cn22, cn4);
         btnRegresiones.setBounds(0, 395, 300, 60);
         pintarBoton(btnRegresiones, "<html>REGRESIONES</html>", cn22, cn22, cn4);
-        btnIndices.setBounds(0, 460, 300, 60);
-        pintarBoton(btnIndices, "<html>INDICES DE DEFORESTACION</html>", cn22, cn22, cn4);
 
         btnMenuP.setBounds(0, 1073, 300, 60);
         pintarBoton(btnMenuP, "<html>MENÚ PRINCIPAL</html>", cn3, cn3, cn4);
         panel.add(btnMenuP);
 
-        btnTablaDatos.addActionListener(e -> {
+        btnTablaDatos.addActionListener(e -> {menuGraficas();
             limpiarPanel();
             limpiarTablaDeDatos();
             tablaDeDatos();
@@ -888,10 +1186,9 @@ public class menuSimulacion {
             menuGraficas();
             barraInteraccion();
         });
-
-        btnIndices.addActionListener(e -> {
+        btnFactores.addActionListener(e -> {
             limpiarPanel();
-            menuSimulacion();
+            menuFactores();
             barraInteraccion();
         });
 
@@ -899,12 +1196,12 @@ public class menuSimulacion {
             limpiarPanel();
             menuPrincipal();
         });
+        
 
         panel.add(btnTablaDatos);
         panel.add(btnEstadisticas);
         panel.add(btnFactores);
         panel.add(btnRegresiones);
-        panel.add(btnIndices);
 
         frameLI.setBackground(cn23);
         frameLD.setBackground(cn24);
