@@ -17,6 +17,8 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.Rotation;
 import java.awt.BorderLayout;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import org.apache.commons.math4.legacy.stat.StatUtils;
 import org.apache.commons.math4.legacy.stat.regression.SimpleRegression;
 import org.jfree.chart.axis.AxisLocation;
@@ -110,7 +112,7 @@ public class menuSimulacion {
     Color cn26 = new Color(0, 70, 94);
     Color inv = new Color(0, 0, 0, 0);
 
-    private static final String DATA_FILE = "Datos.csv";
+    private static final String DATA_FILE = "simulacion.csv";
     private DefaultTableModel mt = new DefaultTableModel();
     private JTable tabla;
     private JScrollPane scrollPane;
@@ -126,8 +128,82 @@ public class menuSimulacion {
         panel.setLayout(null);
         panel.setBackground(cn26);
         frame.add(panel);
-        menuPrincipal();
+//        menuPrincipal();
+        simulacion();
         frame.setVisible(true);
+    }
+
+    public void buscarDatosDesdeCsv(String rutaCsv, int anioBuscado) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(rutaCsv));
+            String linea;
+
+            // Saltar encabezado
+            reader.readLine();
+
+            while ((linea = reader.readLine()) != null) {
+                // Dividir línea por comas
+                String[] datos = linea.split(",");
+
+                // Verificar que los datos sean válidos
+                if (datos.length < 6) {
+                    continue;
+                }
+
+                // Parsear los valores
+                int anio = Integer.parseInt(datos[0].trim());
+                if (anio == anioBuscado) {
+                    double deforestacion = Double.parseDouble(datos[1].trim());
+                    double incertidumbres = Double.parseDouble(datos[2].trim());
+                    double zAlfa2Sigma = Double.parseDouble(datos[3].trim());
+                    double limiteInferior = Double.parseDouble(datos[4].trim());
+                    double limiteSuperior = Double.parseDouble(datos[5].trim());
+
+                    // Mostrar los datos en consola o manipularlos según necesites
+                    System.out.println("Datos encontrados para el año " + anioBuscado + ":");
+                    System.out.println("Deforestación: " + deforestacion);
+                    System.out.println("Incertidumbres: " + incertidumbres);
+                    System.out.println("Z_Alfa/2 * Sigma: " + zAlfa2Sigma);
+                    System.out.println("Límite Inferior: " + limiteInferior);
+                    System.out.println("Límite Superior: " + limiteSuperior);
+
+                    // Puedes conectar esto con elementos de la interfaz gráfica
+                    txtTiempoSimulacion.setText("Año: " + anio + "\nDeforestación: " + deforestacion
+                            + "\nIncertidumbres: " + incertidumbres
+                            + "\nLímite Inferior: " + limiteInferior
+                            + "\nLímite Superior: " + limiteSuperior);
+
+                    // Salir del bucle tras encontrar el año
+                    return;
+                }
+            }
+            // Si no se encontró el año
+            System.out.println("Año " + anioBuscado + " no encontrado en el archivo CSV.");
+            txtTiempoSimulacion.setText("Año " + anioBuscado + " no encontrado en el archivo CSV.");
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            txtTiempoSimulacion.setText("Error al leer el archivo CSV o procesar los datos.");
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public SimulacionDatos obtenerDatosSimulacion(JScrollBar yearScrollBar, RoundTextField txtInput) {
+        int anioSeleccionado = yearScrollBar.getValue();
+        int aniosASimular;
+        try {
+            aniosASimular = Integer.parseInt(txtInput.getText());
+        } catch (NumberFormatException e) {
+            aniosASimular = 0; // Valor predeterminado en caso de error
+        }
+        return new SimulacionDatos(anioSeleccionado, aniosASimular);
     }
 
     public void simulacion() {
@@ -221,12 +297,12 @@ public class menuSimulacion {
                 aCalculado.setText("");
             }
         };
+
         yearScrollBar.addAdjustmentListener(e -> {
             int selectedYear = yearScrollBar.getValue();
             aActual.setText(String.valueOf(selectedYear)); // Actualiza el texto del JLabel
+            actualizarCalculo.run();
         });
-
-        yearScrollBar.addAdjustmentListener(e -> actualizarCalculo.run());
 
         txtInput.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
@@ -267,12 +343,111 @@ public class menuSimulacion {
         panel.repaint();
 
         btnIniciarSimulacion.addActionListener(e -> {
+            SimulacionDatos datos = obtenerDatosSimulacion(yearScrollBar, txtInput);
+            buscarDatosDesdeCsv("/home/prome/NetBeansProjects/proyectoSimulacion/Datos.csv", datos.getAnioSeleccionado());
+            realizarSimulacionYCrearCsv(
+                    "/home/prome/NetBeansProjects/proyectoSimulacion/Datos.csv",
+                    "/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv",
+                    datos.getAnioSeleccionado(),
+                    datos.getAniosASimular()
+            );
             limpiarPanel();
             tablaDeDatos();
-//            menuSimulacion();
             barraInteraccion();
         });
+    }
 
+    public void realizarSimulacionYCrearCsv(String rutaCsv, String rutaSalida, int anioSeleccionado, int aniosASimular) {
+        BufferedReader reader = null;
+        BufferedWriter writer = null;
+        try {
+            // Leer el archivo CSV
+            reader = new BufferedReader(new FileReader(rutaCsv));
+            String linea;
+            String[] encabezado = null;
+            String[] datosIniciales = null;
+
+            // Leer encabezado
+            if ((linea = reader.readLine()) != null) {
+                encabezado = linea.split(",");
+            }
+
+            // Buscar el año seleccionado
+            while ((linea = reader.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (Integer.parseInt(datos[0].trim()) == anioSeleccionado) {
+                    datosIniciales = datos;
+                    break;
+                }
+            }
+
+            // Validar si se encontró el año
+            if (datosIniciales == null) {
+                System.out.println("Año seleccionado no encontrado en el archivo CSV.");
+                return;
+            }
+
+            // Crear archivo CSV de salida
+            writer = new BufferedWriter(new FileWriter(rutaSalida));
+            writer.write(String.join(",", encabezado)); // Escribir encabezado
+            writer.newLine();
+
+            // Variables iniciales para la simulación
+            double deforestacion = Double.parseDouble(datosIniciales[1].trim());
+            double incertidumbres = Double.parseDouble(datosIniciales[2].trim());
+            double zAlfa2Sigma = Double.parseDouble(datosIniciales[3].trim());
+            double limiteInferior = Double.parseDouble(datosIniciales[4].trim());
+            double limiteSuperior = Double.parseDouble(datosIniciales[5].trim());
+
+            // Generar datos simulados para cada año
+            for (int i = 0; i < aniosASimular; i++) {
+                anioSeleccionado++;
+
+                // Ejemplo de simulación: incrementar los valores en un porcentaje fijo
+                deforestacion *= 1.02; // Incremento del 2%
+                incertidumbres *= 1.01; // Incremento del 1%
+                zAlfa2Sigma *= 1.005; // Incremento del 0.5%
+                limiteInferior = deforestacion - incertidumbres;
+                limiteSuperior = deforestacion + incertidumbres;
+
+                // Escribir línea en el archivo CSV
+                String lineaSimulada = anioSeleccionado + ","
+                        + deforestacion + ","
+                        + incertidumbres + ","
+                        + zAlfa2Sigma + ","
+                        + limiteInferior + ","
+                        + limiteSuperior;
+                writer.write(lineaSimulada);
+                writer.newLine();
+            }
+
+            System.out.println("Simulación completada. Datos guardados en: " + rutaSalida);
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println("Error durante la simulación o al escribir el archivo CSV.");
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void actualizarCalculo(JScrollBar yearScrollBar, RoundTextField txtInput, JLabel aCalculado) {
+        try {
+            int anioSeleccionado = yearScrollBar.getValue();
+            int aniosASimular = Integer.parseInt(txtInput.getText());
+            int suma = anioSeleccionado + aniosASimular;
+            aCalculado.setText(String.valueOf(suma));
+        } catch (NumberFormatException ex) {
+            aCalculado.setText("");
+        }
     }
 
     public void Regresion() {
@@ -1272,7 +1447,7 @@ public class menuSimulacion {
         panel.add(btnMenuP);
 
         btnTablaDatos.addActionListener(e -> {
-            menuGraficas();
+//            menuGraficas();
             limpiarPanel();
             limpiarTablaDeDatos();
             tablaDeDatos();
