@@ -17,11 +17,19 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.Rotation;
 import java.awt.BorderLayout;
+import org.apache.commons.math4.legacy.stat.StatUtils;
+import org.apache.commons.math4.legacy.stat.regression.SimpleRegression;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class menuSimulacion {
 
@@ -32,6 +40,7 @@ public class menuSimulacion {
     JPanel panelBarras = new JPanel();
     JPanel panelFactores = new JPanel();
     JPanel panelVista = new JPanel();
+    JPanel panelRegresion = new JPanel();
     JFrame frame = new JFrame();
     JLabel imgMain = new JLabel();
     JButton btnMSim = new JButton();
@@ -69,6 +78,7 @@ public class menuSimulacion {
     JLabel imgFac = new JLabel();
     JTextArea txtModelo = new JTextArea();
     JTextArea txtModelo2 = new JTextArea();
+    JTextArea txtRegresion = new JTextArea();
     JScrollPane jScrollPane1 = new JScrollPane();
     JScrollPane jScrollPane2 = new JScrollPane();
 
@@ -105,25 +115,257 @@ public class menuSimulacion {
     private JTable tabla;
     private JScrollPane scrollPane;
     private boolean metodoUnoActivo = true;
+    private double[] x = {90.5, 0, 15, 10, 15, 28.5, 74, 86, 41, 27.5, 35, 15};
+    private double[] y = {10.529, 4.660, 4.660, 4.660, 10.013, 10.013, 10.013, 13.048, 13.048, 13.048, 3.234, 3.234};
+    private SimpleRegression sr = new SimpleRegression();
 
     public void ventanaMain() {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
-
-        // Configurar panel principal
-        panel.setLayout(null); // Posicionamiento manual de componentes
+        panel.setLayout(null);
         panel.setBackground(cn26);
         frame.add(panel);
-
-//        menuPrincipal();
-        barraInteraccion();
+        menuPrincipal();
         frame.setVisible(true);
     }
-    
-    public void regresiones(){
-    
-    
+
+    public void simulacion() {
+        JLabel aInicio = new JLabel();
+        JLabel aFin = new JLabel();
+        JLabel aActual = new JLabel("2001");
+        JLabel aCalculado = new JLabel();
+        RoundButton btnIniciarSimulacion = new RoundButton(20);
+
+        txtInciciarSImulacion.setText("SELECCIONE EL AÑO DE INICIO DE LA SIMULACIÓN");
+        txtInciciarSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        txtInciciarSImulacion.setForeground(cn4);
+        txtInciciarSImulacion.setBounds(1050, 30, 900, 60);
+        panel.add(txtInciciarSImulacion);
+
+        txtSImulacion.setText("AÑOS A SIMULAR:");
+        txtSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 20));
+        txtSImulacion.setForeground(cn4);
+        txtSImulacion.setBounds(1090, 285, 900, 60);
+        panel.add(txtSImulacion);
+
+        txtTiempoSimulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 20));
+        txtTiempoSimulacion.setBounds(995, 420, 400, 100);
+        txtTiempoSimulacion.setBackground(inv);
+        txtTiempoSimulacion.setForeground(cn4);
+        txtTiempoSimulacion.setEditable(false);
+        txtTiempoSimulacion.setCaretColor(inv);
+        panel.add(txtTiempoSimulacion);
+
+        aInicio.setText("2001");
+        aInicio.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        aInicio.setBounds(993, 115, 100, 100);
+        aInicio.setForeground(cn4);
+        panel.add(aInicio);
+
+        aFin.setText("2021");
+        aFin.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        aFin.setBounds(1685, 115, 100, 100);
+        aFin.setForeground(cn4);
+        panel.add(aFin);
+
+        RoundTextField txtInput = new RoundTextField(1, 30); // 1 columna, radio 30
+        txtInput.setFont(new Font("Arial", Font.PLAIN, 20));
+        txtInput.setForeground(cn4); // Letra blanca
+        txtInput.setBackground(inv); // Fondo negro
+        txtInput.setCaretColor(cn4); // Cursor blanco
+        txtInput.setHorizontalAlignment(JTextField.CENTER);
+        txtInput.setBounds(1330, 285, 100, 60);
+        panel.add(txtInput);
+
+        aActual.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        aActual.setBounds(1350, 200, 100, 30); // Ubicación inicial debajo de la scrollbar
+        aActual.setForeground(cn4);
+        panel.add(aActual);
+
+        JScrollBar yearScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, 2001, 1, 2001, 2022);
+        yearScrollBar.setUnitIncrement(1);
+        yearScrollBar.setBounds(1070, 150, 600, 30);
+
+        // Cambiar estilo de la scrollbar
+        yearScrollBar.setBackground(Color.GRAY);
+        yearScrollBar.setForeground(cn4);
+
+        yearScrollBar.setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                JButton button = super.createDecreaseButton(orientation);
+                button.setPreferredSize(new Dimension(15, 15)); // Tamaño mínimo visible
+                button.setBackground(Color.GRAY); // Color del botón
+                return button;
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                JButton button = super.createIncreaseButton(orientation);
+                button.setPreferredSize(new Dimension(15, 15)); // Tamaño mínimo visible
+                button.setBackground(Color.GRAY); // Color del botón
+                return button;
+            }
+        });
+
+        // Listener para actualizar valores dinámicamente
+        Runnable actualizarCalculo = () -> {
+            try {
+                int inputValue = Integer.parseInt(txtInput.getText());
+                int selectedYear = yearScrollBar.getValue();
+                int suma = inputValue + selectedYear;
+                txtTiempoSimulacion.setText("SE SIMULARA HASTA EL AÑO:");
+                aCalculado.setText(String.valueOf(suma));
+            } catch (NumberFormatException ex) {
+                aCalculado.setText("");
+            }
+        };
+        yearScrollBar.addAdjustmentListener(e -> {
+            int selectedYear = yearScrollBar.getValue();
+            aActual.setText(String.valueOf(selectedYear)); // Actualiza el texto del JLabel
+        });
+
+        yearScrollBar.addAdjustmentListener(e -> actualizarCalculo.run());
+
+        txtInput.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarCalculo.run();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarCalculo.run();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                actualizarCalculo.run();
+            }
+        });
+
+        // Configuración visual de aCalculado
+        aCalculado.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        aCalculado.setForeground(cn4);
+        aCalculado.setBounds(1352, 385, 600, 100);
+        panel.add(aCalculado);
+
+        // Botón de inicio de simulación
+        pintarBoton(btnIniciarSimulacion, "INICIAR SIMULACION", cn22, cn22, cn4);
+        btnIniciarSimulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
+        btnIniciarSimulacion.setBounds(1230, 500, 300, 60);
+        panel.add(btnIniciarSimulacion);
+
+        // Imagen de fondo
+        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/18157321.png", 1920, 1150, LblSim);
+        LblSim.setBounds(0, 0, 1920, 1150);
+        panel.add(LblSim);
+
+        panel.add(yearScrollBar);
+        panel.revalidate();
+        panel.repaint();
+
+        btnIniciarSimulacion.addActionListener(e -> {
+            limpiarPanel();
+            tablaDeDatos();
+//            menuSimulacion();
+            barraInteraccion();
+        });
+
+    }
+
+    public void Regresion() {
+        frame.setTitle("REGRESION LINEAL");
+        try {
+            initializeData();
+
+            XYSeries series = createDataset();
+            JFreeChart chart = createChart(series);
+            ChartPanel chartPanel = new ChartPanel(chart);
+            chartPanel.setPreferredSize(new Dimension(panelRegresion.getWidth(), panelRegresion.getHeight()));
+
+            panelRegresion.removeAll();  // Limpiar jPanel1
+            panelRegresion.setLayout(new BorderLayout());  // Establecer un diseño de borde
+            panelRegresion.add(chartPanel, BorderLayout.CENTER);
+            panelRegresion.validate();  // Validar el panel para que se renderice correctamente
+
+            showResults();  // Muestra los resultados si es necesario en otro lugar
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        panelRegresion.setBounds(450, 20, 1320, 790);
+        panel.add(panelRegresion);
+    }
+
+    private void initializeData() {
+        if (x.length != y.length) {
+            throw new IllegalArgumentException("Arrays 'x' and 'y' must have the same length.");
+        }
+
+        for (int i = 0; i < x.length; i++) {
+            sr.addData(x[i], y[i]);
+        }
+    }
+
+    private XYSeries createDataset() {
+        XYSeries series = new XYSeries("Datos");
+        for (int i = 0; i < x.length; i++) {
+            series.add(x[i], y[i]);
+        }
+        return series;
+    }
+
+    private JFreeChart createChart(XYSeries series) {
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+        JFreeChart chart = ChartFactory.createScatterPlot(
+                "", "X", "Y", dataset, PlotOrientation.VERTICAL, true, true, false);
+
+        double[] yc = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            yc[i] = sr.predict(x[i]);
+        }
+
+        XYSeries regressionSeries = new XYSeries("Regresion");
+        for (int i = 0; i < x.length; i++) {
+            regressionSeries.add(x[i], yc[i]);
+        }
+
+        dataset.addSeries(regressionSeries);
+
+        XYPlot plot = (XYPlot) chart.getPlot();
+        plot.setRenderer(1, plot.getRenderer(0));  // Copia el renderer del gráfico de dispersión
+        plot.setDataset(1, dataset);  // Agrega el conjunto de datos de regresión
+        plot.mapDatasetToRangeAxis(1, 0);  // Mapea el conjunto de datos de regresión al eje y derecho
+
+        ValueAxis yAxis = new NumberAxis("Y");
+        plot.setRangeAxis(1, yAxis);  // Agrega el eje y derecho
+        plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+
+        return chart;
+    }
+
+    private void showResults() {
+        String sp = " ".repeat(32);
+        String sp1 = " ".repeat(10);
+        String sp2 = " ".repeat(5);
+
+        txtRegresion.setText("");
+        txtRegresion.setFont(new Font("Arial", Font.PLAIN, 20));
+        txtRegresion.setLineWrap(true);
+        txtRegresion.append("   DATOS LEIDOS" + sp + "ORDENADAS AL ORIGEN" + sp + "PENDIENTE" + sp + sp2 + "        R2" + sp + sp2.repeat(3) + "VALOR MÍNIMO\n\n");
+        txtRegresion.append(sp1 + "    " + sr.getN() + sp + sp1 + sp2 + "    " + sr.getIntercept() + sp1.repeat(2) + sp2 + "   " + sr.getSlope() + sp1 + sp2 + "   " + sr.getRSquare() + sp2.repeat(7) + "    " + StatUtils.min(y) + "\n\n");
+
+        txtRegresion.append(" VALOR MÁXIMO" + sp1.repeat(2) + sp2.repeat(3) + "   VALOR PROMEDIO" + sp2.repeat(6) + " VALOR VARIANZA" + sp2.repeat(4) + "    VALOR GEOMETRICO" + sp2.repeat(6) + "VALOR SUMA" + "\n\n");
+        txtRegresion.append(sp2 + "     " + StatUtils.max(y) + sp + sp2.repeat(3) + StatUtils.mean(y) + sp2.repeat(5) + "   " + StatUtils.variance(y) + sp1.repeat(2) + "  " + StatUtils.geometricMean(y) + sp2.repeat(5) + StatUtils.sum(y) + "\n\n");
+        txtRegresion.append(sp1.repeat(13) + "     VALOR PRODUCTO\n\n" + sp.repeat(4) + "   " + StatUtils.product(y));
+        txtRegresion.setBounds(385, 815, 1580, 315);
+        txtRegresion.setEditable(false);
+        txtRegresion.setForeground(cn4);
+        txtRegresion.setBackground(inv);
+        panel.add(txtRegresion);
+
     }
 
     public void menuFactores() {
@@ -472,151 +714,6 @@ public class menuSimulacion {
 
         panelBarras.revalidate();
         panelBarras.repaint();
-    }
-
-    public void simulacion() {
-        JLabel aInicio = new JLabel();
-        JLabel aFin = new JLabel();
-        JLabel aActual = new JLabel("2001");
-        JLabel aCalculado = new JLabel();
-        RoundButton btnIniciarSimulacion = new RoundButton(20);
-
-        txtInciciarSImulacion.setText("SELECCIONE EL AÑO DE INICIO DE LA SIMULACIÓN");
-        txtInciciarSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-        txtInciciarSImulacion.setForeground(cn4);
-        txtInciciarSImulacion.setBounds(1050, 30, 900, 60);
-        panel.add(txtInciciarSImulacion);
-
-        txtSImulacion.setText("AÑOS A SIMULAR:");
-        txtSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 20));
-        txtSImulacion.setForeground(cn4);
-        txtSImulacion.setBounds(1090, 285, 900, 60);
-        panel.add(txtSImulacion);
-
-        txtTiempoSimulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 20));
-        txtTiempoSimulacion.setBounds(995, 420, 400, 100);
-        txtTiempoSimulacion.setBackground(inv);
-        txtTiempoSimulacion.setForeground(cn4);
-        txtTiempoSimulacion.setEditable(false);
-        txtTiempoSimulacion.setCaretColor(inv);
-        panel.add(txtTiempoSimulacion);
-
-        aInicio.setText("2001");
-        aInicio.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-        aInicio.setBounds(993, 115, 100, 100);
-        aInicio.setForeground(cn4);
-        panel.add(aInicio);
-
-        aFin.setText("2021");
-        aFin.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-        aFin.setBounds(1685, 115, 100, 100);
-        aFin.setForeground(cn4);
-        panel.add(aFin);
-
-        RoundTextField txtInput = new RoundTextField(1, 30); // 1 columna, radio 30
-        txtInput.setFont(new Font("Arial", Font.PLAIN, 20));
-        txtInput.setForeground(cn4); // Letra blanca
-        txtInput.setBackground(inv); // Fondo negro
-        txtInput.setCaretColor(cn4); // Cursor blanco
-        txtInput.setHorizontalAlignment(JTextField.CENTER);
-        txtInput.setBounds(1330, 285, 100, 60);
-        panel.add(txtInput);
-
-        aActual.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-        aActual.setBounds(1350, 200, 100, 30); // Ubicación inicial debajo de la scrollbar
-        aActual.setForeground(cn4);
-        panel.add(aActual);
-
-        JScrollBar yearScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, 2001, 1, 2001, 2022);
-        yearScrollBar.setUnitIncrement(1);
-        yearScrollBar.setBounds(1070, 150, 600, 30);
-
-        // Cambiar estilo de la scrollbar
-        yearScrollBar.setBackground(Color.GRAY);
-        yearScrollBar.setForeground(cn4);
-
-        yearScrollBar.setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
-            @Override
-            protected JButton createDecreaseButton(int orientation) {
-                JButton button = super.createDecreaseButton(orientation);
-                button.setPreferredSize(new Dimension(15, 15)); // Tamaño mínimo visible
-                button.setBackground(Color.GRAY); // Color del botón
-                return button;
-            }
-
-            @Override
-            protected JButton createIncreaseButton(int orientation) {
-                JButton button = super.createIncreaseButton(orientation);
-                button.setPreferredSize(new Dimension(15, 15)); // Tamaño mínimo visible
-                button.setBackground(Color.GRAY); // Color del botón
-                return button;
-            }
-        });
-
-        // Listener para actualizar valores dinámicamente
-        Runnable actualizarCalculo = () -> {
-            try {
-                int inputValue = Integer.parseInt(txtInput.getText());
-                int selectedYear = yearScrollBar.getValue();
-                int suma = inputValue + selectedYear;
-                txtTiempoSimulacion.setText("SE SIMULARA HASTA EL AÑO:");
-                aCalculado.setText(String.valueOf(suma));
-            } catch (NumberFormatException ex) {
-                aCalculado.setText("");
-            }
-        };
-        yearScrollBar.addAdjustmentListener(e -> {
-            int selectedYear = yearScrollBar.getValue();
-            aActual.setText(String.valueOf(selectedYear)); // Actualiza el texto del JLabel
-        });
-
-        yearScrollBar.addAdjustmentListener(e -> actualizarCalculo.run());
-
-        txtInput.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                actualizarCalculo.run();
-            }
-
-            @Override
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                actualizarCalculo.run();
-            }
-
-            @Override
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                actualizarCalculo.run();
-            }
-        });
-
-        // Configuración visual de aCalculado
-        aCalculado.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-        aCalculado.setForeground(cn4);
-        aCalculado.setBounds(1352, 385, 600, 100);
-        panel.add(aCalculado);
-
-        // Botón de inicio de simulación
-        pintarBoton(btnIniciarSimulacion, "INICIAR SIMULACION", cn22, cn22, cn4);
-        btnIniciarSimulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
-        btnIniciarSimulacion.setBounds(1230, 500, 300, 60);
-        panel.add(btnIniciarSimulacion);
-
-        // Imagen de fondo
-        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/18157321.png", 1920, 1150, LblSim);
-        LblSim.setBounds(0, 0, 1920, 1150);
-        panel.add(LblSim);
-
-        panel.add(yearScrollBar);
-        panel.revalidate();
-        panel.repaint();
-
-        btnIniciarSimulacion.addActionListener(e -> {
-            limpiarPanel();
-            tablaDeDatos();
-//            menuSimulacion();
-            barraInteraccion();
-        });
-
     }
 
     public void documentacionExplicacion() {
@@ -1164,17 +1261,18 @@ public class menuSimulacion {
         btnTablaDatos.setBounds(0, 200, 300, 60);
         pintarBoton(btnTablaDatos, "<html>TABLA DE DATOS</html>", cn22, cn22, cn4);
         btnEstadisticas.setBounds(0, 265, 300, 60);
-        pintarBoton(btnEstadisticas, "<html>ESTADISTICAS POR BOSQUE</html>", cn22, cn22, cn4);
+        pintarBoton(btnEstadisticas, "<html><center>ESTADISTICAS<br>POR BOSQUE</center></html>", cn22, cn22, cn4);
         btnFactores.setBounds(0, 330, 300, 60);
-        pintarBoton(btnFactores, "<html>FACTORES DE DEFORESTACION</html>", cn22, cn22, cn4);
+        pintarBoton(btnFactores, "<html><center>FACTORES DE<br>DEFORESTACION</center></html>", cn22, cn22, cn4);
         btnRegresiones.setBounds(0, 395, 300, 60);
-        pintarBoton(btnRegresiones, "<html>REGRESIONES</html>", cn22, cn22, cn4);
+        pintarBoton(btnRegresiones, "<html><center>MODELO DE <br>REGRESION LINEAL</center></html>", cn22, cn22, cn4);
 
         btnMenuP.setBounds(0, 1073, 300, 60);
         pintarBoton(btnMenuP, "<html>MENÚ PRINCIPAL</html>", cn3, cn3, cn4);
         panel.add(btnMenuP);
 
-        btnTablaDatos.addActionListener(e -> {menuGraficas();
+        btnTablaDatos.addActionListener(e -> {
+            menuGraficas();
             limpiarPanel();
             limpiarTablaDeDatos();
             tablaDeDatos();
@@ -1191,12 +1289,16 @@ public class menuSimulacion {
             menuFactores();
             barraInteraccion();
         });
+        btnRegresiones.addActionListener(e -> {
+            limpiarPanel();
+            Regresion();
+            barraInteraccion();
+        });
 
         btnMenuP.addActionListener(e -> {
             limpiarPanel();
             menuPrincipal();
         });
-        
 
         panel.add(btnTablaDatos);
         panel.add(btnEstadisticas);

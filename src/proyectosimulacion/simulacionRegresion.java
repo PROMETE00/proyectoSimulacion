@@ -51,7 +51,7 @@ public class simulacionRegresion extends javax.swing.JFrame {
         pMenu.setBorder(new MatteBorder(0,0,0,4, Color.BLACK));
         pcontenido.setBackground(cn7);
         pMenu.setBackground(cn4);
-        estadoInicial();
+//        estadoInicial();
         titulo();
         pintarBoton(btnMain,"<html>Menú Principal</html>",cn6,cn6,cn5);
         setIcon("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforestation_4148626.png",450,450);
@@ -77,14 +77,7 @@ public class simulacionRegresion extends javax.swing.JFrame {
     ImageIcon scaledIcon = new ImageIcon(scaledImage);
    
     }
-    public void estadoInicial(){
-        pintarBoton(btnTabla,"<html>Tablas de datos</html>",cn4,cn4,cn5);
-        pintarBoton(btnEstadisticas,"<html>Estadisticas por bosque<html>",cn4,cn4,cn5);
-        pintarBoton(btnFactores,"<html>Factores de deforestación</html>",cn4,cn4,cn5);
-        pintarBoton(btnRegresiones,"<html>Regresiones</html>",cn3,cn3,cn4);
-         btnRegresiones.setEnabled(false);
-        pintarBoton(btnIndices,"<html>Indices de deforestación</html>",cn4,cn4,cn5);
-    }
+    
     public void Regresion() {
     try {
         initializeData();
@@ -414,7 +407,7 @@ public class simulacionRegresion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTablaMouseEntered
 
     private void btnTablaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTablaMouseExited
-        estadoInicial();
+//        estadoInicial();
     }//GEN-LAST:event_btnTablaMouseExited
 
     private void btnFactoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFactoresActionPerformed
@@ -433,7 +426,7 @@ public class simulacionRegresion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFactoresMouseEntered
 
     private void btnFactoresMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFactoresMouseExited
-     estadoInicial();
+//     estadoInicial();
     }//GEN-LAST:event_btnFactoresMouseExited
 
     private void btnEstadisticasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEstadisticasMouseEntered
@@ -445,7 +438,7 @@ public class simulacionRegresion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEstadisticasMouseEntered
 
     private void btnEstadisticasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEstadisticasMouseExited
-        estadoInicial();
+//        estadoInicial();
     }//GEN-LAST:event_btnEstadisticasMouseExited
 
     private void btnRegresionesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresionesMouseEntered
@@ -457,7 +450,7 @@ public class simulacionRegresion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresionesMouseEntered
 
     private void btnRegresionesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresionesMouseExited
-        estadoInicial();
+//        estadoInicial();
     }//GEN-LAST:event_btnRegresionesMouseExited
 
     private void btnRegresionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresionesActionPerformed
@@ -473,7 +466,7 @@ public class simulacionRegresion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIndicesMouseEntered
 
     private void btnIndicesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIndicesMouseExited
-        estadoInicial();
+//        estadoInicial();
     }//GEN-LAST:event_btnIndicesMouseExited
 
     private void btnIndicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndicesActionPerformed
