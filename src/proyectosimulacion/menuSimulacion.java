@@ -17,8 +17,12 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.Rotation;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
 import org.apache.commons.math4.legacy.stat.StatUtils;
 import org.apache.commons.math4.legacy.stat.regression.SimpleRegression;
 import org.jfree.chart.axis.AxisLocation;
@@ -45,6 +49,16 @@ public class menuSimulacion {
     JPanel panelRegresion = new JPanel();
     JFrame frame = new JFrame();
     JLabel imgMain = new JLabel();
+    JLabel imgIngresar = new JLabel();
+    JLabel ingresarDaMan = new JLabel();
+    JLabel ingresarAnio = new JLabel();
+    JLabel ingresarDef = new JLabel();
+    JLabel ingresarInser = new JLabel();
+    JLabel ingresarZAlfa = new JLabel();
+    JLabel ingresarLimInf = new JLabel();
+    JLabel ingresarLimSup = new JLabel();
+    JLabel ingresarAnioFIn = new JLabel();
+    JLabel subirDatos = new JLabel();
     JButton btnMSim = new JButton();
     JButton btnMDoc = new JButton();
     JButton btnTablaDatos = new JButton();
@@ -69,6 +83,18 @@ public class menuSimulacion {
     JButton btnGB5 = new JButton();
     JButton btnF1 = new JButton();
     JButton btnF2 = new JButton();
+    JButton btnIngresarDatos = new JButton();
+    JButton btnMandarDatos = new JButton();
+    JButton btnSubirDatos = new JButton();
+    JButton btnExplicarAnio = new JButton();
+    JButton btnExplicarDeforestacion = new JButton();
+    JButton btnExplicarIncertidumbre = new JButton();
+    JButton btnExplicarAlfa = new JButton();
+    JButton btnExplicarLimInf = new JButton();
+    JButton btnExplicarLimSup = new JButton();
+    JButton btnExplicarCsv = new JButton();
+    JButton impCsv = new JButton();
+
     JLabel txtInciciarSImulacion = new JLabel();
     JLabel txtSImulacion = new JLabel();
     JTextArea txtTiempoSimulacion = new JTextArea();
@@ -83,6 +109,14 @@ public class menuSimulacion {
     JTextArea txtRegresion = new JTextArea();
     JScrollPane jScrollPane1 = new JScrollPane();
     JScrollPane jScrollPane2 = new JScrollPane();
+
+    JTextField inAnio = new JTextField();
+    JTextField inDef = new JTextField();
+    JTextField inInc = new JTextField();
+    JTextField inAlfa = new JTextField();
+    JTextField inLimInf = new JTextField();
+    JTextField inLimSup = new JTextField();
+    JTextField inAnioFin = new JTextField();
 
     Color cn1 = new Color(76, 43, 11); // café
     Color cn2 = new Color(204, 204, 204); // gris
@@ -129,8 +163,254 @@ public class menuSimulacion {
         panel.setBackground(cn26);
         frame.add(panel);
 //        menuPrincipal();
-        simulacion();
+//        simulacion();
+        pantallaIngresar();
         frame.setVisible(true);
+    }
+
+    public void pantallaIngresar() {
+        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/sinkhole_10567249.png", 200, 200, imgIngresar);
+        imgIngresar.setBounds(10, 10, 200, 200);
+        panel.add(imgIngresar);
+        ingresarDaMan.setText("INGRESAR DATOS PARA SIMULAR AÑO ESPECIFICO");
+        ingresarDaMan.setFont(new Font("Arial", Font.BOLD, 36));
+        ingresarDaMan.setForeground(cn4);
+        ingresarDaMan.setBounds(585, 20, 900, 200);
+        panel.add(ingresarDaMan);
+        ingresarAnio.setText("INGRESAR AÑO INICIO:");
+        ingresarAnio.setFont(new Font("Arial", Font.BOLD, 20));
+        ingresarAnio.setForeground(cn4);
+        ingresarAnio.setBounds(450, 250, 300, 200);
+        panel.add(ingresarAnio);
+        ingresarDef.setText("INGRESAR DEFORESTACION:");
+        ingresarDef.setFont(new Font("Arial", Font.BOLD, 20));
+        ingresarDef.setForeground(cn4);
+        ingresarDef.setBounds(450, 325, 300, 200);
+        panel.add(ingresarDef);
+        ingresarInser.setText("INGRESAR INCERTIDUMBRES:");
+        ingresarInser.setFont(new Font("Arial", Font.BOLD, 20));
+        ingresarInser.setForeground(cn4);
+        ingresarInser.setBounds(450, 400, 300, 200);
+        panel.add(ingresarInser);
+        ingresarZAlfa.setText("INGRESAR ALFA:");
+        ingresarZAlfa.setFont(new Font("Arial", Font.BOLD, 20));
+        ingresarZAlfa.setForeground(cn4);
+        ingresarZAlfa.setBounds(450, 475, 300, 200);
+        panel.add(ingresarZAlfa);
+        ingresarLimInf.setText("INGRESAR LIMITE INFERIOR:");
+        ingresarLimInf.setFont(new Font("Arial", Font.BOLD, 20));
+        ingresarLimInf.setForeground(cn4);
+        ingresarLimInf.setBounds(450, 550, 300, 200);
+        panel.add(ingresarLimInf);
+        ingresarLimSup.setText("INGRESAR LIMITE SUPERIOR:");
+        ingresarLimSup.setFont(new Font("Arial", Font.BOLD, 20));
+        ingresarLimSup.setForeground(cn4);
+        ingresarLimSup.setBounds(450, 625, 300, 200);
+        panel.add(ingresarLimSup);
+        ingresarAnioFIn.setText("INGRESAR AÑO FINALIZACIÓN:");
+        ingresarAnioFIn.setFont(new Font("Arial", Font.BOLD, 20));
+        ingresarAnioFIn.setForeground(cn4);
+        ingresarAnioFIn.setBounds(450, 700, 300, 200);
+        panel.add(ingresarAnioFIn);
+        subirDatos.setText("SUBIR DATOS DESDE CSV");
+        subirDatos.setFont(new Font("Arial", Font.BOLD, 20));
+        subirDatos.setForeground(cn4);
+        subirDatos.setBounds(900, 800, 300, 200);
+        panel.add(subirDatos);
+
+        inAnio.setBounds(850, 325, 500, 50);
+        panel.add(inAnio);
+        inDef.setBounds(850, 400, 500, 50);
+        panel.add(inDef);
+        inInc.setBounds(850, 475, 500, 50);
+        panel.add(inInc);
+        inAlfa.setBounds(850, 550, 500, 50);
+        panel.add(inAlfa);
+        inLimInf.setBounds(850, 625, 500, 50);
+        panel.add(inLimInf);
+        inLimSup.setBounds(850, 700, 500, 50);
+        panel.add(inLimSup);
+        inAnioFin.setBounds(850, 700, 500, 50);
+        panel.add(inAnioFin);
+
+        btnExplicarAnio.setText("");
+        btnExplicarAnio.setToolTipText("Indica el año específico en que se recolectaron los datos o se realizaron las estimaciones. ");
+        btnExplicarAnio.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarAnio.setFocusPainted(false);
+        btnExplicarAnio.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarAnio.setContentAreaFilled(false);
+        btnExplicarAnio.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarAnio);
+        btnExplicarAnio.setBounds(1360, 325, 50, 50);
+        panel.add(btnExplicarAnio);
+        btnExplicarDeforestacion.setText("");
+        btnExplicarDeforestacion.setToolTipText("Representa la cantidad de áreas boscosas que se perdieron en un año determinado.(HECTAREAS)");
+        btnExplicarDeforestacion.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarDeforestacion.setFocusPainted(false);
+        btnExplicarDeforestacion.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarDeforestacion.setContentAreaFilled(false);
+        btnExplicarDeforestacion.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarDeforestacion);
+        btnExplicarDeforestacion.setBounds(1360, 400, 50, 50);
+        panel.add(btnExplicarDeforestacion);
+        btnExplicarIncertidumbre.setText("");
+        btnExplicarIncertidumbre.setToolTipText("Es una medida de la variabilidad o el margen de error de las estadísticas, indicando qué tan confiables son los datos.");
+        btnExplicarIncertidumbre.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarIncertidumbre.setFocusPainted(false);
+        btnExplicarIncertidumbre.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarIncertidumbre.setContentAreaFilled(false);
+        btnExplicarIncertidumbre.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarIncertidumbre);
+        btnExplicarIncertidumbre.setBounds(1360, 475, 50, 50);
+        panel.add(btnExplicarIncertidumbre);
+        btnExplicarAlfa.setText("");
+        btnExplicarAlfa.setToolTipText("El valor crítico de una distribución normal dependiente del nivel de confianza,La desviación estándar se utiliza para calcular intervalos de confianza y evaluar la precisión de las estimaciones.");
+        btnExplicarAlfa.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarAlfa.setFocusPainted(false);
+        btnExplicarAlfa.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarAlfa.setContentAreaFilled(false);
+        btnExplicarAlfa.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarAlfa);
+        btnExplicarAlfa.setBounds(1360, 550, 50, 50);
+        panel.add(btnExplicarAlfa);
+        btnExplicarLimInf.setText("");
+        btnExplicarLimInf.setToolTipText("Representa el valor mínimo dentro del intervalo de confianza para las estadísticas de deforestación.");
+        btnExplicarLimInf.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarLimInf.setFocusPainted(false);
+        btnExplicarLimInf.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarLimInf.setContentAreaFilled(false);
+        btnExplicarLimInf.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarLimInf);
+        btnExplicarLimInf.setBounds(1360, 625, 50, 50);
+        panel.add(btnExplicarLimInf);
+        btnExplicarLimSup.setText("");
+        btnExplicarLimSup.setToolTipText("Representa el valor máximo dentro del intervalo de confianza, indica el mejor escenario dentro del rango calculado.");
+        btnExplicarLimSup.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarLimSup.setFocusPainted(false);
+        btnExplicarLimSup.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarLimSup.setContentAreaFilled(false);
+        btnExplicarLimSup.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarLimSup);
+        btnExplicarLimSup.setBounds(1360, 700, 50, 50);
+        panel.add(btnExplicarLimSup);
+        btnExplicarCsv.setText("");
+        btnExplicarCsv.setToolTipText("Importar datos desde un csv,cumpliendo con los campos minimos necesarios.");
+        btnExplicarCsv.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarCsv.setFocusPainted(false);
+        btnExplicarCsv.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarCsv.setContentAreaFilled(false);
+        btnExplicarCsv.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 30, 30, btnExplicarCsv);
+        btnExplicarCsv.setBounds(1150, 887, 30, 30);
+        panel.add(btnExplicarCsv);
+
+        impCsv.setFocusPainted(false);
+        impCsv.setBorder(BorderFactory.createEmptyBorder());
+        impCsv.setContentAreaFilled(false);
+        impCsv.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/outbox_393799.png", 100, 100, impCsv);
+        impCsv.setBounds(990, 967, 100, 100);
+
+        impCsv.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Selecciona un archivo CSV");
+                int result = fileChooser.showOpenDialog(frame);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    if (selectedFile.getName().endsWith(".csv")) {
+                        try {
+                            boolean valid = leerYValidarCSV(selectedFile);
+                            if (valid) {
+                                JOptionPane.showMessageDialog(frame, "El archivo es válido ,procediendo con la simulacion.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "El archivo no contiene los campos requeridos.", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(frame, "Error al leer el archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Por favor selecciona un archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        panel.add(impCsv);
+
+        RoundButton menuSImmulacion = new RoundButton(20);
+
+        menuSImmulacion.setText("Menú simulación");
+        menuSImmulacion.setFont(new Font("Arial", Font.BOLD, 16));
+        menuSImmulacion.setForeground(cn5);
+        menuSImmulacion.setBackground(cn11);
+        menuSImmulacion.setBounds(20, 1050, 300, 60);
+        panel.add(menuSImmulacion);
+
+        RoundButton btnEnviarSimulacion = new RoundButton(20);
+
+        btnEnviarSimulacion.setText("INICIAR SIMULACIÓN");
+        btnEnviarSimulacion.setFont(new Font("Arial", Font.BOLD, 20));
+        btnEnviarSimulacion.setForeground(cn5);
+        btnEnviarSimulacion.setBackground(cn11);
+        btnEnviarSimulacion.setBounds(1520, 510, 300, 60);
+        panel.add(btnEnviarSimulacion);
+
+        btnEnviarSimulacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                panel.removeAll();
+                String anio = inAnio.getText();
+                String deforestacion = inDef.getText();
+                String inc = inInc.getText();
+                String alfa = inAlfa.getText();
+                String limInf = inLimInf.getText();
+                String limSup = inLimSup.getText();
+                String anioFin = inAnioFin.getText();
+
+                SimulacionDatos datos = obtenerDatosSimulacion(anio, anioFin);
+                buscarDatosDesdeCsv("/home/prome/NetBeansProjects/proyectoSimulacion/Datos.csv", datos.getAnioSeleccionado());
+                realizarSimulacionYCrearCsv(
+                        "/home/prome/NetBeansProjects/proyectoSimulacion/Datos.csv",
+                        "/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv",
+                        datos.getAnioSeleccionado(),
+                        datos.getAniosASimular()
+                );
+                limpiarPanel();
+                tablaDeDatos();
+            }
+        });
+
+        menuSImmulacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                simulacion();
+            }
+        });
+    }
+
+    public static boolean leerYValidarCSV(File file) throws IOException {
+        String[] camposRequeridos = {"año", "deforestacion", "incertidumbre(%)", "Z_alfa/2*sigma", "limite_inferior", "limite_superior"};
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String primeraLinea = br.readLine();
+            if (primeraLinea == null) {
+                return false; // Archivo vacío
+            }
+            String[] campos = primeraLinea.split(",");
+            List<String> encabezadosNormalizados = Arrays.stream(campos)
+                    .map(String::trim) // Elimina espacios alrededor
+                    .map(String::toLowerCase) // Convierte a minúsculas
+                    .toList();
+            List<String> camposRequeridosNormalizados = Arrays.stream(camposRequeridos)
+                    .map(String::trim)
+                    .map(String::toLowerCase)
+                    .toList();
+            return encabezadosNormalizados.containsAll(camposRequeridosNormalizados);
+        }
     }
 
     public void buscarDatosDesdeCsv(String rutaCsv, int anioBuscado) {
@@ -244,6 +524,13 @@ public class menuSimulacion {
         aFin.setBounds(1685, 115, 100, 100);
         aFin.setForeground(cn4);
         panel.add(aFin);
+
+        btnIngresarDatos.setText("INGRESAR DATOS MANUALMENTE");
+        btnIngresarDatos.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 10));
+        btnIngresarDatos.setBounds(615, 45, 200, 60);
+        btnIngresarDatos.setForeground(cn4);
+        btnIngresarDatos.setBackground(inv);
+        panel.add(btnIngresarDatos);
 
         RoundTextField txtInput = new RoundTextField(1, 30); // 1 columna, radio 30
         txtInput.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -1489,6 +1776,13 @@ public class menuSimulacion {
     }
 
     public void img(String ruta, int n1, int n2, JLabel lb) {
+        ImageIcon iconoOriginal = new ImageIcon(ruta);
+        Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(n1, n2, Image.SCALE_SMOOTH);
+        ImageIcon iconoRedimensionado = new ImageIcon(imagenEscalada);
+        lb.setIcon(iconoRedimensionado);
+    }
+
+    public void imgB(String ruta, int n1, int n2, JButton lb) {
         ImageIcon iconoOriginal = new ImageIcon(ruta);
         Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(n1, n2, Image.SCALE_SMOOTH);
         ImageIcon iconoRedimensionado = new ImageIcon(imagenEscalada);
