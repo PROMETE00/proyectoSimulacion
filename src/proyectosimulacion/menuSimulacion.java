@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import org.apache.commons.math4.legacy.stat.StatUtils;
 import org.apache.commons.math4.legacy.stat.regression.SimpleRegression;
@@ -92,6 +93,7 @@ public class menuSimulacion {
     JButton btnExplicarAlfa = new JButton();
     JButton btnExplicarLimInf = new JButton();
     JButton btnExplicarLimSup = new JButton();
+    JButton btnExplicarAnioFin = new JButton();
     JButton btnExplicarCsv = new JButton();
     JButton impCsv = new JButton();
 
@@ -210,7 +212,7 @@ public class menuSimulacion {
         ingresarAnioFIn.setText("INGRESAR AÑO FINALIZACIÓN:");
         ingresarAnioFIn.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarAnioFIn.setForeground(cn4);
-        ingresarAnioFIn.setBounds(450, 700, 300, 200);
+        ingresarAnioFIn.setBounds(450, 700, 350, 200);
         panel.add(ingresarAnioFIn);
         subirDatos.setText("SUBIR DATOS DESDE CSV");
         subirDatos.setFont(new Font("Arial", Font.BOLD, 20));
@@ -230,7 +232,7 @@ public class menuSimulacion {
         panel.add(inLimInf);
         inLimSup.setBounds(850, 700, 500, 50);
         panel.add(inLimSup);
-        inAnioFin.setBounds(850, 700, 500, 50);
+        inAnioFin.setBounds(850, 775, 500, 50);
         panel.add(inAnioFin);
 
         btnExplicarAnio.setText("");
@@ -293,6 +295,16 @@ public class menuSimulacion {
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarLimSup);
         btnExplicarLimSup.setBounds(1360, 700, 50, 50);
         panel.add(btnExplicarLimSup);
+        btnExplicarAnioFin.setText("");
+        btnExplicarAnioFin.setToolTipText("Año de finalizacion de la simulación");
+        btnExplicarAnioFin.setFont(new Font("Arial", Font.BOLD, 16));
+        btnExplicarAnioFin.setFocusPainted(false);
+        btnExplicarAnioFin.setBorder(BorderFactory.createEmptyBorder());
+        btnExplicarAnioFin.setContentAreaFilled(false);
+        btnExplicarAnioFin.setForeground(Color.BLUE);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarAnioFin);
+        btnExplicarAnioFin.setBounds(1360, 775, 50, 50);
+        panel.add(btnExplicarAnioFin);
         btnExplicarCsv.setText("");
         btnExplicarCsv.setToolTipText("Importar datos desde un csv,cumpliendo con los campos minimos necesarios.");
         btnExplicarCsv.setFont(new Font("Arial", Font.BOLD, 16));
@@ -370,17 +382,11 @@ public class menuSimulacion {
                 String limInf = inLimInf.getText();
                 String limSup = inLimSup.getText();
                 String anioFin = inAnioFin.getText();
-
-                SimulacionDatos datos = obtenerDatosSimulacion(anio, anioFin);
-                buscarDatosDesdeCsv("/home/prome/NetBeansProjects/proyectoSimulacion/Datos.csv", datos.getAnioSeleccionado());
-                realizarSimulacionYCrearCsv(
-                        "/home/prome/NetBeansProjects/proyectoSimulacion/Datos.csv",
-                        "/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv",
-                        datos.getAnioSeleccionado(),
-                        datos.getAniosASimular()
-                );
+                iniciarSimulacion(anio, anioFin, deforestacion, inc, alfa, limInf, limSup);
                 limpiarPanel();
+                
                 tablaDeDatos();
+                barraInteraccion();
             }
         });
 
@@ -391,6 +397,61 @@ public class menuSimulacion {
                 simulacion();
             }
         });
+    }
+
+    public void iniciarSimulacion(String anioInicio, String anioFinal, String deforestacion, String inc, String alfa, String limInf, String limSup) {
+        try {
+            int anioIni = Integer.parseInt(anioInicio);
+            int anioFin = Integer.parseInt(anioFinal);
+            double def = Double.parseDouble(deforestacion);
+            double incertidumbre = Double.parseDouble(inc);
+            double alpha = Double.parseDouble(alfa);
+            double limiteInferior = Double.parseDouble(limInf);
+            double limiteSuperior = Double.parseDouble(limSup);
+
+            // Validar datos
+            if (anioIni > anioFin) {
+                JOptionPane.showMessageDialog(null, "El año inicial no puede ser mayor que el año final.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Especificar ruta del archivo (cambia según tu preferencia)
+            String rutaDirectorio = "/home/prome/NetBeansProjects/proyectoSimulacion/"; // Cambia a la ruta deseada
+            String nombreArchivo = "simulacion.csv";
+            String rutaCompleta = rutaDirectorio + nombreArchivo;
+
+            // Crear directorio si no existe
+            java.io.File directorio = new java.io.File(rutaDirectorio);
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+
+            // Crear archivo CSV (sobrescribe si ya existe)
+            FileWriter fileWriter = new FileWriter(rutaCompleta, false); // 'false' para sobrescribir
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+
+            // Escribir encabezado en el archivo CSV
+            printWriter.println("Año,Deforestación,Incertidumbre,Alfa,Límite Inferior,Límite Superior");
+
+            // Generar simulación y escribir datos año por año
+            for (int anio = anioIni; anio <= anioFin; anio++) {
+                double defAnual = def + (Math.random() * incertidumbre) - (incertidumbre / 2);
+                double limInfAnual = limiteInferior - (alpha * Math.random());
+                double limSupAnual = limiteSuperior + (alpha * Math.random());
+
+                // Escribir línea en el archivo
+                printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", anio, defAnual, incertidumbre, alpha, limInfAnual, limSupAnual);
+            }
+
+            // Cerrar archivo
+            printWriter.close();
+            JOptionPane.showMessageDialog(null, "Simulación completada. Archivo creado: " + rutaCompleta, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error en el formato de los datos. Verifique las entradas.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error al escribir el archivo CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static boolean leerYValidarCSV(File file) throws IOException {
