@@ -21,9 +21,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import org.apache.commons.math4.legacy.stat.StatUtils;
 import org.apache.commons.math4.legacy.stat.regression.SimpleRegression;
 import org.jfree.chart.axis.AxisLocation;
@@ -120,6 +124,34 @@ public class menuSimulacion {
     JTextField inLimSup = new JTextField();
     JTextField inAnioFin = new JTextField();
 
+    JTextField inAnio1 = new JTextField();
+    JTextField inDef1 = new JTextField();
+    JTextField inInc1 = new JTextField();
+    JTextField inAlfa1 = new JTextField();
+    JTextField inLimInf1 = new JTextField();
+    JTextField inLimSup1 = new JTextField();
+
+    JTextField inAnio2 = new JTextField();
+    JTextField inDef2 = new JTextField();
+    JTextField inInc2 = new JTextField();
+    JTextField inAlfa2 = new JTextField();
+    JTextField inLimInf2 = new JTextField();
+    JTextField inLimSup2 = new JTextField();
+
+    JTextField inAnio3 = new JTextField();
+    JTextField inDef3 = new JTextField();
+    JTextField inInc3 = new JTextField();
+    JTextField inAlfa3 = new JTextField();
+    JTextField inLimInf3 = new JTextField();
+    JTextField inLimSup3 = new JTextField();
+
+    JTextField inAnio4 = new JTextField();
+    JTextField inDef4 = new JTextField();
+    JTextField inInc4 = new JTextField();
+    JTextField inAlfa4 = new JTextField();
+    JTextField inLimInf4 = new JTextField();
+    JTextField inLimSup4 = new JTextField();
+
     Color cn1 = new Color(76, 43, 11); // café
     Color cn2 = new Color(204, 204, 204); // gris
     Color cn3 = new Color(118, 92, 166); // morado
@@ -170,7 +202,202 @@ public class menuSimulacion {
         frame.setVisible(true);
     }
 
+    public List<String> buscarFilaPorAnio(String filePath, int targetYear) {
+        List<String> filaEncontrada = null;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String linea;
+            boolean esPrimeraLinea = true;
+
+            while ((linea = br.readLine()) != null) {
+                // Dividir la línea en valores separados por comas
+                String[] valores = linea.split(",");
+
+                // Omitir la primera línea (encabezados)
+                if (esPrimeraLinea) {
+                    esPrimeraLinea = false;
+                    continue;
+                }
+
+                // Verificar si el primer valor coincide con el año buscado
+                if (valores.length > 0 && Integer.parseInt(valores[0].trim()) == targetYear) {
+                    filaEncontrada = new ArrayList<>();
+                    for (String valor : valores) {
+                        filaEncontrada.add(valor.trim());
+                    }
+                    break; // Detener la búsqueda una vez encontrada la fila
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Archivo no encontrado: " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Formato no válido en el archivo CSV: " + e.getMessage());
+        }
+
+        return filaEncontrada;
+    }
+
+    public void mostrarDatosEnCampos(List<String> datos, JTextField txtAnio, JTextField txtD, JTextField txtI, JTextField txtAlfa, JTextField txtLimI, JTextField txtLimS) {
+        if (datos != null && datos.size() >= 6) { // Asegúrate de que hay suficientes columnas
+            txtAnio.setText(datos.get(0));             // Año
+            txtD.setText(datos.get(1));    // Deforestación
+            txtI.setText(datos.get(2));    // Incertidumbre
+            txtAlfa.setText(datos.get(3));             // Alfa
+            txtLimI.setText(datos.get(4));   // Límite Inferior
+            txtLimS.setText(datos.get(5));   // Límite Superior
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron datos para mostrar o el archivo CSV tiene menos columnas de las esperadas.");
+        }
+    }
+
     public void pantallaIngresar() {
+        JButton anio = new JButton();
+        anio.setBounds(570, 225, 75, 60);
+        anio.setBorder(new LineBorder(inv, 3));
+        anio.setBackground(inv);
+        anio.setFocusPainted(false);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/download_473632.png", 75, 60, anio);
+        panel.add(anio);
+        JButton anio1 = new JButton();
+        anio1.setBounds(820, 225, 75, 60);
+        anio1.setBorder(new LineBorder(inv, 3));
+        anio1.setBackground(inv);
+        anio1.setFocusPainted(false);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/download_473632.png", 75, 60, anio1);
+        panel.add(anio1);
+        JButton anio2 = new JButton();
+        anio2.setBounds(1070, 225, 75, 60);
+        anio2.setBorder(new LineBorder(inv, 3));
+        anio2.setBackground(inv);
+        anio2.setFocusPainted(false);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/download_473632.png", 75, 60, anio2);
+        panel.add(anio2);
+        JButton anio3 = new JButton();
+        anio3.setBounds(1320, 225, 75, 60);
+        anio3.setBorder(new LineBorder(inv, 3));
+        anio3.setBackground(inv);
+        anio3.setFocusPainted(false);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/download_473632.png", 75, 60, anio3);
+        panel.add(anio3);
+        JButton anio4 = new JButton();
+        anio4.setBounds(1570, 225, 75, 60);
+        anio4.setBorder(new LineBorder(inv, 3));
+        anio4.setBackground(inv);
+        anio4.setFocusPainted(false);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/download_473632.png", 75, 60, anio4);
+        panel.add(anio4);
+        String ruta = "/home/prome/NetBeansProjects/proyectoSimulacion/Datos.csv";
+
+        anio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = inAnio.getText().trim(); // Elimina espacios en blanco
+                if (text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El campo de año está vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    int x = Integer.parseInt(text); // Convierte a entero
+                    List<String> res = buscarFilaPorAnio(ruta, x); // Busca la fila
+                    mostrarDatosEnCampos(res, inAnio, inDef, inInc, inAlfa, inLimInf, inLimSup); // Muestra datos
+                    inAnio1.setText(String.valueOf(x + 1));
+                    inAnio2.setText(String.valueOf(x + 2));
+                    inAnio3.setText(String.valueOf(x + 3));
+                    inAnio4.setText(String.valueOf(x + 4));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        anio1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = inAnio1.getText().trim(); // Elimina espacios en blanco
+                if (text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El campo de año está vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    int x = Integer.parseInt(text); // Convierte a entero
+                    List<String> res = buscarFilaPorAnio(ruta, x); // Busca la fila
+                    mostrarDatosEnCampos(res, inAnio1, inDef1, inInc1, inAlfa1, inLimInf1, inLimSup1); // Muestra datos
+                    inAnio.setText(String.valueOf(x - 1));
+                    inAnio2.setText(String.valueOf(x + 1));
+                    inAnio3.setText(String.valueOf(x + 2));
+                    inAnio4.setText(String.valueOf(x + 3));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        anio2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = inAnio2.getText().trim(); // Elimina espacios en blanco
+                if (text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El campo de año está vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    int x = Integer.parseInt(text); // Convierte a entero
+                    List<String> res = buscarFilaPorAnio(ruta, x); // Busca la fila
+                    mostrarDatosEnCampos(res, inAnio2, inDef2, inInc2, inAlfa2, inLimInf2, inLimSup2); // Muestra datos
+                    inAnio.setText(String.valueOf(x - 2));
+                    inAnio1.setText(String.valueOf(x - 1));
+                    inAnio3.setText(String.valueOf(x + 1));
+                    inAnio4.setText(String.valueOf(x + 2));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        anio3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = inAnio3.getText().trim(); // Elimina espacios en blanco
+                if (text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El campo de año está vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    int x = Integer.parseInt(text); // Convierte a entero
+                    List<String> res = buscarFilaPorAnio(ruta, x); // Busca la fila
+                    mostrarDatosEnCampos(res, inAnio3, inDef3, inInc3, inAlfa3, inLimInf3, inLimSup3); // Muestra datos
+                    inAnio.setText(String.valueOf(x - 3));
+                    inAnio1.setText(String.valueOf(x - 2));
+                    inAnio2.setText(String.valueOf(x - 1));
+                    inAnio4.setText(String.valueOf(x + 1));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        anio4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = inAnio4.getText().trim(); // Elimina espacios en blanco
+                if (text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El campo de año está vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    int x = Integer.parseInt(text); // Convierte a entero
+                    List<String> res = buscarFilaPorAnio(ruta, x); // Busca la fila
+                    mostrarDatosEnCampos(res, inAnio4, inDef4, inInc4, inAlfa4, inLimInf4, inLimSup4); // Muestra datos
+                    inAnio.setText(String.valueOf(x - 4));
+                    inAnio1.setText(String.valueOf(x - 3));
+                    inAnio2.setText(String.valueOf(x - 2));
+                    inAnio3.setText(String.valueOf(x - 1));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/sinkhole_10567249.png", 200, 200, imgIngresar);
         imgIngresar.setBounds(10, 10, 200, 200);
         panel.add(imgIngresar);
@@ -182,58 +409,141 @@ public class menuSimulacion {
         ingresarAnio.setText("INGRESAR AÑO INICIO:");
         ingresarAnio.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarAnio.setForeground(cn4);
-        ingresarAnio.setBounds(450, 250, 300, 200);
+        ingresarAnio.setBounds(150, 250, 300, 200);
         panel.add(ingresarAnio);
         ingresarDef.setText("INGRESAR DEFORESTACION:");
         ingresarDef.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarDef.setForeground(cn4);
-        ingresarDef.setBounds(450, 325, 300, 200);
+        ingresarDef.setBounds(150, 325, 300, 200);
         panel.add(ingresarDef);
         ingresarInser.setText("INGRESAR INCERTIDUMBRES:");
         ingresarInser.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarInser.setForeground(cn4);
-        ingresarInser.setBounds(450, 400, 300, 200);
+        ingresarInser.setBounds(150, 400, 300, 200);
         panel.add(ingresarInser);
         ingresarZAlfa.setText("INGRESAR ALFA:");
         ingresarZAlfa.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarZAlfa.setForeground(cn4);
-        ingresarZAlfa.setBounds(450, 475, 300, 200);
+        ingresarZAlfa.setBounds(150, 475, 300, 200);
         panel.add(ingresarZAlfa);
         ingresarLimInf.setText("INGRESAR LIMITE INFERIOR:");
         ingresarLimInf.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarLimInf.setForeground(cn4);
-        ingresarLimInf.setBounds(450, 550, 300, 200);
+        ingresarLimInf.setBounds(150, 550, 300, 200);
         panel.add(ingresarLimInf);
         ingresarLimSup.setText("INGRESAR LIMITE SUPERIOR:");
         ingresarLimSup.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarLimSup.setForeground(cn4);
-        ingresarLimSup.setBounds(450, 625, 300, 200);
+        ingresarLimSup.setBounds(150, 625, 300, 200);
         panel.add(ingresarLimSup);
         ingresarAnioFIn.setText("INGRESAR AÑO FINALIZACIÓN:");
         ingresarAnioFIn.setFont(new Font("Arial", Font.BOLD, 20));
         ingresarAnioFIn.setForeground(cn4);
-        ingresarAnioFIn.setBounds(450, 700, 350, 200);
+        ingresarAnioFIn.setBounds(150, 700, 350, 200);
         panel.add(ingresarAnioFIn);
         subirDatos.setText("SUBIR DATOS DESDE CSV");
         subirDatos.setFont(new Font("Arial", Font.BOLD, 20));
         subirDatos.setForeground(cn4);
-        subirDatos.setBounds(900, 800, 300, 200);
+        subirDatos.setBounds(1625, 800, 300, 200);
         panel.add(subirDatos);
 
-        inAnio.setBounds(850, 325, 500, 50);
+        inAnio.setBounds(500, 325, 200, 50);
+        inAnio.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(inAnio);
-        inDef.setBounds(850, 400, 500, 50);
+        inDef.setBounds(500, 400, 200, 50);
+        inDef.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(inDef);
-        inInc.setBounds(850, 475, 500, 50);
+        inInc.setBounds(500, 475, 200, 50);
+        inInc.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(inInc);
-        inAlfa.setBounds(850, 550, 500, 50);
+        inAlfa.setBounds(500, 550, 200, 50);
+        inAlfa.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(inAlfa);
-        inLimInf.setBounds(850, 625, 500, 50);
+        inLimInf.setBounds(500, 625, 200, 50);
+        inLimInf.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(inLimInf);
-        inLimSup.setBounds(850, 700, 500, 50);
+        inLimSup.setBounds(500, 700, 200, 50);
+        inLimSup.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(inLimSup);
-        inAnioFin.setBounds(850, 775, 500, 50);
+        inAnioFin.setBounds(1000, 775, 200, 50);
+        inAnioFin.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(inAnioFin);
+
+        inAnio1.setBounds(750, 325, 200, 50);
+        inAnio1.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAnio1);
+        inDef1.setBounds(750, 400, 200, 50);
+        inDef1.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inDef1);
+        inInc1.setBounds(750, 475, 200, 50);
+        inInc1.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inInc1);
+        inAlfa1.setBounds(750, 550, 200, 50);
+        inAlfa1.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAlfa1);
+        inLimInf1.setBounds(750, 625, 200, 50);
+        inLimInf1.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimInf1);
+        inLimSup1.setBounds(750, 700, 200, 50);
+        inLimSup1.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimSup1);
+
+        inAnio2.setBounds(1000, 325, 200, 50);
+        inAnio2.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAnio2);
+        inDef2.setBounds(1000, 400, 200, 50);
+        inDef2.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inDef2);
+        inInc2.setBounds(1000, 475, 200, 50);
+        inInc2.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inInc2);
+        inAlfa2.setBounds(1000, 550, 200, 50);
+        inAlfa2.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAlfa2);
+        inLimInf2.setBounds(1000, 625, 200, 50);
+        inLimInf2.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimInf2);
+        inLimSup2.setBounds(1000, 700, 200, 50);
+        inLimSup2.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimSup2);
+
+        inAnio3.setBounds(1250, 325, 200, 50);
+        inAnio3.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAnio3);
+        inDef3.setBounds(1250, 400, 200, 50);
+        inDef3.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inDef3);
+        inInc3.setBounds(1250, 475, 200, 50);
+        inInc3.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inInc3);
+        inAlfa3.setBounds(1250, 550, 200, 50);
+        inAlfa3.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAlfa3);
+        inLimInf3.setBounds(1250, 625, 200, 50);
+        inLimInf3.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimInf3);
+        inLimSup3.setBounds(1250, 700, 200, 50);
+        inLimSup3.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimSup3);
+
+        inAnio4.setBounds(1500, 325, 200, 50);
+        inAnio4.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAnio4);
+        inDef4.setBounds(1500, 400, 200, 50);
+        inDef4.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inDef4);
+        inInc4.setBounds(1500, 475, 200, 50);
+        inInc4.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inInc4);
+        inAlfa4.setBounds(1500, 550, 200, 50);
+        inAlfa4.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inAlfa4);
+        inLimInf4.setBounds(1500, 625, 200, 50);
+        inLimInf4.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimInf4);
+        inLimSup4.setBounds(1500, 700, 200, 50);
+        inLimSup4.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(inLimSup4);
 
         btnExplicarAnio.setText("");
         btnExplicarAnio.setToolTipText("Indica el año específico en que se recolectaron los datos o se realizaron las estimaciones. ");
@@ -243,7 +553,7 @@ public class menuSimulacion {
         btnExplicarAnio.setContentAreaFilled(false);
         btnExplicarAnio.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarAnio);
-        btnExplicarAnio.setBounds(1360, 325, 50, 50);
+        btnExplicarAnio.setBounds(1750, 325, 50, 50);
         panel.add(btnExplicarAnio);
         btnExplicarDeforestacion.setText("");
         btnExplicarDeforestacion.setToolTipText("Representa la cantidad de áreas boscosas que se perdieron en un año determinado.(HECTAREAS)");
@@ -253,7 +563,7 @@ public class menuSimulacion {
         btnExplicarDeforestacion.setContentAreaFilled(false);
         btnExplicarDeforestacion.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarDeforestacion);
-        btnExplicarDeforestacion.setBounds(1360, 400, 50, 50);
+        btnExplicarDeforestacion.setBounds(1750, 400, 50, 50);
         panel.add(btnExplicarDeforestacion);
         btnExplicarIncertidumbre.setText("");
         btnExplicarIncertidumbre.setToolTipText("Es una medida de la variabilidad o el margen de error de las estadísticas, indicando qué tan confiables son los datos.");
@@ -263,7 +573,7 @@ public class menuSimulacion {
         btnExplicarIncertidumbre.setContentAreaFilled(false);
         btnExplicarIncertidumbre.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarIncertidumbre);
-        btnExplicarIncertidumbre.setBounds(1360, 475, 50, 50);
+        btnExplicarIncertidumbre.setBounds(1750, 475, 50, 50);
         panel.add(btnExplicarIncertidumbre);
         btnExplicarAlfa.setText("");
         btnExplicarAlfa.setToolTipText("El valor crítico de una distribución normal dependiente del nivel de confianza,La desviación estándar se utiliza para calcular intervalos de confianza y evaluar la precisión de las estimaciones.");
@@ -273,7 +583,7 @@ public class menuSimulacion {
         btnExplicarAlfa.setContentAreaFilled(false);
         btnExplicarAlfa.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarAlfa);
-        btnExplicarAlfa.setBounds(1360, 550, 50, 50);
+        btnExplicarAlfa.setBounds(1750, 550, 50, 50);
         panel.add(btnExplicarAlfa);
         btnExplicarLimInf.setText("");
         btnExplicarLimInf.setToolTipText("Representa el valor mínimo dentro del intervalo de confianza para las estadísticas de deforestación.");
@@ -283,7 +593,7 @@ public class menuSimulacion {
         btnExplicarLimInf.setContentAreaFilled(false);
         btnExplicarLimInf.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarLimInf);
-        btnExplicarLimInf.setBounds(1360, 625, 50, 50);
+        btnExplicarLimInf.setBounds(1750, 625, 50, 50);
         panel.add(btnExplicarLimInf);
         btnExplicarLimSup.setText("");
         btnExplicarLimSup.setToolTipText("Representa el valor máximo dentro del intervalo de confianza, indica el mejor escenario dentro del rango calculado.");
@@ -293,7 +603,7 @@ public class menuSimulacion {
         btnExplicarLimSup.setContentAreaFilled(false);
         btnExplicarLimSup.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarLimSup);
-        btnExplicarLimSup.setBounds(1360, 700, 50, 50);
+        btnExplicarLimSup.setBounds(1750, 700, 50, 50);
         panel.add(btnExplicarLimSup);
         btnExplicarAnioFin.setText("");
         btnExplicarAnioFin.setToolTipText("Año de finalizacion de la simulación");
@@ -303,7 +613,7 @@ public class menuSimulacion {
         btnExplicarAnioFin.setContentAreaFilled(false);
         btnExplicarAnioFin.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 50, 50, btnExplicarAnioFin);
-        btnExplicarAnioFin.setBounds(1360, 775, 50, 50);
+        btnExplicarAnioFin.setBounds(1250, 775, 50, 50);
         panel.add(btnExplicarAnioFin);
         btnExplicarCsv.setText("");
         btnExplicarCsv.setToolTipText("Importar datos desde un csv,cumpliendo con los campos minimos necesarios.");
@@ -313,7 +623,7 @@ public class menuSimulacion {
         btnExplicarCsv.setContentAreaFilled(false);
         btnExplicarCsv.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 30, 30, btnExplicarCsv);
-        btnExplicarCsv.setBounds(1150, 887, 30, 30);
+        btnExplicarCsv.setBounds(1880, 887, 30, 30);
         panel.add(btnExplicarCsv);
 
         impCsv.setFocusPainted(false);
@@ -321,7 +631,7 @@ public class menuSimulacion {
         impCsv.setContentAreaFilled(false);
         impCsv.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/outbox_393799.png", 100, 100, impCsv);
-        impCsv.setBounds(990, 967, 100, 100);
+        impCsv.setBounds(1690, 967, 100, 100);
 
         impCsv.addActionListener(new ActionListener() {
             @Override
@@ -354,11 +664,11 @@ public class menuSimulacion {
 
         RoundButton menuSImmulacion = new RoundButton(20);
 
-        menuSImmulacion.setText("Menú simulación");
+        menuSImmulacion.setText("MENÚ SIMULACIÓN");
         menuSImmulacion.setFont(new Font("Arial", Font.BOLD, 16));
         menuSImmulacion.setForeground(cn5);
         menuSImmulacion.setBackground(cn11);
-        menuSImmulacion.setBounds(20, 1050, 300, 60);
+        menuSImmulacion.setBounds(20, 1050, 200, 60);
         panel.add(menuSImmulacion);
 
         RoundButton btnEnviarSimulacion = new RoundButton(20);
@@ -367,24 +677,40 @@ public class menuSimulacion {
         btnEnviarSimulacion.setFont(new Font("Arial", Font.BOLD, 20));
         btnEnviarSimulacion.setForeground(cn5);
         btnEnviarSimulacion.setBackground(cn11);
-        btnEnviarSimulacion.setBounds(1520, 510, 300, 60);
+        btnEnviarSimulacion.setBounds(800, 960, 300, 60);
         panel.add(btnEnviarSimulacion);
 
         btnEnviarSimulacion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                // Limpiar panel antes de la simulación
                 panel.removeAll();
-                String anio = inAnio.getText();
-                String deforestacion = inDef.getText();
-                String inc = inInc.getText();
-                String alfa = inAlfa.getText();
-                String limInf = inLimInf.getText();
-                String limSup = inLimSup.getText();
-                String anioFin = inAnioFin.getText();
-                iniciarSimulacion(anio, anioFin, deforestacion, inc, alfa, limInf, limSup);
+
+                // Obtener los valores de los campos de entrada
+                String[] deforestaciones = {
+                    inDef.getText(), inDef1.getText(), inDef2.getText(), inDef3.getText(), inDef4.getText()
+                };
+                String[] incs = {
+                    inInc.getText(), inInc1.getText(), inInc2.getText(), inInc3.getText(), inInc4.getText()
+                };
+                String[] alfas = {
+                    inAlfa.getText(), inAlfa1.getText(), inAlfa2.getText(), inAlfa3.getText(), inAlfa4.getText()
+                };
+                String[] limInfs = {
+                    inLimInf.getText(), inLimInf1.getText(), inLimInf2.getText(), inLimInf3.getText(), inLimInf4.getText()
+                };
+                String[] limSups = {
+                    inLimSup.getText(), inLimSup1.getText(), inLimSup2.getText(), inLimSup3.getText(), inLimSup4.getText()
+                };
+
+                // Obtener el año final de la simulación
+                int añoFin = Integer.parseInt(inAnioFin.getText());
+
+                // Iniciar simulación con los valores obtenidos de los campos
+                iniciarSimulacion(deforestaciones, incs, alfas, limInfs, limSups, añoFin);
+
+                // Limpiar el panel y realizar otras acciones
                 limpiarPanel();
-                
                 tablaDeDatos();
                 barraInteraccion();
             }
@@ -399,20 +725,11 @@ public class menuSimulacion {
         });
     }
 
-    public void iniciarSimulacion(String anioInicio, String anioFinal, String deforestacion, String inc, String alfa, String limInf, String limSup) {
+    public void iniciarSimulacion(String[] deforestaciones, String[] incs, String[] alfas, String[] limInfs, String[] limSups, int añoFin) {
         try {
-            int anioIni = Integer.parseInt(anioInicio);
-            int anioFin = Integer.parseInt(anioFinal);
-            double def = Double.parseDouble(deforestacion);
-            double incertidumbre = Double.parseDouble(inc);
-            double alpha = Double.parseDouble(alfa);
-            double limiteInferior = Double.parseDouble(limInf);
-            double limiteSuperior = Double.parseDouble(limSup);
-
-            // Validar datos
-            if (anioIni > anioFin) {
-                JOptionPane.showMessageDialog(null, "El año inicial no puede ser mayor que el año final.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+            // Verificar que las longitudes de los arreglos sean correctas
+            if (deforestaciones.length != 5 || incs.length != 5 || alfas.length != 5 || limInfs.length != 5 || limSups.length != 5) {
+                throw new IllegalArgumentException("Debe ingresar exactamente 5 valores para cada parámetro.");
             }
 
             // Especificar ruta del archivo (cambia según tu preferencia)
@@ -430,20 +747,48 @@ public class menuSimulacion {
             FileWriter fileWriter = new FileWriter(rutaCompleta, false); // 'false' para sobrescribir
             PrintWriter printWriter = new PrintWriter(fileWriter);
 
-            // Escribir encabezado en el archivo CSV
-            printWriter.println("Año,Deforestación,Incertidumbre,Alfa,Límite Inferior,Límite Superior");
+            // Convertir los valores de los arreglos a doubles
+            double[] deforestacionesVals = new double[5];
+            double[] incsVals = new double[5];
+            double[] alfasVals = new double[5];
+            double[] limInfsVals = new double[5];
+            double[] limSupsVals = new double[5];
 
-            // Generar simulación y escribir datos año por año
-            for (int anio = anioIni; anio <= anioFin; anio++) {
-                double defAnual = def + (Math.random() * incertidumbre) - (incertidumbre / 2);
-                double limInfAnual = limiteInferior - (alpha * Math.random());
-                double limSupAnual = limiteSuperior + (alpha * Math.random());
-
-                // Escribir línea en el archivo
-                printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", anio, defAnual, incertidumbre, alpha, limInfAnual, limSupAnual);
+            for (int i = 0; i < 5; i++) {
+                deforestacionesVals[i] = Double.parseDouble(deforestaciones[i]);
+                incsVals[i] = Double.parseDouble(incs[i]);
+                alfasVals[i] = Double.parseDouble(alfas[i]);
+                limInfsVals[i] = Double.parseDouble(limInfs[i]);
+                limSupsVals[i] = Double.parseDouble(limSups[i]);
             }
 
-            // Cerrar archivo
+            // Calcular la variabilidad de los datos entre los años
+            double[] defVariabilidad = new double[4];
+            double[] incVariabilidad = new double[4];
+            double[] alfaVariabilidad = new double[4];
+            double[] limInfVariabilidad = new double[4];
+            double[] limSupVariabilidad = new double[4];
+
+            for (int i = 0; i < 4; i++) {
+                defVariabilidad[i] = deforestacionesVals[i + 1] - deforestacionesVals[i];
+                incVariabilidad[i] = incsVals[i + 1] - incsVals[i];
+                alfaVariabilidad[i] = alfasVals[i + 1] - alfasVals[i];
+                limInfVariabilidad[i] = limInfsVals[i + 1] - limInfsVals[i];
+                limSupVariabilidad[i] = limSupsVals[i + 1] - limSupsVals[i];
+            }
+
+            // Simular para los años siguientes hasta el año final (añoFin)
+            for (int año = 2006; año <= añoFin; año++) {
+                // Simulamos la variación para el año actual
+                double deforestacionSimulada = deforestacionesVals[4] + defVariabilidad[3] * (año - 2005);
+                double incertidumbreSimulada = incsVals[4] + incVariabilidad[3] * (año - 2005);
+                double alfaSimulado = alfasVals[4] + alfaVariabilidad[3] * (año - 2005);
+                double limInfSimulado = limInfsVals[4] + limInfVariabilidad[3] * (año - 2005);
+                double limSupSimulado = limSupsVals[4] + limSupVariabilidad[3] * (año - 2005);
+
+                // Escribir la simulación en el archivo CSV
+                printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", año, deforestacionSimulada, incertidumbreSimulada, alfaSimulado, limInfSimulado, limSupSimulado);
+            }
             printWriter.close();
             JOptionPane.showMessageDialog(null, "Simulación completada. Archivo creado: " + rutaCompleta, "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
@@ -451,6 +796,8 @@ public class menuSimulacion {
             JOptionPane.showMessageDialog(null, "Error en el formato de los datos. Verifique las entradas.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error al escribir el archivo CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1721,6 +2068,23 @@ public class menuSimulacion {
         Datos();
         panel.revalidate();
         panel.repaint();
+
+        // Establecer el renderizador de celdas para cambiar el color de fondo de las filas
+        tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Cambiar el color de fondo solo para las primeras 5 filas
+                if (row < 5) {
+                    c.setBackground(Color.YELLOW); // Fondo amarillo para las primeras 5 filas
+                } else {
+                    c.setBackground(Color.WHITE); // Fondo blanco para el resto de las filas
+                }
+
+                return c;
+            }
+        });
     }
 
     public void limpiarTablaDeDatos() {
