@@ -64,6 +64,17 @@ public class menuSimulacion {
     JLabel ingresarLimSup = new JLabel();
     JLabel ingresarAnioFIn = new JLabel();
     JLabel subirDatos = new JLabel();
+    JButton exp1 = new JButton();
+    JButton exp2 = new JButton();
+    JButton exp3 = new JButton();
+    JButton exp4 = new JButton();
+    JButton exp5 = new JButton();
+    JButton exp6 = new JButton();
+    JButton exp7 = new JButton();
+    JButton exp8 = new JButton();
+    JButton exp9 = new JButton();
+    JButton exp10 = new JButton();
+    JButton exp11 = new JButton();
     JButton btnMSim = new JButton();
     JButton btnMDoc = new JButton();
     JButton btnTablaDatos = new JButton();
@@ -196,9 +207,11 @@ public class menuSimulacion {
         panel.setLayout(null);
         panel.setBackground(cn26);
         frame.add(panel);
-//        menuPrincipal();
+        menuPrincipal();
 //        simulacion();
-        pantallaIngresar();
+//        pantallaIngresar();
+//        Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
+//        barraInteraccion();
         frame.setVisible(true);
     }
 
@@ -252,6 +265,7 @@ public class menuSimulacion {
     }
 
     public void pantallaIngresar() {
+        panel.removeAll();
         JButton anio = new JButton();
         anio.setBounds(570, 225, 75, 60);
         anio.setBorder(new LineBorder(inv, 3));
@@ -646,6 +660,9 @@ public class menuSimulacion {
                         try {
                             boolean valid = leerYValidarCSV(selectedFile);
                             if (valid) {
+                                limpiarPanel();
+                                tablaDeDatos();
+                                barraInteraccion();
                                 JOptionPane.showMessageDialog(frame, "El archivo es válido ,procediendo con la simulacion.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
                             } else {
@@ -685,6 +702,8 @@ public class menuSimulacion {
             public void actionPerformed(ActionEvent e) {
                 // Limpiar panel antes de la simulación
                 panel.removeAll();
+                String ini = inAnio.getText();
+                int añoInicio = Integer.parseInt(ini);
 
                 // Obtener los valores de los campos de entrada
                 String[] deforestaciones = {
@@ -707,7 +726,7 @@ public class menuSimulacion {
                 int añoFin = Integer.parseInt(inAnioFin.getText());
 
                 // Iniciar simulación con los valores obtenidos de los campos
-                iniciarSimulacion(deforestaciones, incs, alfas, limInfs, limSups, añoFin);
+                iniciarSimulacion(añoInicio, deforestaciones, incs, alfas, limInfs, limSups, añoFin);
 
                 // Limpiar el panel y realizar otras acciones
                 limpiarPanel();
@@ -725,7 +744,7 @@ public class menuSimulacion {
         });
     }
 
-    public void iniciarSimulacion(String[] deforestaciones, String[] incs, String[] alfas, String[] limInfs, String[] limSups, int añoFin) {
+    public void iniciarSimulacion(int anioInicio, String[] deforestaciones, String[] incs, String[] alfas, String[] limInfs, String[] limSups, int añoFin) {
         try {
             // Verificar que las longitudes de los arreglos sean correctas
             if (deforestaciones.length != 5 || incs.length != 5 || alfas.length != 5 || limInfs.length != 5 || limSups.length != 5) {
@@ -741,6 +760,12 @@ public class menuSimulacion {
             java.io.File directorio = new java.io.File(rutaDirectorio);
             if (!directorio.exists()) {
                 directorio.mkdirs();
+            }
+
+            // Eliminar el archivo anterior si existe
+            java.io.File archivoAnterior = new java.io.File(rutaCompleta);
+            if (archivoAnterior.exists()) {
+                archivoAnterior.delete();
             }
 
             // Crear archivo CSV (sobrescribe si ya existe)
@@ -778,7 +803,7 @@ public class menuSimulacion {
             }
 
             // Simular para los años siguientes hasta el año final (añoFin)
-            for (int año = 2006; año <= añoFin; año++) {
+            for (int año = anioInicio; año <= añoFin; año++) {
                 // Simulamos la variación para el año actual
                 double deforestacionSimulada = deforestacionesVals[4] + defVariabilidad[3] * (año - 2005);
                 double incertidumbreSimulada = incsVals[4] + incVariabilidad[3] * (año - 2005);
@@ -934,11 +959,19 @@ public class menuSimulacion {
         panel.add(aFin);
 
         btnIngresarDatos.setText("INGRESAR DATOS MANUALMENTE");
-        btnIngresarDatos.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 10));
-        btnIngresarDatos.setBounds(615, 45, 200, 60);
-        btnIngresarDatos.setForeground(cn4);
-        btnIngresarDatos.setBackground(inv);
+        btnIngresarDatos.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 15));
+        btnIngresarDatos.setBounds(615, 45, 300, 60);
+        btnIngresarDatos.setForeground(cn5);
+        btnIngresarDatos.setFocusPainted(false);
+        btnIngresarDatos.setBackground(cn10);
         panel.add(btnIngresarDatos);
+
+        btnIngresarDatos.addActionListener(e -> {
+            panel.removeAll();
+            pantallaIngresar();
+            panel.revalidate(); // Recalcula el diseño del panel
+            panel.repaint();
+        });
 
         RoundTextField txtInput = new RoundTextField(1, 30); // 1 columna, radio 30
         txtInput.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -1084,8 +1117,8 @@ public class menuSimulacion {
 
             // Crear archivo CSV de salida
             writer = new BufferedWriter(new FileWriter(rutaSalida));
-            writer.write(String.join(",", encabezado)); // Escribir encabezado
-            writer.newLine();
+//            writer.write(String.join(",", encabezado)); // Escribir encabezado
+//            writer.newLine();
 
             // Variables iniciales para la simulación
             double deforestacion = Double.parseDouble(datosIniciales[1].trim());
@@ -1145,11 +1178,11 @@ public class menuSimulacion {
         }
     }
 
-    public void Regresion() {
+    public void Regresion(String csvFilePath) {
         frame.setTitle("REGRESION LINEAL");
         try {
+            loadDataFromCSV(csvFilePath);  // Cargar los datos desde el CSV
             initializeData();
-
             XYSeries series = createDataset();
             JFreeChart chart = createChart(series);
             ChartPanel chartPanel = new ChartPanel(chart);
@@ -1217,25 +1250,163 @@ public class menuSimulacion {
     }
 
     private void showResults() {
-        String sp = " ".repeat(32);
+        String sp = " ".repeat(20);
         String sp1 = " ".repeat(10);
         String sp2 = " ".repeat(5);
 
         txtRegresion.setText("");
         txtRegresion.setFont(new Font("Arial", Font.PLAIN, 20));
         txtRegresion.setLineWrap(true);
-        txtRegresion.append("   DATOS LEIDOS" + sp + "ORDENADAS AL ORIGEN" + sp + "PENDIENTE" + sp + sp2 + "        R2" + sp + sp2.repeat(3) + "VALOR MÍNIMO\n\n");
-        txtRegresion.append(sp1 + "    " + sr.getN() + sp + sp1 + sp2 + "    " + sr.getIntercept() + sp1.repeat(2) + sp2 + "   " + sr.getSlope() + sp1 + sp2 + "   " + sr.getRSquare() + sp2.repeat(7) + "    " + StatUtils.min(y) + "\n\n");
-
-        txtRegresion.append(" VALOR MÁXIMO" + sp1.repeat(2) + sp2.repeat(3) + "   VALOR PROMEDIO" + sp2.repeat(6) + " VALOR VARIANZA" + sp2.repeat(4) + "    VALOR GEOMETRICO" + sp2.repeat(6) + "VALOR SUMA" + "\n\n");
-        txtRegresion.append(sp2 + "     " + StatUtils.max(y) + sp + sp2.repeat(3) + StatUtils.mean(y) + sp2.repeat(5) + "   " + StatUtils.variance(y) + sp1.repeat(2) + "  " + StatUtils.geometricMean(y) + sp2.repeat(5) + StatUtils.sum(y) + "\n\n");
-        txtRegresion.append(sp1.repeat(13) + "     VALOR PRODUCTO\n\n" + sp.repeat(4) + "   " + StatUtils.product(y));
-        txtRegresion.setBounds(385, 815, 1580, 315);
+        txtRegresion.append("DATOS LEIDOS" + sp2.repeat(10) + sr.getN() + sp2.repeat(7) + "    ORDENADAS AL ORIGEN" + sp + sr.getIntercept() + "\n\n");
+        txtRegresion.append("VALOR MÍNIMO" + sp2.repeat(8) + StatUtils.min(y) + sp2.repeat(6) + "    VALOR MÁXIMO" + sp2 + sp1.repeat(3) + StatUtils.max(y) + "\n\n");
+        txtRegresion.append("VALOR PROMEDIO   " + sp2.repeat(6) + StatUtils.mean(y) + sp2.repeat(6) + "    VALOR VARIANZA   " + sp2.repeat(6) + StatUtils.variance(y) + "\n\n");
+        txtRegresion.append("VALOR GEOMETRICO" + sp2.repeat(4) + StatUtils.geometricMean(y) + sp2.repeat(5) + "  VALOR SUMA " + sp2.repeat(8) + StatUtils.sum(y) + "\n\n");
+        txtRegresion.append("PENDIENTE   " + sp2.repeat(7) + sr.getSlope() + sp + sp2 + "VALOR PRODUCTO     " + sp2.repeat(5) + StatUtils.product(y) + sp + "R2" + sp1 + sr.getRSquare());
+        txtRegresion.setBounds(450, 815, 1580, 315);
         txtRegresion.setEditable(false);
         txtRegresion.setForeground(cn4);
         txtRegresion.setBackground(inv);
         panel.add(txtRegresion);
 
+        exp1.setToolTipText("Cantidad de datos analizados para realizar la regresión lineal.");
+        exp1.setFont(new Font("Arial", Font.BOLD, 16));
+        exp1.setFocusPainted(false);
+        exp1.setBorder(BorderFactory.createEmptyBorder());
+        exp1.setContentAreaFilled(false);
+        exp1.setForeground(inv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp1);
+        exp1.setBounds(420, 822, 20, 20);
+        panel.add(exp1);
+
+        exp2.setToolTipText("El menor valor observado en los datos analizados.");
+        exp2.setFont(new Font("Arial", Font.BOLD, 16));
+        exp2.setFocusPainted(false);
+        exp2.setBorder(BorderFactory.createEmptyBorder());
+        exp2.setContentAreaFilled(false);
+        exp2.setForeground(inv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp2);
+        exp2.setBounds(420, 877, 20, 20);
+        panel.add(exp2);
+
+        exp3.setToolTipText("El promedio de todos los valores analizados.");
+        exp3.setFont(new Font("Arial", Font.BOLD, 16));
+        exp3.setFocusPainted(false);
+        exp3.setBorder(BorderFactory.createEmptyBorder());
+        exp3.setContentAreaFilled(false);
+        exp3.setForeground(inv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp3);
+        exp3.setBounds(420, 932, 20, 20);
+        panel.add(exp3);
+
+        exp4.setToolTipText("Promedio basado en el producto de los valores en lugar de su suma.");
+        exp4.setFont(new Font("Arial", Font.BOLD, 16));
+        exp4.setFocusPainted(false);
+        exp4.setBorder(BorderFactory.createEmptyBorder());
+        exp4.setContentAreaFilled(false);
+        exp4.setForeground(inv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp4);
+        exp4.setBounds(420, 987, 20, 20);
+        panel.add(exp4);
+
+        exp5.setToolTipText("Indica cuánto cambia Y por cada unidad que cambia X.");
+        exp5.setFont(new Font("Arial", Font.BOLD, 16));
+        exp5.setFocusPainted(false);
+        exp5.setBorder(BorderFactory.createEmptyBorder());
+        exp5.setContentAreaFilled(false);
+        exp5.setForeground(inv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp5);
+        exp5.setBounds(420, 1042, 20, 20);
+        panel.add(exp5);
+//
+//        exp6.setToolTipText("Punto donde la línea de regresión cruza el eje Y (cuando X es 0).");
+//        exp6.setFont(new Font("Arial", Font.BOLD, 16));
+//        exp6.setFocusPainted(false);
+//        exp6.setBorder(BorderFactory.createEmptyBorder());
+//        exp6.setContentAreaFilled(false);
+//        exp6.setForeground(inv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp6);
+//        exp6.setBounds(1028, 822, 20, 20);
+//        panel.add(exp6);
+//       
+//        exp7.setToolTipText("El mayor valor observado en los datos analizados.");
+//        exp7.setFont(new Font("Arial", Font.BOLD, 16));
+//        exp7.setFocusPainted(false);
+//        exp7.setBorder(BorderFactory.createEmptyBorder());
+//        exp7.setContentAreaFilled(false);
+//        exp7.setForeground(inv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp7);
+//        exp7.setBounds(1028, 877, 20, 20);
+//        panel.add(exp7);
+//
+//        exp8.setToolTipText("Representa la cantidad de áreas boscosas que se perdieron en un año determinado.(HECTAREAS)");
+//        exp8.setFont(new Font("Arial", Font.BOLD, 16));
+//        exp8.setFocusPainted(false);
+//        exp8.setBorder(BorderFactory.createEmptyBorder());
+//        exp8.setContentAreaFilled(false);
+//        exp8.setForeground(inv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp8);
+//        exp8.setBounds(1028, 932, 20, 20);
+//        panel.add(exp8);
+//
+//        exp9.setToolTipText("Representa la cantidad de áreas boscosas que se perdieron en un año determinado.(HECTAREAS)");
+//        exp9.setFont(new Font("Arial", Font.BOLD, 16));
+//        exp9.setFocusPainted(false);
+//        exp9.setBorder(BorderFactory.createEmptyBorder());
+//        exp9.setContentAreaFilled(false);
+//        exp9.setForeground(inv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp9);
+//        exp9.setBounds(1028, 987, 20, 20);
+//        panel.add(exp9);
+//
+//        exp10.setToolTipText("Representa la cantidad de áreas boscosas que se perdieron en un año determinado.(HECTAREAS)");
+//        exp10.setFont(new Font("Arial", Font.BOLD, 16));
+//        exp10.setFocusPainted(false);
+//        exp10.setBorder(BorderFactory.createEmptyBorder());
+//        exp10.setContentAreaFilled(false);
+//        exp10.setForeground(inv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp10);
+//        exp10.setBounds(1028, 1042, 20, 20);
+//        panel.add(exp10);
+//
+//        exp11.setToolTipText("Representa la cantidad de áreas boscosas que se perdieron en un año determinado.(HECTAREAS)");
+//        exp11.setFont(new Font("Arial", Font.BOLD, 16));
+//        exp11.setFocusPainted(false);
+//        exp11.setBorder(BorderFactory.createEmptyBorder());
+//        exp11.setContentAreaFilled(false);
+//        exp11.setForeground(inv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp11);
+//        exp11.setBounds(1686, 1042, 20, 20);
+//        panel.add(exp11);
+
+    }
+
+    private void loadDataFromCSV(String filePath) {
+        ArrayList<Double> xList = new ArrayList<>();
+        ArrayList<Double> yList = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;  // Saltar la cabecera
+                    continue;
+                }
+
+                String[] values = line.split(","); // Suponiendo que el delimitador es una coma
+                double year = Double.parseDouble(values[0].trim());
+                double deforestation = Double.parseDouble(values[1].trim());
+
+                xList.add(year);
+                yList.add(deforestation);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Convertir las listas a arreglos
+        x = xList.stream().mapToDouble(Double::doubleValue).toArray();
+        y = yList.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
     public void menuFactores() {
@@ -2178,7 +2349,7 @@ public class menuSimulacion {
         });
         btnRegresiones.addActionListener(e -> {
             limpiarPanel();
-            Regresion();
+            Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
             barraInteraccion();
         });
 
