@@ -875,12 +875,11 @@ public class menuSimulacion {
         }
     }
 
-    // Método para iniciar la simulación con mayor realismo
     public void iniciarSimulacion(int anioInicio, String[] deforestaciones, String[] incs, String[] alfas, String[] limInfs, String[] limSups, int añoFin) {
         try {
-            // Validación de datos iniciales
-            if (deforestaciones.length != 5 || incs.length != 5 || alfas.length != 5 || limInfs.length != 5 || limSups.length != 5) {
-                throw new IllegalArgumentException("Debe ingresar exactamente 5 valores para cada parámetro.");
+            // Validación de que los arreglos tengan el mismo tamaño
+            if (deforestaciones.length != incs.length || deforestaciones.length != alfas.length || deforestaciones.length != limInfs.length || deforestaciones.length != limSups.length) {
+                throw new IllegalArgumentException("Todos los arreglos deben tener el mismo tamaño.");
             }
 
             String rutaDirectorio = "/home/prome/NetBeansProjects/proyectoSimulacion/"; // Cambiar ruta si necesario
@@ -900,7 +899,7 @@ public class menuSimulacion {
             FileWriter fileWriter = new FileWriter(rutaCompleta, false); // 'false' sobrescribe
             PrintWriter printWriter = new PrintWriter(fileWriter);
 
-            // Convertir las entradas
+            // Convertir las entradas de String a double
             double[] deforestacionVals = new double[deforestaciones.length];
             double[] incsVals = new double[incs.length];
             double[] alfasVals = new double[alfas.length];
@@ -914,34 +913,40 @@ public class menuSimulacion {
                 limSupsVals[i] = Double.parseDouble(limSups[i]);
             }
 
-            // Escribir los datos iniciales
+            // Escribir los datos iniciales para los primeros años
             int anioActual = anioInicio;
             for (int i = 0; i < deforestacionVals.length; i++) {
                 printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", anioActual, deforestacionVals[i], incsVals[i], alfasVals[i], limInfsVals[i], limSupsVals[i]);
                 anioActual++;
             }
 
-            // Simular datos
+            // Simular fluctuaciones controladas para los años restantes
             Random random = new Random();
             double deforestacionActual = deforestacionVals[deforestacionVals.length - 1];
-            for (int año = anioActual; año <= añoFin; año++) {
-                // Variabilidad en la deforestación (aumenta o disminuye, nunca negativa)
-                double variabilidad = deforestacionActual * 0.15; // Máx ±15% de cambio
-                double cambio = random.nextDouble() * variabilidad - (variabilidad / 2); // [-variabilidad/2, +variabilidad/2]
-                deforestacionActual = Math.max(0, deforestacionActual + cambio);
 
-                // Incertidumbre y límites ajustados
-                double incertidumbre = 30 + random.nextDouble() * 30; // 30%-60%
+            // Definir una variabilidad moderada con un 3% de cambio anual
+            double rangoFluctuacion = 0.2 * deforestacionActual;  // ±3% de la deforestación actual
+
+            // Iterar sobre los años hasta el año final
+            for (int año = anioActual; año <= añoFin; año++) {
+                // Generar fluctuaciones aleatorias, controlando la magnitud de la variación
+                double cambio = random.nextDouble() * 2 * rangoFluctuacion - rangoFluctuacion;  // Generar fluctuaciones entre -3% y +3%
+                deforestacionActual = Math.max(0, deforestacionActual + cambio);  // Evitar que la deforestación sea negativa
+
+                // Calcular la incertidumbre de forma dinámica, manteniendo un rango moderado
+                double incertidumbre = 10 + random.nextDouble() * 10;  // 10% a 20%
                 double zAlfa = deforestacionActual * (incertidumbre / 100);
+
+                // Calcular los límites superior e inferior con base en la incertidumbre
                 double limiteInferior = Math.max(0, deforestacionActual - zAlfa);
                 double limiteSuperior = deforestacionActual + zAlfa;
 
-                // Escribir los valores simulados
+                // Escribir los valores simulados en el archivo CSV
                 printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", año, deforestacionActual, incertidumbre, zAlfa, limiteInferior, limiteSuperior);
             }
 
             printWriter.close();
-            JOptionPane.showMessageDialog(null, "Simulación completada. Archivo creado: " + rutaCompleta, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Simulación ajustada completada. Archivo creado: " + rutaCompleta, "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Error en el formato de los datos. Verifique las entradas.", "Error", JOptionPane.ERROR_MESSAGE);
