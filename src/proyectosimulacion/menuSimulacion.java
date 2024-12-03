@@ -26,6 +26,10 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.apache.commons.math4.legacy.stat.StatUtils;
@@ -207,9 +211,9 @@ public class menuSimulacion {
         panel.setLayout(null);
         panel.setBackground(cn26);
         frame.add(panel);
-        menuPrincipal();
+//        menuPrincipal();
 //        simulacion();
-//        pantallaIngresar();
+        pantallaIngresar();
 //        Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
 //        barraInteraccion();
         frame.setVisible(true);
@@ -650,6 +654,7 @@ public class menuSimulacion {
         impCsv.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("Selecciona un archivo CSV");
                 int result = fileChooser.showOpenDialog(frame);
@@ -661,6 +666,7 @@ public class menuSimulacion {
                             boolean valid = leerYValidarCSV(selectedFile);
                             if (valid) {
                                 limpiarPanel();
+                                simularYExportarCSV(selectedFile, "/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
                                 tablaDeDatos();
                                 barraInteraccion();
                                 JOptionPane.showMessageDialog(frame, "El archivo es válido ,procediendo con la simulacion.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -675,6 +681,7 @@ public class menuSimulacion {
                         JOptionPane.showMessageDialog(frame, "Por favor selecciona un archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+
             }
         });
         panel.add(impCsv);
@@ -744,76 +751,195 @@ public class menuSimulacion {
         });
     }
 
+    public void simularYExportarCSV(File archivoBase, String rutaDestino) {
+        try {
+            // Leer datos del CSV original
+            List<Map<String, Double>> datosBase = leerDatosDesdeCSV(archivoBase);
+
+            // Verificar que los datos base no estén vacíos
+            if (datosBase.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "El archivo no contiene datos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Solicitar el año a simular
+            String input = JOptionPane.showInputDialog(frame, "Ingresa el año hasta el que deseas simular:");
+            int anoSimulacion = Integer.parseInt(input);
+
+            // Generar simulación
+            List<Map<String, Double>> datosSimulados = simularDatos(datosBase, anoSimulacion);
+
+            // Exportar simulación a CSV
+            exportarCSV(datosSimulados, rutaDestino);
+
+            JOptionPane.showMessageDialog(frame, "Simulación completada y exportada a: " + rutaDestino, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(frame, "El año ingresado no es válido.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Error al procesar el archivo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private List<Map<String, Double>> leerDatosDesdeCSV(File archivo) throws IOException {
+        List<Map<String, Double>> datos = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            String[] encabezados = br.readLine().split(",");
+            while ((linea = br.readLine()) != null) {
+                String[] valores = linea.split(",");
+                if (valores.length != encabezados.length) {
+                    JOptionPane.showMessageDialog(frame, "Formato incorrecto en el archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
+                    continue; // Ignorar filas mal formateadas
+                }
+                Map<String, Double> fila = new HashMap<>();
+                try {
+                    for (int i = 0; i < encabezados.length; i++) {
+                        fila.put(encabezados[i].trim(), Double.parseDouble(valores[i].trim()));
+                    }
+                    datos.add(fila);
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(frame, "Error al leer una fila: " + Arrays.toString(valores), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+        return datos;
+    }
+
+    private List<Map<String, Double>> simularDatos(List<Map<String, Double>> datosBase, int anoSimulacion) {
+        List<Map<String, Double>> simulados = new ArrayList<>();
+        List<Integer> anos = new ArrayList<>();
+        List<Double> deforestaciones = new ArrayList<>();
+        List<Double> incertidumbres = new ArrayList<>();
+
+        for (Map<String, Double> fila : datosBase) {
+            try {
+                anos.add(fila.get("año").intValue());
+                deforestaciones.add(fila.get("deforestacion"));
+                incertidumbres.add(fila.get("incertidumbre(%)"));
+            } catch (NullPointerException e) {
+                JOptionPane.showMessageDialog(frame, "Datos faltantes en el archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
+                return simulados; // Detener la simulación
+            }
+        }
+
+        if (anos.size() != deforestaciones.size() || anos.size() != incertidumbres.size()) {
+            JOptionPane.showMessageDialog(frame, "Las listas no tienen el mismo tamaño. Revisa los datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return simulados;
+        }
+
+        if (anos.contains(null) || deforestaciones.contains(null) || incertidumbres.contains(null)) {
+            JOptionPane.showMessageDialog(frame, "Hay valores nulos en las listas. Revisa los datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return simulados;
+        }
+
+        LinearRegression modeloDeforestacion = new LinearRegression(anos, deforestaciones);
+        LinearRegression modeloIncertidumbre = new LinearRegression(anos, incertidumbres);
+
+        int ultimoAno = anos.get(anos.size() - 1);
+        for (int ano = ultimoAno + 1; ano <= anoSimulacion; ano++) {
+            double deforestacion = modeloDeforestacion.predict(ano);
+            double incertidumbre = modeloIncertidumbre.predict(ano);
+            double sigma = incertidumbre / 100 * deforestacion;
+            double limiteInferior = deforestacion - 1.96 * sigma;
+            double limiteSuperior = deforestacion + 1.96 * sigma;
+
+            Map<String, Double> simulado = new HashMap<>();
+            simulado.put("año", (double) ano);
+            simulado.put("deforestacion", deforestacion);
+            simulado.put("incertidumbre(%)", incertidumbre);
+            simulado.put("Z_alfa/2*sigma", sigma);
+            simulado.put("limite_inferior", limiteInferior);
+            simulado.put("limite_superior", limiteSuperior);
+
+            simulados.add(simulado);
+        }
+        return simulados;
+    }
+
+    private void exportarCSV(List<Map<String, Double>> datos, String rutaDestino) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaDestino))) {
+            // Escribir encabezados
+            writer.write("año,deforestacion,incertidumbre(%),Z_alfa/2*sigma,limite_inferior,limite_superior\n");
+
+            // Escribir filas
+            for (Map<String, Double> fila : datos) {
+                writer.write(String.format(Locale.US, "%.0f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
+                        fila.get("año"),
+                        fila.get("deforestacion"),
+                        fila.get("incertidumbre(%)"),
+                        fila.get("Z_alfa/2*sigma"),
+                        fila.get("limite_inferior"),
+                        fila.get("limite_superior")));
+            }
+        }
+    }
+
+    // Método para iniciar la simulación con mayor realismo
     public void iniciarSimulacion(int anioInicio, String[] deforestaciones, String[] incs, String[] alfas, String[] limInfs, String[] limSups, int añoFin) {
         try {
-            // Verificar que las longitudes de los arreglos sean correctas
+            // Validación de datos iniciales
             if (deforestaciones.length != 5 || incs.length != 5 || alfas.length != 5 || limInfs.length != 5 || limSups.length != 5) {
                 throw new IllegalArgumentException("Debe ingresar exactamente 5 valores para cada parámetro.");
             }
 
-            // Especificar ruta del archivo (cambia según tu preferencia)
-            String rutaDirectorio = "/home/prome/NetBeansProjects/proyectoSimulacion/"; // Cambia a la ruta deseada
+            String rutaDirectorio = "/home/prome/NetBeansProjects/proyectoSimulacion/"; // Cambiar ruta si necesario
             String nombreArchivo = "simulacion.csv";
             String rutaCompleta = rutaDirectorio + nombreArchivo;
 
-            // Crear directorio si no existe
+            // Crear el archivo CSV
             java.io.File directorio = new java.io.File(rutaDirectorio);
             if (!directorio.exists()) {
                 directorio.mkdirs();
             }
-
-            // Eliminar el archivo anterior si existe
             java.io.File archivoAnterior = new java.io.File(rutaCompleta);
             if (archivoAnterior.exists()) {
                 archivoAnterior.delete();
             }
 
-            // Crear archivo CSV (sobrescribe si ya existe)
-            FileWriter fileWriter = new FileWriter(rutaCompleta, false); // 'false' para sobrescribir
+            FileWriter fileWriter = new FileWriter(rutaCompleta, false); // 'false' sobrescribe
             PrintWriter printWriter = new PrintWriter(fileWriter);
 
-            // Convertir los valores de los arreglos a doubles
-            double[] deforestacionesVals = new double[5];
-            double[] incsVals = new double[5];
-            double[] alfasVals = new double[5];
-            double[] limInfsVals = new double[5];
-            double[] limSupsVals = new double[5];
-
-            for (int i = 0; i < 5; i++) {
-                deforestacionesVals[i] = Double.parseDouble(deforestaciones[i]);
+            // Convertir las entradas
+            double[] deforestacionVals = new double[deforestaciones.length];
+            double[] incsVals = new double[incs.length];
+            double[] alfasVals = new double[alfas.length];
+            double[] limInfsVals = new double[limInfs.length];
+            double[] limSupsVals = new double[limSups.length];
+            for (int i = 0; i < deforestaciones.length; i++) {
+                deforestacionVals[i] = Double.parseDouble(deforestaciones[i]);
                 incsVals[i] = Double.parseDouble(incs[i]);
                 alfasVals[i] = Double.parseDouble(alfas[i]);
                 limInfsVals[i] = Double.parseDouble(limInfs[i]);
                 limSupsVals[i] = Double.parseDouble(limSups[i]);
             }
 
-            // Calcular la variabilidad de los datos entre los años
-            double[] defVariabilidad = new double[4];
-            double[] incVariabilidad = new double[4];
-            double[] alfaVariabilidad = new double[4];
-            double[] limInfVariabilidad = new double[4];
-            double[] limSupVariabilidad = new double[4];
-
-            for (int i = 0; i < 4; i++) {
-                defVariabilidad[i] = deforestacionesVals[i + 1] - deforestacionesVals[i];
-                incVariabilidad[i] = incsVals[i + 1] - incsVals[i];
-                alfaVariabilidad[i] = alfasVals[i + 1] - alfasVals[i];
-                limInfVariabilidad[i] = limInfsVals[i + 1] - limInfsVals[i];
-                limSupVariabilidad[i] = limSupsVals[i + 1] - limSupsVals[i];
+            // Escribir los datos iniciales
+            int anioActual = anioInicio;
+            for (int i = 0; i < deforestacionVals.length; i++) {
+                printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", anioActual, deforestacionVals[i], incsVals[i], alfasVals[i], limInfsVals[i], limSupsVals[i]);
+                anioActual++;
             }
 
-            // Simular para los años siguientes hasta el año final (añoFin)
-            for (int año = anioInicio; año <= añoFin; año++) {
-                // Simulamos la variación para el año actual
-                double deforestacionSimulada = deforestacionesVals[4] + defVariabilidad[3] * (año - 2005);
-                double incertidumbreSimulada = incsVals[4] + incVariabilidad[3] * (año - 2005);
-                double alfaSimulado = alfasVals[4] + alfaVariabilidad[3] * (año - 2005);
-                double limInfSimulado = limInfsVals[4] + limInfVariabilidad[3] * (año - 2005);
-                double limSupSimulado = limSupsVals[4] + limSupVariabilidad[3] * (año - 2005);
+            // Simular datos
+            Random random = new Random();
+            double deforestacionActual = deforestacionVals[deforestacionVals.length - 1];
+            for (int año = anioActual; año <= añoFin; año++) {
+                // Variabilidad en la deforestación (aumenta o disminuye, nunca negativa)
+                double variabilidad = deforestacionActual * 0.15; // Máx ±15% de cambio
+                double cambio = random.nextDouble() * variabilidad - (variabilidad / 2); // [-variabilidad/2, +variabilidad/2]
+                deforestacionActual = Math.max(0, deforestacionActual + cambio);
 
-                // Escribir la simulación en el archivo CSV
-                printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", año, deforestacionSimulada, incertidumbreSimulada, alfaSimulado, limInfSimulado, limSupSimulado);
+                // Incertidumbre y límites ajustados
+                double incertidumbre = 30 + random.nextDouble() * 30; // 30%-60%
+                double zAlfa = deforestacionActual * (incertidumbre / 100);
+                double limiteInferior = Math.max(0, deforestacionActual - zAlfa);
+                double limiteSuperior = deforestacionActual + zAlfa;
+
+                // Escribir los valores simulados
+                printWriter.printf("%d,%.2f,%.2f,%.2f,%.2f,%.2f%n", año, deforestacionActual, incertidumbre, zAlfa, limiteInferior, limiteSuperior);
             }
+
             printWriter.close();
             JOptionPane.showMessageDialog(null, "Simulación completada. Archivo creado: " + rutaCompleta, "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
@@ -824,6 +950,139 @@ public class menuSimulacion {
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private double calcularSimulacionConVariabilidad(double[] valores, Random random) {
+        double tasaDeCambio = (valores[valores.length - 1] - valores[0]) / (valores.length - 1);
+        double variabilidad = tasaDeCambio * 0.1; // Variabilidad del 10%
+        double cambioAleatorio = random.nextDouble() * variabilidad - (variabilidad / 2); // Rango [-variabilidad/2, variabilidad/2]
+        return Math.max(0, valores[valores.length - 1] + tasaDeCambio + cambioAleatorio);
+    }
+
+    private double calcularExtrapolacionSuave(int[] años, double[] valores, int añoSimulacion) {
+        int n = años.length;
+        double[] tasasDeCambio = new double[n - 1];
+
+        for (int i = 0; i < n - 1; i++) {
+            tasasDeCambio[i] = (valores[i + 1] - valores[i]) / (años[i + 1] - años[i]);
+        }
+
+        double tasaPromedio = 0;
+        double factorSuavizado = 0.5;
+        for (int i = 0; i < n - 1; i++) {
+            tasasDeCambio[i] *= factorSuavizado;
+            tasaPromedio += tasasDeCambio[i] * (n - i - 1);
+        }
+        tasaPromedio /= (n * (n - 1)) / 2.0;
+
+        double valorSimulado = valores[n - 1] + tasaPromedio * (añoSimulacion - años[n - 1]);
+
+        double limiteInferior = valores[n - 1] * 0.8;
+        double limiteSuperior = valores[n - 1] * 1.2;
+        valorSimulado = Math.min(limiteSuperior, Math.max(limiteInferior, valorSimulado));
+
+        return Math.max(0, valorSimulado);
+    }
+
+// Método para calcular la extrapolación con un factor de suavizado
+    private double calcularExtrapolacion(int[] años, double[] valores, int añoSimulacion, double factorSuavizado) {
+        int n = años.length;
+
+        // Calcular las tasas de cambio entre cada par de valores consecutivos
+        double[] tasasDeCambio = new double[n - 1];
+        for (int i = 0; i < n - 1; i++) {
+            tasasDeCambio[i] = (valores[i + 1] - valores[i]) / (años[i + 1] - años[i]);
+        }
+
+        // Calcular la tasa de cambio promedio ponderada (más reciente tiene mayor peso)
+        double tasaPromedio = 0;
+        for (int i = 0; i < n - 1; i++) {
+            tasaPromedio += tasasDeCambio[i] * (n - i - 1); // Ponderación decreciente
+        }
+        tasaPromedio /= (n * (n - 1)) / 2.0; // Normalizar la ponderación
+
+        // Proyección lineal controlada con la tasa de cambio y un factor de suavizado
+        double valorSimulado = valores[n - 1] + tasaPromedio * (añoSimulacion - años[n - 1]);
+
+        // Aplicar el factor de suavizado para evitar un crecimiento excesivo
+        valorSimulado = valores[n - 1] + (valorSimulado - valores[n - 1]) * factorSuavizado;
+
+        // Asegurarse de que el valor simulado no sea negativo
+        valorSimulado = Math.max(0, valorSimulado);
+
+        return valorSimulado;
+    }
+
+// Método para calcular la extrapolación usando una tasa de cambio ponderada
+    private double calcularExtrapolacion(int[] años, double[] valores, int añoSimulacion) {
+        int n = años.length;
+
+        // Calcular las tasas de cambio entre cada par de valores consecutivos
+        double[] tasasDeCambio = new double[n - 1];
+        for (int i = 0; i < n - 1; i++) {
+            tasasDeCambio[i] = (valores[i + 1] - valores[i]) / (años[i + 1] - años[i]);
+        }
+
+        // Calcular la tasa de cambio promedio ponderada (más reciente tiene mayor peso)
+        double tasaPromedio = 0;
+        for (int i = 0; i < n - 1; i++) {
+            tasaPromedio += tasasDeCambio[i] * (n - i - 1); // Ponderación decreciente
+        }
+        tasaPromedio /= (n * (n - 1)) / 2.0; // Normalizar la ponderación
+
+        // Proyección lineal controlada con la tasa de cambio
+        double valorSimulado = valores[n - 1] + tasaPromedio * (añoSimulacion - años[n - 1]);
+
+        // Asegurarse de que el valor simulado no sea negativo
+        valorSimulado = Math.max(0, valorSimulado);
+
+        return valorSimulado;
+    }
+
+// Método para calcular la extrapolación moderada
+    private double calcularExtrapolacionModerada(int[] años, double[] valores, int añoSimulacion) {
+        int n = años.length;
+
+        // Calcular el cambio promedio entre los valores
+        double cambioTotal = valores[n - 1] - valores[0];
+        double cambioPromedio = cambioTotal / (años[n - 1] - años[0]);
+
+        // Utilizar un enfoque lineal moderado para evitar extrapolaciones extremas
+        double valorSimulado = valores[n - 1] + cambioPromedio * (añoSimulacion - años[n - 1]);
+
+        // Asegurarse de que el valor simulado no sea negativo
+        valorSimulado = Math.max(0, valorSimulado);
+
+        return valorSimulado;
+    }
+
+// Método para calcular la regresión lineal
+    private double calcularRegresionLineal(int[] años, double[] valores, int añoSimulacion) {
+        // Calcular las sumas necesarias para la regresión lineal
+        int n = años.length;
+        double sumaX = 0, sumaY = 0, sumaXY = 0, sumaX2 = 0;
+
+        for (int i = 0; i < n; i++) {
+            sumaX += años[i];
+            sumaY += valores[i];
+            sumaXY += años[i] * valores[i];
+            sumaX2 += años[i] * años[i];
+        }
+
+        // Calcular la pendiente (m) y la intersección (b) de la recta de regresión
+        double m = (n * sumaXY - sumaX * sumaY) / (n * sumaX2 - sumaX * sumaX);
+        double b = (sumaY - m * sumaX) / n;
+
+        // Usar la ecuación de la recta: Y = m * X + b
+        return m * añoSimulacion + b;
+    }
+
+// Método auxiliar para agregar un nuevo valor al arreglo (simular crecimiento)
+    public double[] appendToArray(double[] originalArray, double newValue) {
+        double[] newArray = new double[originalArray.length + 1];
+        System.arraycopy(originalArray, 0, newArray, 0, originalArray.length);
+        newArray[originalArray.length] = newValue;
+        return newArray;
     }
 
     public static boolean leerYValidarCSV(File file) throws IOException {
