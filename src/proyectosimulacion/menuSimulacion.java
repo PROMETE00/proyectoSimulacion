@@ -79,17 +79,17 @@ public class menuSimulacion {
     JButton exp9 = new JButton();
     JButton exp10 = new JButton();
     JButton exp11 = new JButton();
-    JButton btnMSim = new JButton();
-    JButton btnMDoc = new JButton();
-    JButton btnTablaDatos = new JButton();
-    JButton btnEstadisticas = new JButton();
-    JButton btnFactores = new JButton();
-    JButton btnRegresiones = new JButton();
+    RoundButton btnMSim = new RoundButton(20);
+    RoundButton btnMDoc = new RoundButton(20);
+    RoundButton btnTablaDatos = new RoundButton(20);
+    RoundButton btnEstadisticas = new RoundButton(20);
+    RoundButton btnFactores = new RoundButton(20);
+    RoundButton btnRegresiones = new RoundButton(20);
     JButton btnIndices = new JButton();
-    JButton btnExp = new JButton();
-    JButton btnMod = new JButton();
-    JButton btnObj = new JButton();
-    JButton btnMenuP = new JButton();
+    RoundButton btnExp = new RoundButton(20);
+    RoundButton btnMod = new RoundButton(20);
+    RoundButton btnObj = new RoundButton(20);
+    RoundButton btnMenuP = new RoundButton(20);
     JButton btnGC = new JButton();
     JButton btnGB = new JButton();
     JButton btnGCB1 = new JButton();
@@ -102,7 +102,7 @@ public class menuSimulacion {
     JButton btnGB4 = new JButton();
     JButton btnGB5 = new JButton();
     JButton btnF1 = new JButton();
-    JButton btnF2 = new JButton();
+    RoundButton btnF2 = new RoundButton(20);
     JButton btnIngresarDatos = new JButton();
     JButton btnMandarDatos = new JButton();
     JButton btnSubirDatos = new JButton();
@@ -198,6 +198,7 @@ public class menuSimulacion {
     private static final String DATA_FILE = "simulacion.csv";
     private DefaultTableModel mt = new DefaultTableModel();
     private JTable tabla;
+    double randomValue = 0.1 + (Math.random() * (10.0 - 1.0));
     private JScrollPane scrollPane;
     private boolean metodoUnoActivo = true;
     private double[] x = {90.5, 0, 15, 10, 15, 28.5, 74, 86, 41, 27.5, 35, 15};
@@ -211,9 +212,9 @@ public class menuSimulacion {
         panel.setLayout(null);
         panel.setBackground(cn26);
         frame.add(panel);
-//        menuPrincipal();
+        menuPrincipal();
 //        simulacion();
-        pantallaIngresar();
+//        pantallaIngresar();
 //        Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
 //        barraInteraccion();
         frame.setVisible(true);
@@ -462,7 +463,7 @@ public class menuSimulacion {
         subirDatos.setText("SUBIR DATOS DESDE CSV");
         subirDatos.setFont(new Font("Arial", Font.BOLD, 20));
         subirDatos.setForeground(cn4);
-        subirDatos.setBounds(1625, 800, 300, 200);
+        subirDatos.setBounds(1625, 750, 300, 200);
         panel.add(subirDatos);
 
         inAnio.setBounds(500, 325, 200, 50);
@@ -641,7 +642,7 @@ public class menuSimulacion {
         btnExplicarCsv.setContentAreaFilled(false);
         btnExplicarCsv.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 30, 30, btnExplicarCsv);
-        btnExplicarCsv.setBounds(1880, 887, 30, 30);
+        btnExplicarCsv.setBounds(1880, 900, 30, 30);
         panel.add(btnExplicarCsv);
 
         impCsv.setFocusPainted(false);
@@ -649,7 +650,7 @@ public class menuSimulacion {
         impCsv.setContentAreaFilled(false);
         impCsv.setForeground(Color.BLUE);
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/outbox_393799.png", 100, 100, impCsv);
-        impCsv.setBounds(1690, 967, 100, 100);
+        impCsv.setBounds(1690, 917, 100, 100);
 
         impCsv.addActionListener(new ActionListener() {
             @Override
@@ -753,8 +754,8 @@ public class menuSimulacion {
 
     public void simularYExportarCSV(File archivoBase, String rutaDestino) {
         try {
-            // Leer datos del CSV original
-            List<Map<String, Double>> datosBase = leerDatosDesdeCSV(archivoBase);
+            // Leer los datos desde el archivo CSV
+            List<Map<String, String>> datosBase = leerDatosDesdeCSV(archivoBase);
 
             // Verificar que los datos base no estén vacíos
             if (datosBase.isEmpty()) {
@@ -762,45 +763,74 @@ public class menuSimulacion {
                 return;
             }
 
+            // Mostrar las claves disponibles en el archivo
+            datosBase.forEach(fila -> System.out.println("Claves disponibles: " + fila.keySet()));
+
+            // Extraer los valores de las columnas de interés
+            String[] deforestaciones = datosBase.stream()
+                    .map(fila -> fila.getOrDefault("deforestacion", "0").trim())
+                    .toArray(String[]::new);
+            String[] incs = datosBase.stream()
+                    .map(fila -> fila.getOrDefault("Incertidumbre(%)", "0").trim())
+                    .toArray(String[]::new);
+            String[] alfas = datosBase.stream()
+                    .map(fila -> fila.getOrDefault("Z_alfa/2*sigma", "0").trim())
+                    .toArray(String[]::new);
+            String[] limInfs = datosBase.stream()
+                    .map(fila -> fila.getOrDefault("limite_inferior", "0").trim())
+                    .toArray(String[]::new);
+            String[] limSups = datosBase.stream()
+                    .map(fila -> fila.getOrDefault("limite_superior", "0").trim())
+                    .toArray(String[]::new);
+
+            // Mostrar los valores extraídos para depuración
+            System.out.println("Incertidumbre: " + Arrays.toString(incs));
+            System.out.println("Alfa: " + Arrays.toString(alfas));
+
             // Solicitar el año a simular
             String input = JOptionPane.showInputDialog(frame, "Ingresa el año hasta el que deseas simular:");
-            int anoSimulacion = Integer.parseInt(input);
+            if (input == null || input.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "No se ingresó un año.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            // Generar simulación
-            List<Map<String, Double>> datosSimulados = simularDatos(datosBase, anoSimulacion);
+            int añoFin = Integer.parseInt(input.trim());
 
-            // Exportar simulación a CSV
-            exportarCSV(datosSimulados, rutaDestino);
+            // Obtener el año de inicio desde los datos
+            String añoInicioStr = datosBase.get(0).getOrDefault("año", "0").trim();
+            int añoInicio = Integer.parseInt(añoInicioStr);
+
+            // Mostrar años para depuración
+            System.out.println("Año inicio: " + añoInicio);
+            System.out.println("Año fin: " + añoFin);
+
+            // Llamar al método iniciarSimulacion con los datos leídos
+            iniciarSimulacion(añoInicio, deforestaciones, incs, alfas, limInfs, limSups, añoFin);
 
             JOptionPane.showMessageDialog(frame, "Simulación completada y exportada a: " + rutaDestino, "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(frame, "El año ingresado no es válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "El año ingresado no es válido o los datos no están en el formato correcto.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Error al procesar el archivo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private List<Map<String, Double>> leerDatosDesdeCSV(File archivo) throws IOException {
-        List<Map<String, Double>> datos = new ArrayList<>();
+// Método para leer los datos desde un archivo CSV y devolverlos como una lista de mapas
+    private List<Map<String, String>> leerDatosDesdeCSV(File archivo) throws IOException {
+        List<Map<String, String>> datos = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
+            // Leer la primera línea para obtener los encabezados
             String[] encabezados = br.readLine().split(",");
+
             while ((linea = br.readLine()) != null) {
                 String[] valores = linea.split(",");
-                if (valores.length != encabezados.length) {
-                    JOptionPane.showMessageDialog(frame, "Formato incorrecto en el archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
-                    continue; // Ignorar filas mal formateadas
+                Map<String, String> fila = new HashMap<>();
+                for (int i = 0; i < encabezados.length; i++) {
+                    fila.put(encabezados[i].trim(), valores[i].trim());
                 }
-                Map<String, Double> fila = new HashMap<>();
-                try {
-                    for (int i = 0; i < encabezados.length; i++) {
-                        fila.put(encabezados[i].trim(), Double.parseDouble(valores[i].trim()));
-                    }
-                    datos.add(fila);
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(frame, "Error al leer una fila: " + Arrays.toString(valores), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                datos.add(fila);
             }
         }
         return datos;
@@ -1189,6 +1219,7 @@ public class menuSimulacion {
         JLabel aActual = new JLabel("2001");
         JLabel aCalculado = new JLabel();
         RoundButton btnIniciarSimulacion = new RoundButton(20);
+        RoundButton IngresarM = new RoundButton(20);
 
         txtInciciarSImulacion.setText("SELECCIONE EL AÑO DE INICIO DE LA SIMULACIÓN");
         txtInciciarSImulacion.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
@@ -1216,21 +1247,21 @@ public class menuSimulacion {
         aInicio.setForeground(cn4);
         panel.add(aInicio);
 
-        aFin.setText("2021");
+        aFin.setText("2016");
         aFin.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 23));
         aFin.setBounds(1685, 115, 100, 100);
         aFin.setForeground(cn4);
         panel.add(aFin);
 
-        btnIngresarDatos.setText("INGRESAR DATOS MANUALMENTE");
-        btnIngresarDatos.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 15));
-        btnIngresarDatos.setBounds(615, 45, 300, 60);
-        btnIngresarDatos.setForeground(cn5);
-        btnIngresarDatos.setFocusPainted(false);
-        btnIngresarDatos.setBackground(cn10);
-        panel.add(btnIngresarDatos);
+        IngresarM.setText("INGRESAR DATOS MANUALMENTE");
+        IngresarM.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 15));
+        IngresarM.setBounds(615, 45, 300, 60);
+        IngresarM.setForeground(cn5);
+        IngresarM.setFocusPainted(false);
+        IngresarM.setBackground(cn10);
+        panel.add(IngresarM);
 
-        btnIngresarDatos.addActionListener(e -> {
+        IngresarM.addActionListener(e -> {
             panel.removeAll();
             pantallaIngresar();
             panel.revalidate(); // Recalcula el diseño del panel
@@ -1251,7 +1282,7 @@ public class menuSimulacion {
         aActual.setForeground(cn4);
         panel.add(aActual);
 
-        JScrollBar yearScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, 2001, 1, 2001, 2022);
+        JScrollBar yearScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, 2001, 1, 2001, 2017);
         yearScrollBar.setUnitIncrement(1);
         yearScrollBar.setBounds(1070, 150, 600, 30);
 
@@ -1525,7 +1556,7 @@ public class menuSimulacion {
         txtRegresion.append("VALOR MÍNIMO" + sp2.repeat(8) + StatUtils.min(y) + sp2.repeat(6) + "    VALOR MÁXIMO" + sp2 + sp1.repeat(3) + StatUtils.max(y) + "\n\n");
         txtRegresion.append("VALOR PROMEDIO   " + sp2.repeat(6) + StatUtils.mean(y) + sp2.repeat(6) + "    VALOR VARIANZA   " + sp2.repeat(6) + StatUtils.variance(y) + "\n\n");
         txtRegresion.append("VALOR GEOMETRICO" + sp2.repeat(4) + StatUtils.geometricMean(y) + sp2.repeat(5) + "  VALOR SUMA " + sp2.repeat(8) + StatUtils.sum(y) + "\n\n");
-        txtRegresion.append("PENDIENTE   " + sp2.repeat(7) + sr.getSlope() + sp + sp2 + "VALOR PRODUCTO     " + sp2.repeat(5) + StatUtils.product(y) + sp + "R2" + sp1 + sr.getRSquare());
+        txtRegresion.append("PENDIENTE   " + sp2.repeat(7) + sr.getSlope() + sp + sp2 + "VALOR PRODUCTO     " + sp2.repeat(5) + StatUtils.product(y) + sp + "\n\nR²" + sp1 + sr.getRSquare());
         txtRegresion.setBounds(450, 815, 1580, 315);
         txtRegresion.setEditable(false);
         txtRegresion.setForeground(cn4);
@@ -1581,17 +1612,17 @@ public class menuSimulacion {
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp5);
         exp5.setBounds(420, 1042, 20, 20);
         panel.add(exp5);
-//
-//        exp6.setToolTipText("Punto donde la línea de regresión cruza el eje Y (cuando X es 0).");
-//        exp6.setFont(new Font("Arial", Font.BOLD, 16));
-//        exp6.setFocusPainted(false);
-//        exp6.setBorder(BorderFactory.createEmptyBorder());
-//        exp6.setContentAreaFilled(false);
-//        exp6.setForeground(inv);
-//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp6);
-//        exp6.setBounds(1028, 822, 20, 20);
-//        panel.add(exp6);
-//       
+
+        exp6.setToolTipText("R² indica qué tan bien el modelo explica los datos; su valor varía entre 0 y 1, siendo 1 un ajuste perfecto.");
+        exp6.setFont(new Font("Arial", Font.BOLD, 16));
+        exp6.setFocusPainted(false);
+        exp6.setBorder(BorderFactory.createEmptyBorder());
+        exp6.setContentAreaFilled(false);
+        exp6.setForeground(inv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp6);
+        exp6.setBounds(420, 1097, 20, 20);
+        panel.add(exp6);
+       
 //        exp7.setToolTipText("El mayor valor observado en los datos analizados.");
 //        exp7.setFont(new Font("Arial", Font.BOLD, 16));
 //        exp7.setFocusPainted(false);
@@ -1673,8 +1704,8 @@ public class menuSimulacion {
         y = yList.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
-    public void menuFactores() {
-
+    public void menuFactores(double x) {
+        
         img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforest_9568180.png", 160, 160, imgFac);
         imgFac.setBounds(1015, 20, 160, 160);
         panel.add(imgFac);
@@ -1687,37 +1718,36 @@ public class menuSimulacion {
 
         panelVista.setBounds(380, 200, 1460, 850);
         panel.add(panelVista);
-        primarios();
+        primarios(x);
         panel.add(btnF1);
         panel.add(btnF2);
 
         btnF2.addActionListener(e -> {
             if (metodoUnoActivo) {
                 frame.setTitle("FACTORES  DE DEFORESTACIÓN PRIMARIOS");
-                primarios();
+                primarios(x);
             } else {
                 frame.setTitle("FACTORES  DE DEFORESTACIÓN SECUNDARIOS");
-                secundarios();
+                secundarios(x);
             }
             metodoUnoActivo = !metodoUnoActivo;
             barraInteraccion();
         });
-//        btnF1.addActionListener(e -> {
-//        });
     }
 
-    public void secundarios() {
+    public void secundarios(double x) {
+        
         panelVista.removeAll();
         btnF2.setText("FACTORES PRIMARIOS");
-        double n1 = 0;
-        double n2 = 65;
-        double n3 = 42;
-        double n4 = 29;
-        double n5 = 0;
-        double n6 = 5;
-        double n7 = 45.5;
-        double n8 = 33;
-        double n9 = 14.5;
+        double n1 = 9*x;
+        double n2 = 65*x;
+        double n3 = 42*x;
+        double n4 = 29*x;
+        double n5 = 15*x;
+        double n6 = 5*x;
+        double n7 = 45.5*x;
+        double n8 = 33*x;
+        double n9 = 14.5*x;
 
         DefaultCategoryDataset datos = new DefaultCategoryDataset();
         datos.setValue(n1, "ESTADISTICA", "factor socioeconomico");
@@ -1752,22 +1782,22 @@ public class menuSimulacion {
         panelVista.repaint(); // Repaint para actualizar la vista
     }
 
-    public void primarios() {
+    public void primarios(double x) {
 
         btnF2.setText("FACTORES SECUNDARIOS");
         panelVista.removeAll();
-        double n1 = 90.5;
-        double n2 = 0;
-        double n3 = 15;
-        double n4 = 10;
-        double n5 = 15;
-        double n6 = 28.5;
-        double n7 = 74;
-        double n8 = 86;
-        double n9 = 41;
-        double n10 = 27.5;
-        double n11 = 35;
-        double n12 = 15;
+        double n1 = 90.5*x;
+        double n2 = 10*x;
+        double n3 = 15*x;
+        double n4 = 10*x;
+        double n5 = 15*x;
+        double n6 = 28.5*x;
+        double n7 = 74*x;
+        double n8 = 86*x;
+        double n9 = 41*x;
+        double n10 = 27.5*x;
+        double n11 = 35*x;
+        double n12 = 15*x;
 
         DefaultCategoryDataset datos = new DefaultCategoryDataset();
 
@@ -2022,6 +2052,7 @@ public class menuSimulacion {
     }
 
     public void documentacionExplicacion() {
+        
         lblImg1.setVisible(true);
         frame.setTitle("             COMPONENTES DEL MODELO MATEMATICO");
         txtModelo.setText("Pendiente (ß1):\n\n"
@@ -2168,16 +2199,19 @@ public class menuSimulacion {
         panel.add(btnMenuP);
 
         btnExp.addActionListener(e -> {
+            limpiarPanel();
             documentacionExplicacion();
             barraInteraccionD();
         });
 
         btnObj.addActionListener(e -> {
+            limpiarPanel();
             documentacionObjetivos();
             barraInteraccionD();
         });
 
         btnMod.addActionListener(e -> {
+            limpiarPanel();
             documentacionModelo();
             barraInteraccionD();
         });
@@ -2583,12 +2617,11 @@ public class menuSimulacion {
         btnTablaDatos.setBounds(0, 200, 300, 60);
         pintarBoton(btnTablaDatos, "<html>TABLA DE DATOS</html>", cn22, cn22, cn4);
         btnEstadisticas.setBounds(0, 265, 300, 60);
-        pintarBoton(btnEstadisticas, "<html><center>ESTADISTICAS<br>POR BOSQUE</center></html>", cn22, cn22, cn4);
+        pintarBoton(btnEstadisticas, "<html><center>MODELO DE <br>REGRESION LINEAL</center></html>", cn22, cn22, cn4);
         btnFactores.setBounds(0, 330, 300, 60);
         pintarBoton(btnFactores, "<html><center>FACTORES DE<br>DEFORESTACION</center></html>", cn22, cn22, cn4);
-        btnRegresiones.setBounds(0, 395, 300, 60);
-        pintarBoton(btnRegresiones, "<html><center>MODELO DE <br>REGRESION LINEAL</center></html>", cn22, cn22, cn4);
-
+//        btnRegresiones.setBounds(0, 395, 300, 60);
+//        pintarBoton(btnRegresiones, "", cn22, cn22, cn4);
         btnMenuP.setBounds(0, 1073, 300, 60);
         pintarBoton(btnMenuP, "<html>MENÚ PRINCIPAL</html>", cn3, cn3, cn4);
         panel.add(btnMenuP);
@@ -2603,12 +2636,12 @@ public class menuSimulacion {
 
         btnEstadisticas.addActionListener(e -> {
             limpiarPanel();
-            menuGraficas();
+            Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
             barraInteraccion();
         });
         btnFactores.addActionListener(e -> {
             limpiarPanel();
-            menuFactores();
+            menuFactores(randomValue);
             barraInteraccion();
         });
         btnRegresiones.addActionListener(e -> {
