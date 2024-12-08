@@ -21,7 +21,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -115,7 +117,20 @@ public class menuSimulacion {
     JButton btnExplicarAnioFin = new JButton();
     JButton btnExplicarCsv = new JButton();
     JButton impCsv = new JButton();
-
+    JButton ExpCsv = new JButton();
+    JButton botonAnio = new JButton();
+    JButton botonDeforestacion = new JButton();
+    JButton botonIncertidumbre = new JButton();
+    JButton botonZAlpha = new JButton();
+    JButton botonLimiteInferior = new JButton();
+    JButton botonLimiteSuperior = new JButton();
+    JLabel txtExp1 = new JLabel();
+    JLabel txtExp2 = new JLabel();
+    JLabel txtExp3 = new JLabel();
+    JLabel txtExp4 = new JLabel();
+    JLabel txtExp5 = new JLabel();
+    JLabel txtExp6 = new JLabel();
+    JLabel txtTab = new JLabel();
     JLabel txtInciciarSImulacion = new JLabel();
     JLabel txtSImulacion = new JLabel();
     JTextArea txtTiempoSimulacion = new JTextArea();
@@ -212,11 +227,12 @@ public class menuSimulacion {
         panel.setLayout(null);
         panel.setBackground(cn26);
         frame.add(panel);
-        menuPrincipal();
+//        menuPrincipal();
 //        simulacion();
 //        pantallaIngresar();
 //        Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
-//        barraInteraccion();
+        tablaDeDatos();
+        barraInteraccion();
         frame.setVisible(true);
     }
 
@@ -649,7 +665,8 @@ public class menuSimulacion {
         impCsv.setBorder(BorderFactory.createEmptyBorder());
         impCsv.setContentAreaFilled(false);
         impCsv.setForeground(Color.BLUE);
-        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/outbox_393799.png", 100, 100, impCsv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/box_15309795.gif", 100, 100, impCsv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/outbox_393799.png", 100, 100, impCsv);
         impCsv.setBounds(1690, 917, 100, 100);
 
         impCsv.addActionListener(new ActionListener() {
@@ -1622,7 +1639,7 @@ public class menuSimulacion {
         imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp6);
         exp6.setBounds(420, 1097, 20, 20);
         panel.add(exp6);
-       
+
 //        exp7.setToolTipText("El mayor valor observado en los datos analizados.");
 //        exp7.setFont(new Font("Arial", Font.BOLD, 16));
 //        exp7.setFocusPainted(false);
@@ -1672,7 +1689,6 @@ public class menuSimulacion {
 //        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 20, 20, exp11);
 //        exp11.setBounds(1686, 1042, 20, 20);
 //        panel.add(exp11);
-
     }
 
     private void loadDataFromCSV(String filePath) {
@@ -1705,7 +1721,7 @@ public class menuSimulacion {
     }
 
     public void menuFactores(double x) {
-        
+
         img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforest_9568180.png", 160, 160, imgFac);
         imgFac.setBounds(1015, 20, 160, 160);
         panel.add(imgFac);
@@ -1736,18 +1752,18 @@ public class menuSimulacion {
     }
 
     public void secundarios(double x) {
-        
+
         panelVista.removeAll();
         btnF2.setText("FACTORES PRIMARIOS");
-        double n1 = 9*x;
-        double n2 = 65*x;
-        double n3 = 42*x;
-        double n4 = 29*x;
-        double n5 = 15*x;
-        double n6 = 5*x;
-        double n7 = 45.5*x;
-        double n8 = 33*x;
-        double n9 = 14.5*x;
+        double n1 = 9 * x;
+        double n2 = 65 * x;
+        double n3 = 42 * x;
+        double n4 = 29 * x;
+        double n5 = 15 * x;
+        double n6 = 5 * x;
+        double n7 = 45.5 * x;
+        double n8 = 33 * x;
+        double n9 = 14.5 * x;
 
         DefaultCategoryDataset datos = new DefaultCategoryDataset();
         datos.setValue(n1, "ESTADISTICA", "factor socioeconomico");
@@ -1786,18 +1802,18 @@ public class menuSimulacion {
 
         btnF2.setText("FACTORES SECUNDARIOS");
         panelVista.removeAll();
-        double n1 = 90.5*x;
-        double n2 = 10*x;
-        double n3 = 15*x;
-        double n4 = 10*x;
-        double n5 = 15*x;
-        double n6 = 28.5*x;
-        double n7 = 74*x;
-        double n8 = 86*x;
-        double n9 = 41*x;
-        double n10 = 27.5*x;
-        double n11 = 35*x;
-        double n12 = 15*x;
+        double n1 = 90.5 * x;
+        double n2 = 10 * x;
+        double n3 = 15 * x;
+        double n4 = 10 * x;
+        double n5 = 15 * x;
+        double n6 = 28.5 * x;
+        double n7 = 74 * x;
+        double n8 = 86 * x;
+        double n9 = 41 * x;
+        double n10 = 27.5 * x;
+        double n11 = 35 * x;
+        double n12 = 15 * x;
 
         DefaultCategoryDataset datos = new DefaultCategoryDataset();
 
@@ -2052,7 +2068,7 @@ public class menuSimulacion {
     }
 
     public void documentacionExplicacion() {
-        
+
         lblImg1.setVisible(true);
         frame.setTitle("             COMPONENTES DEL MODELO MATEMATICO");
         txtModelo.setText("Pendiente (ß1):\n\n"
@@ -2528,11 +2544,95 @@ public class menuSimulacion {
     }
 
     public void tablaDeDatos() {
-        frame.setTitle("TABLA DE DATOS");
+//        frame.setTitle("TABLA DE DATOS");
+        ExpCsv.setBounds(1790, 30, 70, 70);
+        txtTab.setText("TABLA DE DATOS");
+        txtTab.setBounds(880, 1, 450, 65);
+        txtTab.setBorder(new LineBorder(inv, 2));
+        txtTab.setFont(new Font("Noto Sans Mono Thin", Font.BOLD, 50));
+        txtTab.setForeground(cn4);
+        txtTab.setBackground(inv);
+        panel.add(txtTab);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/package_1079004.png", 70, 70, ExpCsv);
+        ExpCsv.setBorderPainted(false);
+        ExpCsv.setFocusPainted(false);
+        ExpCsv.setOpaque(false);
+        ExpCsv.setContentAreaFilled(false);
+        ExpCsv.setBackground(inv);
+        ExpCsv.addActionListener(e -> {
+            String sourcePath = "/ruta/a/tu/archivo.xlsx";
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Selecciona la ruta de destino");
+            int result = fileChooser.showSaveDialog(null);
+            if (result != JFileChooser.APPROVE_OPTION) {
+                JOptionPane.showMessageDialog(null, "Operación cancelada.");
+                return;
+            }
+
+            File destinationFile = fileChooser.getSelectedFile();
+
+            // Copiar y modificar el archivo Excel
+//            copiarYAgregarFilaExcel(sourcePath, destinationFile);
+        });
+
+        panel.add(ExpCsv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 45, 45, botonAnio);
+        botonAnio.setToolTipText("El año en el que se recopilaron los datos sobre deforestación.");
+        botonAnio.setBounds(445, 75, 45, 45);
+        botonAnio.setOpaque(false);
+        botonAnio.setBorderPainted(false);
+        botonAnio.setFocusPainted(false);
+        botonAnio.setBackground(inv);
+        panel.add(botonLimiteInferior);
+        panel.add(botonAnio);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 45, 45, botonDeforestacion);
+        botonDeforestacion.setToolTipText("Cantidad total de área deforestada en hectáreas durante ese año.");
+        botonDeforestacion.setBounds(700, 75, 45, 45);
+        botonDeforestacion.setOpaque(false);
+        botonDeforestacion.setBorderPainted(false);
+        botonDeforestacion.setFocusPainted(false);
+        botonDeforestacion.setBackground(inv);
+        panel.add(botonLimiteInferior);
+        panel.add(botonDeforestacion);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 45, 45, botonIncertidumbre);
+        botonIncertidumbre.setToolTipText("El margen de error del cálculo de deforestación, expresado en porcentaje.");
+        botonIncertidumbre.setBounds(945, 75, 45, 45);
+        botonIncertidumbre.setOpaque(false);
+        botonIncertidumbre.setBorderPainted(false);
+        botonIncertidumbre.setFocusPainted(false);
+        botonIncertidumbre.setBackground(inv);
+        panel.add(botonLimiteInferior);
+        panel.add(botonIncertidumbre);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 45, 45, botonZAlpha);
+        botonZAlpha.setToolTipText("Valor estadístico que mide la variabilidad de los datos para calcular intervalos de confianza.");
+        botonZAlpha.setBounds(1190, 75, 45, 45);
+        botonZAlpha.setOpaque(false);
+        botonZAlpha.setBorderPainted(false);
+        botonZAlpha.setFocusPainted(false);
+        botonZAlpha.setBackground(inv);
+        panel.add(botonLimiteInferior);
+        panel.add(botonZAlpha);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 45, 45, botonLimiteInferior);
+        botonLimiteInferior.setToolTipText("El valor mínimo estimado del área deforestada dentro del intervalo de confianza.");
+        botonLimiteInferior.setBounds(1430, 75, 45, 45);
+        botonLimiteInferior.setOpaque(false);
+        botonLimiteInferior.setBorderPainted(false);
+        botonLimiteInferior.setFocusPainted(false);
+        botonLimiteInferior.setBackground(inv);
+        panel.add(botonLimiteInferior);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/dudas.png", 45, 45, botonLimiteSuperior);
+        botonLimiteSuperior.setToolTipText("El valor máximo estimado del área deforestada dentro del intervalo de confianza.");
+        botonLimiteSuperior.setBounds(1685, 75, 45, 45);
+        botonLimiteSuperior.setOpaque(false);
+        botonLimiteSuperior.setBorderPainted(false);
+        botonLimiteSuperior.setFocusPainted(false);
+        botonLimiteSuperior.setBackground(inv);
+        panel.add(botonLimiteSuperior);
         tabla = new JTable(mt);
         scrollPane = new JScrollPane(tabla);
         tabla.setRowHeight(46);
-        scrollPane.setBounds(350, 50, 1510, 1040);
+        scrollPane.setBounds(350, 130, 1510, 960);
         panel.add(scrollPane);
         Datos();
         panel.revalidate();
@@ -2550,11 +2650,41 @@ public class menuSimulacion {
                 } else {
                     c.setBackground(Color.WHITE); // Fondo blanco para el resto de las filas
                 }
-
                 return c;
             }
         });
     }
+//
+//    private void copiarYAgregarFilaExcel(String sourcePath, File destinationFile) {
+//        // Cargar el archivo de Excel
+//        try (FileInputStream fis = new FileInputStream(sourcePath); Workbook workbook = new XSSFWorkbook(fis)) {
+//
+//            // Obtener la primera hoja (ajustar si tienes más de una hoja)
+//            Sheet sheet = workbook.getSheetAt(0);
+//
+//            // Crear una nueva fila con los valores que se quieren agregar
+//            String[] newValues = {
+//                "2024", "12345.67", "5.43", "67890.12", "54321.00", "67890.00"
+//            };
+//
+//            // Agregar la nueva fila al final de la hoja
+//            agregarFila(sheet, newValues);
+//
+//            // Guardar el archivo en la ruta de destino
+//            guardarArchivo(workbook, destinationFile);
+//
+//            // Mensaje de éxito
+//            JOptionPane.showMessageDialog(null,
+//                    "Archivo copiado y modificado exitosamente:\n" + destinationFile.getAbsolutePath(),
+//                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+//
+//        } catch (IOException ex) {
+//            JOptionPane.showMessageDialog(null,
+//                    "Ocurrió un error: " + ex.getMessage(),
+//                    "Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//    }
+
 
     public void limpiarTablaDeDatos() {
         mt.setRowCount(0);
