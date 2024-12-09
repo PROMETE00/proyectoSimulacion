@@ -157,6 +157,7 @@ public class menuSimulacion {
 
     JTextField inAnio1 = new JTextField();
     JTextField inDef1 = new JTextField();
+    JTextField inDe1 = new JTextField();
     JTextField inInc1 = new JTextField();
     JTextField inAlfa1 = new JTextField();
     JTextField inLimInf1 = new JTextField();
