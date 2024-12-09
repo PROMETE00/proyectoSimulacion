@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -229,12 +231,12 @@ public class menuSimulacion {
         panel.setLayout(null);
         panel.setBackground(cn26);
         frame.add(panel);
-//        menuPrincipal();
+        menuPrincipal();
 //        simulacion();
 //        pantallaIngresar();
-        Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
+//        Regresion("/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv");
 //        tablaDeDatos();
-        barraInteraccion();
+//        barraInteraccion();
         frame.setVisible(true);
     }
 
@@ -667,8 +669,8 @@ public class menuSimulacion {
         impCsv.setBorder(BorderFactory.createEmptyBorder());
         impCsv.setContentAreaFilled(false);
         impCsv.setForeground(Color.BLUE);
-        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/box_15309795.gif", 100, 100, impCsv);
-//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/outbox_393799.png", 100, 100, impCsv);
+//        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/box_15309795.gif", 100, 100, impCsv);
+        imgB("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/outbox_393799.png", 100, 100, impCsv);
         impCsv.setBounds(1690, 917, 100, 100);
 
         impCsv.addActionListener(new ActionListener() {
@@ -1709,34 +1711,35 @@ public class menuSimulacion {
     }
 
     public void menuFactores(double x) {
+        frame.setTitle("HECTARES DEFORESTADAS POR AÑO");
 
-        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforest_9568180.png", 160, 160, imgFac);
-        imgFac.setBounds(1015, 20, 160, 160);
-        panel.add(imgFac);
+//        img("/home/prome/NetBeansProjects/proyectoSimulacion/src/imagenes/deforest_9568180.png", 160, 160, imgFac);
+//        imgFac.setBounds(1015, 20, 160, 160);
+//        panel.add(imgFac);
+//
+//        frame.setTitle("FACTORES DE DEFORESTACIÓN PRIMARIOS");
+////        btnF1.setBounds(380, 1000, 240, 100);
+//        btnF2.setBounds(1600, 45, 240, 100);
+////        pintarBoton(btnF1, "FACTORES PRIMARIOS", cn3, cn3, cn4);
+//        pintarBoton(btnF2, "FACTORES SECUNDARIOS", cn3, cn3, cn4);
 
-        frame.setTitle("FACTORES DE DEFORESTACIÓN PRIMARIOS");
-//        btnF1.setBounds(380, 1000, 240, 100);
-        btnF2.setBounds(1600, 45, 240, 100);
-//        pintarBoton(btnF1, "FACTORES PRIMARIOS", cn3, cn3, cn4);
-        pintarBoton(btnF2, "FACTORES SECUNDARIOS", cn3, cn3, cn4);
-
-        panelVista.setBounds(380, 200, 1460, 850);
+        panelVista.setBounds(380, 30, 1460, 1050);
         panel.add(panelVista);
         primarios(x);
-        panel.add(btnF1);
-        panel.add(btnF2);
+//        panel.add(btnF1);
+//        panel.add(btnF2);
 
-        btnF2.addActionListener(e -> {
-            if (metodoUnoActivo) {
-                frame.setTitle("FACTORES  DE DEFORESTACIÓN PRIMARIOS");
-                primarios(x);
-            } else {
-                frame.setTitle("FACTORES  DE DEFORESTACIÓN SECUNDARIOS");
-                secundarios(x);
-            }
-            metodoUnoActivo = !metodoUnoActivo;
-            barraInteraccion();
-        });
+//        btnF2.addActionListener(e -> {
+//            if (metodoUnoActivo) {
+//                frame.setTitle("FACTORES  DE DEFORESTACIÓN PRIMARIOS");
+//                primarios(x);
+//            } else {
+//                frame.setTitle("FACTORES  DE DEFORESTACIÓN SECUNDARIOS");
+//                secundarios(x);
+//            }
+//            metodoUnoActivo = !metodoUnoActivo;
+//            barraInteInteraccion();
+//        });
     }
 
     public void secundarios(double x) {
@@ -1787,57 +1790,65 @@ public class menuSimulacion {
     }
 
     public void primarios(double x) {
-
-        btnF2.setText("FACTORES SECUNDARIOS");
+        btnF2.setText("HECTARES DEFORESTADAS POR AÑO");
         panelVista.removeAll();
-        double n1 = 90.5 * x;
-        double n2 = 10 * x;
-        double n3 = 15 * x;
-        double n4 = 10 * x;
-        double n5 = 15 * x;
-        double n6 = 28.5 * x;
-        double n7 = 74 * x;
-        double n8 = 86 * x;
-        double n9 = 41 * x;
-        double n10 = 27.5 * x;
-        double n11 = 35 * x;
-        double n12 = 15 * x;
 
-        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+        // Cargar datos desde el archivo CSV
+        String csvFile = "/home/prome/NetBeansProjects/proyectoSimulacion/simulacion.csv";
+        try (CSVReader reader = new CSVReader(new FileReader(csvFile))) {
+            // Leer todas las filas del archivo CSV
+            List<String[]> rows = reader.readAll();
 
-        datos.setValue(n1, "ESTADISTICA", "factor socioeconomico");
-        datos.setValue(n2, "ESTADISTICA", "extraccion insostenible de leña para combustible");
-        datos.setValue(n3, "ESTADISTICA", "extraccion de madera insostenible");
-        datos.setValue(n4, "ESTADISTICA", "incendios forestales (intencionales)");
-        datos.setValue(n5, "ESTADISTICA", "incendios forestales naturales");
-        datos.setValue(n6, "ESTADISTICA", "desarrollo de infraestructura ");
-        datos.setValue(n7, "ESTADISTICA", "pastero de ganado libre ");
-        datos.setValue(n8, "ESTADISTICA", "expansion urbana y rural ");
-        datos.setValue(n9, "ESTADISTICA", "expansion agricula de subsistencia  ");
-        datos.setValue(n10, "ESTADISTICA", "deslizamiento de tierra  ");
-        datos.setValue(n11, "ESTADISTICA", "plagas");
-        datos.setValue(n12, "ESTADISTICA", "gobernanza debil");
+            // Crear el dataset para el gráfico
+            DefaultCategoryDataset datos = new DefaultCategoryDataset();
 
-        JFreeChart grafico_barras = ChartFactory.createBarChart3D(
-                "FACTORES PRIMARIOS",
-                "TIPO",
-                "PORCENTAJE",
-                datos,
-                PlotOrientation.HORIZONTAL,
-                true,
-                true,
-                false
-        );
+            // Iterar sobre las filas del CSV (omite la cabecera si la tiene)
+            for (String[] row : rows) {
+                if (row.length > 1) {
+                    // Suponemos que la primera columna es el año y las siguientes son los valores de los factores
+                    String año = row[0];  // Año en la primera columna
 
-        ChartPanel panel = new ChartPanel(grafico_barras);
-        panel.setMouseWheelEnabled(true);
-        panel.setPreferredSize(new Dimension(1000, 500));
+                    // Multiplicar los valores por el factor 'x'
+                    double factorSocioeconomico = Double.parseDouble(row[1]) * x;
+                    double extraccionLeña = Double.parseDouble(row[2]) * x;
+                    double extraccionMadera = Double.parseDouble(row[3]) * x;
+                    double incendios = Double.parseDouble(row[4]) * x;
 
-        panelVista.setLayout(new BorderLayout());
-        panelVista.add(panel, BorderLayout.CENTER);
+                    // Añadir los valores al dataset con el año como categoría
+                    datos.setValue(factorSocioeconomico, "", "" + año);
+                    datos.setValue(extraccionLeña, "", "" + año);
+                    datos.setValue(extraccionMadera, "", "" + año);
+                    datos.setValue(incendios, "", "" + año);
+                }
+            }
 
-        panelVista.repaint();
-        panelVista.revalidate();
+            // Crear el gráfico de barras
+            JFreeChart grafico_barras = ChartFactory.createBarChart3D(
+                    "HECTAREAS DEFORESTADAS POR AÑO",
+                    "AÑO",
+                    "HECTAREAS",
+                    datos,
+                    PlotOrientation.HORIZONTAL,
+                    true,
+                    true,
+                    false
+            );
+
+            // Configurar el panel del gráfico
+            ChartPanel panel = new ChartPanel(grafico_barras);
+            panel.setMouseWheelEnabled(true);
+            panel.setPreferredSize(new Dimension(1000, 500));
+
+            // Agregar el gráfico al panelVista
+            panelVista.setLayout(new BorderLayout());
+            panelVista.add(panel, BorderLayout.CENTER);
+
+            panelVista.repaint();
+            panelVista.revalidate();
+
+        } catch (IOException | CsvException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deforestacion() {
@@ -2725,7 +2736,7 @@ public class menuSimulacion {
         btnEstadisticas.setBounds(0, 265, 300, 60);
         pintarBoton(btnEstadisticas, "<html><center>MODELO DE <br>REGRESION LINEAL</center></html>", cn22, cn22, cn4);
         btnFactores.setBounds(0, 330, 300, 60);
-        pintarBoton(btnFactores, "<html><center>FACTORES DE<br>DEFORESTACION</center></html>", cn22, cn22, cn4);
+        pintarBoton(btnFactores, "<html><center>GRAFICA DE<br>BARRAS</center></html>", cn22, cn22, cn4);
 //        btnRegresiones.setBounds(0, 395, 300, 60);
 //        pintarBoton(btnRegresiones, "", cn22, cn22, cn4);
         btnMenuP.setBounds(0, 1073, 300, 60);
